@@ -33,6 +33,37 @@ body {
   overflow-x: hidden;
 }
 
+/* Per-locale font swaps — keep geometric sans feel across scripts */
+html[lang="he"] body {
+  font-family: var(--font-heebo), var(--font-geist-sans), system-ui, sans-serif;
+  letter-spacing: -0.005em;
+}
+
+html[lang="ru"] body {
+  font-family: var(--font-manrope), var(--font-geist-sans), system-ui, sans-serif;
+  letter-spacing: -0.012em;
+}
+
+/* RTL direction reflow polish */
+html[dir="rtl"] {
+  text-align: start;
+}
+
+/* Numbers and code stay LTR even in RTL flow */
+html[dir="rtl"] .ltr-num,
+html[dir="rtl"] [data-ltr] {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Mirror the gradient text for RTL so highlight reads naturally */
+html[dir="rtl"] .text-gradient {
+  background: linear-gradient(250deg, #ecfdf5 20%, #10b981 45%, #ecfdf5 70%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
 ::selection {
   background: rgba(16, 185, 129, 0.35);
   color: #ecfdf5;

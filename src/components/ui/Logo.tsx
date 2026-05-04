@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useT } from "../i18n/LanguageProvider";
 
 type Props = {
   className?: string;
@@ -8,6 +9,7 @@ type Props = {
 };
 
 export default function Logo({ className = "", showWordmark = true }: Props) {
+  const t = useT();
   return (
     <a href="#top" className={`group flex items-center gap-2.5 ${className}`}>
       <motion.svg
@@ -27,7 +29,6 @@ export default function Logo({ className = "", showWordmark = true }: Props) {
             <stop offset="100%" stopColor="#059669" />
           </linearGradient>
         </defs>
-        {/* Outer hex */}
         <motion.polygon
           points="20,2 36,11 36,29 20,38 4,29 4,11"
           fill="none"
@@ -37,11 +38,9 @@ export default function Logo({ className = "", showWordmark = true }: Props) {
           animate={{ pathLength: 1 }}
           transition={{ duration: 1.2, ease: "easeInOut" }}
         />
-        {/* Inner stacked bars (ledger glyph) */}
         <rect x="13" y="14" width="14" height="2.4" rx="1" fill="url(#acg)" />
         <rect x="13" y="19" width="10" height="2.4" rx="1" fill="#10b981" opacity="0.85" />
         <rect x="13" y="24" width="14" height="2.4" rx="1" fill="url(#acg)" />
-        {/* Diagonal accent (rising trend) */}
         <motion.path
           d="M9 30 L31 12"
           stroke="#ecfdf5"
@@ -54,12 +53,12 @@ export default function Logo({ className = "", showWordmark = true }: Props) {
         />
       </motion.svg>
       {showWordmark && (
-        <div className="leading-none">
+        <div className="leading-none" dir="ltr">
           <span className="block text-[15px] font-semibold tracking-tight text-slate-100 group-hover:text-white transition-colors">
             Accoun<span className="text-emerald-400">Tech</span>
           </span>
-          <span className="block text-[10px] uppercase tracking-[0.18em] text-slate-500">
-            Precision · Transparency
+          <span className="mt-1 block text-[10px] uppercase tracking-[0.18em] text-slate-500">
+            {t.logo.tagline}
           </span>
         </div>
       )}
