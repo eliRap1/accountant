@@ -53,22 +53,23 @@ function WireKnot() {
   );
 }
 
+const N = 9;
+const GRID_ITEMS: { x: number; z: number }[] = [];
+for (let i = 0; i < N; i++) {
+  for (let j = 0; j < N; j++) {
+    GRID_ITEMS.push({ x: (i - (N - 1) / 2) * 0.55, z: (j - (N - 1) / 2) * 0.55 });
+  }
+}
+
 function DataGrid() {
   const ref = useRef<THREE.Group>(null);
   useFrame((state) => {
     if (!ref.current) return;
     ref.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.15) * 0.05;
   });
-  const items: { x: number; z: number }[] = [];
-  const N = 9;
-  for (let i = 0; i < N; i++) {
-    for (let j = 0; j < N; j++) {
-      items.push({ x: (i - (N - 1) / 2) * 0.55, z: (j - (N - 1) / 2) * 0.55 });
-    }
-  }
   return (
     <group ref={ref} position={[0, -1.8, 0]} rotation={[-Math.PI / 2.2, 0, 0]}>
-      {items.map((p, idx) => (
+      {GRID_ITEMS.map((p, idx) => (
         <Bar key={idx} {...p} idx={idx} />
       ))}
     </group>
