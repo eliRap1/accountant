@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { useState } from "react";
 import Logo from "./Logo";
 import { Menu, X } from "lucide-react";
@@ -74,10 +74,13 @@ export default function Navbar() {
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
 
+        <AnimatePresence>
         {open && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
             className="glass-strong absolute left-0 right-0 top-[calc(100%+0.5rem)] rounded-2xl p-4 md:hidden"
           >
             <ul className="flex flex-col gap-1">
@@ -104,6 +107,7 @@ export default function Navbar() {
             </ul>
           </motion.div>
         )}
+        </AnimatePresence>
       </nav>
     </motion.header>
   );
