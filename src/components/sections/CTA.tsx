@@ -52,14 +52,16 @@ export default function CTA() {
             onSubmit={(e) => e.preventDefault()}
             className="glass-strong space-y-4 rounded-2xl p-6 sm:p-8"
           >
-            <Field label="Full name" type="text" placeholder="Jane Doe" />
-            <Field label="Work email" type="email" placeholder="jane@company.com" />
-            <Field label="Company" type="text" placeholder="Acme, Inc." />
+            <Field label="Full name" type="text" placeholder="Jane Doe" name="fullName" />
+            <Field label="Work email" type="email" placeholder="jane@company.com" name="email" />
+            <Field label="Company" type="text" placeholder="Acme, Inc." name="company" />
             <div>
-              <label className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-slate-400">
+              <label htmlFor="field-message" className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-slate-400">
                 What do you need help with?
               </label>
               <textarea
+                id="field-message"
+                name="message"
                 rows={4}
                 placeholder="Audit prep, R&D credit, monthly close..."
                 className="w-full resize-none rounded-xl border border-white/10 bg-slate-950/60 px-3.5 py-3 text-sm text-slate-100 outline-none transition-colors placeholder:text-slate-600 focus:border-emerald-400/60"
@@ -82,17 +84,22 @@ function Field({
   label,
   type,
   placeholder,
+  name,
 }: {
   label: string;
   type: string;
   placeholder: string;
+  name: string;
 }) {
+  const id = `field-${name}`;
   return (
     <div>
-      <label className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-slate-400">
+      <label htmlFor={id} className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-slate-400">
         {label}
       </label>
       <input
+        id={id}
+        name={name}
         type={type}
         placeholder={placeholder}
         className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-3.5 py-3 text-sm text-slate-100 outline-none transition-colors placeholder:text-slate-600 focus:border-emerald-400/60"
