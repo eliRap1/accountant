@@ -15,6 +15,7 @@ export default function Logo({ className = "", showWordmark = true }: Props) {
         height="34"
         viewBox="0 0 40 40"
         xmlns="http://www.w3.org/2000/svg"
+        role="img"
         aria-label="AccounTech logo"
         initial={{ rotate: -10, opacity: 0 }}
         animate={{ rotate: 0, opacity: 1 }}
