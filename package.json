@@ -95,8 +95,11 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "@parcel/watcher",
+      "@prisma/client",
       "@sentry/cli",
       "@swc/core",
+      "better-sqlite3",
+      "core-js",
       "esbuild",
       "protobufjs",
       "sharp",
