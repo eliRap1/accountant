@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import type { Route } from "next";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Mail, Loader2, Check } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { sendVerificationEmail } from "@/lib/auth/client";
 
 export default function VerifyEmailView() {
@@ -103,7 +102,7 @@ export default function VerifyEmailView() {
       <div className="mt-8 border-t border-white/10 pt-6 text-xs text-slate-500">
         לא קיבלתם? בדקו תיקיית ספאם, או{" "}
         <Link
-          href={"/sign-in" as Route}
+          href="/sign-in"
           className="text-emerald-300 hover:text-emerald-200"
         >
           התחברו עם חשבון קיים

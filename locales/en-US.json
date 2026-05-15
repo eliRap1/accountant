@@ -1,0 +1,133 @@
+{
+  "nav": {
+    "services": "Features",
+    "dashboard": "Live Demo",
+    "approach": "How it works",
+    "contact": "Pricing",
+    "login": "Sign in",
+    "book": "Start free"
+  },
+  "logo": {
+    "tagline": "Estimates · Not tax advice"
+  },
+  "hero": {
+    "badge": "Built for עוסק פטור · עוסק מורשה · ח.פ.",
+    "title1": "The accountant",
+    "titleAccent": "you don't",
+    "title2": "have to pay every month.",
+    "desc": "Israeli tax invoices, receipt OCR, VAT estimates and ready-to-upload SHAAM files. From ₪49/month. Estimates only — not tax advice; consult a licensed CPA before filing.",
+    "ctaPrimary": "Start free",
+    "ctaSecondary": "See the dashboard",
+    "kpi1Value": "₪49",
+    "kpi1Label": "Solo plan / month",
+    "kpi2Value": "10s",
+    "kpi2Label": "To issue a tax invoice",
+    "kpi3Value": "60h+",
+    "kpi3Label": "Saved per year",
+    "scroll": "scroll ↓"
+  },
+  "services": {
+    "eyebrow": "What it does",
+    "title1": "Three workflows.",
+    "titleAccent": "One clean panel.",
+    "desc": "Replace the spreadsheet, the receipt shoebox, and the back-and-forth with your CPA. Estimates only — final filings stay with a licensed accountant.",
+    "audit": {
+      "title": "Invoicing & receipts",
+      "desc": "Issue compliant חשבונית מס in seconds. Scan receipts with OCR. 2026 allocation-number support built in.",
+      "b1": "חשבונית מס with allocation №",
+      "b2": "Receipt OCR + auto-category",
+      "b3": "Hyp / Grow / PayPlus sync"
+    },
+    "tax": {
+      "title": "VAT & income estimates",
+      "desc": "We crunch your invoices and expenses into clean PCN874, form 102 and form 6111 files — ready to upload to SHAAM.",
+      "b1": "PCN874 / 6111 / 102 export",
+      "b2": "Form 1301 / 1214 prep",
+      "b3": "Estimates only · not advice"
+    },
+    "consulting": {
+      "title": "AI advisor + CPA mode",
+      "desc": "Plain-Hebrew explainer for every number. Invite your accountant on the ₪399 tier — multi-business view, full audit log.",
+      "b1": "Plain-language explanations",
+      "b2": "Accountant collaboration",
+      "b3": "Consult a CPA before filing"
+    }
+  },
+  "dashboard": {
+    "eyebrow": "Live preview",
+    "title1": "Your numbers,",
+    "titleAccent": "without the shoebox.",
+    "desc": "Hover the bars to inspect monthly revenue. Every figure ties back to a receipt, an invoice, or a bank line — auditable end to end.",
+    "cta": "Try the demo",
+    "kpiArr": "Annualized revenue",
+    "kpiGm": "Net margin",
+    "kpiEbitda": "Expenses (YTD)",
+    "kpiYoy": "YoY growth",
+    "kpiYoyDelta": "healthy",
+    "barTitle": "Monthly revenue",
+    "fy": "FY 2026",
+    "areaTitle": "Profit trajectory",
+    "cashTitle": "Cash position",
+    "cashOperating": "Operating",
+    "cashReserve": "Tax reserve",
+    "cashInvestment": "Other",
+    "revenue": "Revenue",
+    "ebitda": "Profit",
+    "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+  },
+  "approach": {
+    "eyebrow": "How it works",
+    "title": "From signup to first invoice in 10 minutes.",
+    "s1": {
+      "title": "Connect",
+      "desc": "Add your עוסק details and link your payment processor or bank in a couple of clicks."
+    },
+    "s2": {
+      "title": "Import",
+      "desc": "Drop in past invoices and receipts. OCR reads, categorizes, and dedupes the lot."
+    },
+    "s3": {
+      "title": "Issue & track",
+      "desc": "Send tax invoices with allocation numbers. Watch VAT and income estimates update live."
+    },
+    "s4": {
+      "title": "File",
+      "desc": "Export PCN874, 102, 6111 — upload to SHAAM yourself, or hand off to your CPA."
+    }
+  },
+  "cta": {
+    "eyebrow": "Pricing",
+    "title1": "Free to start.",
+    "title2": "₪49 when you're ready.",
+    "desc": "Free / Solo ₪49 / Plus ₪99 / Business ₪199 / Accountant ₪399 — all prices monthly, ex-VAT. No card required for the free tier. Cancel anytime.",
+    "address": "Tel Aviv · 100% online",
+    "nameLabel": "Full name",
+    "namePh": "Israel Israeli",
+    "emailLabel": "Email",
+    "emailPh": "you@business.co.il",
+    "companyLabel": "Business name",
+    "companyPh": "Your business / ח.פ.",
+    "msgLabel": "What are you using today?",
+    "msgPh": "Excel + accountant, just an accountant, nothing yet...",
+    "submit": "Start free trial",
+    "note": "No card required. Estimates only — not tax advice."
+  },
+  "footer": {
+    "tagline": "AccounTech — software that handles invoices, receipts and VAT estimates for Israeli self-employed. Estimates only · Not tax advice · Consult a licensed CPA.",
+    "practice": "Product",
+    "practiceLinks": ["Invoicing", "Receipts & OCR", "VAT estimates", "Accountant mode"],
+    "company": "Company",
+    "companyLinks": ["About", "Pricing", "Security", "Contact"],
+    "resources": "Resources",
+    "resourceLinks": ["Help center", "2026 allocation №", "SHAAM guide", "Status"],
+    "copy": "AccounTech Ltd · Software, not a CPA firm. Estimates only — not tax advice."
+  },
+  "sticky": {
+    "label": "Start free"
+  },
+  "language": {
+    "label": "English",
+    "short": "EN",
+    "flag": "🇺🇸"
+  }
+}

@@ -2,9 +2,9 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import GlareCard from "../ui/GlareCard";
 import { ScanSearch, Calculator, LineChart, ArrowUpRight } from "lucide-react";
-import { useT, useLocale } from "../i18n/LanguageProvider";
 
 export default function Services() {
   const wrap = useRef<HTMLDivElement>(null);
@@ -14,30 +14,34 @@ export default function Services() {
   });
   const headerY = useTransform(scrollYProgress, [0, 1], [60, -60]);
   const headerOpacity = useTransform(scrollYProgress, [0, 0.25, 0.85, 1], [0.2, 1, 1, 0.4]);
-  const t = useT();
-  const { locale } = useLocale();
-  const isRtl = locale === "he";
+  const t = useTranslations("services");
+  const locale = useLocale();
+  const isRtl = locale === "he-IL";
 
   const services = [
     {
       icon: ScanSearch,
-      title: t.services.audit.title,
-      desc: t.services.audit.desc,
-      bullets: [t.services.audit.b1, t.services.audit.b2, t.services.audit.b3],
+      title: t("audit.title"),
+      desc: t("audit.desc"),
+      bullets: [t("audit.b1"), t("audit.b2"), t("audit.b3")],
       tag: "01",
     },
     {
       icon: Calculator,
-      title: t.services.tax.title,
-      desc: t.services.tax.desc,
-      bullets: [t.services.tax.b1, t.services.tax.b2, t.services.tax.b3],
+      title: t("tax.title"),
+      desc: t("tax.desc"),
+      bullets: [t("tax.b1"), t("tax.b2"), t("tax.b3")],
       tag: "02",
     },
     {
       icon: LineChart,
-      title: t.services.consulting.title,
-      desc: t.services.consulting.desc,
-      bullets: [t.services.consulting.b1, t.services.consulting.b2, t.services.consulting.b3],
+      title: t("consulting.title"),
+      desc: t("consulting.desc"),
+      bullets: [
+        t("consulting.b1"),
+        t("consulting.b2"),
+        t("consulting.b3"),
+      ],
       tag: "03",
     },
   ];
@@ -46,13 +50,12 @@ export default function Services() {
     <section ref={wrap} id="services" className="relative mx-auto w-full max-w-7xl px-6 py-32">
       <motion.div style={{ y: headerY, opacity: headerOpacity }} className="mb-16 max-w-2xl">
         <span className="text-xs uppercase tracking-[0.22em] text-emerald-400">
-          {t.services.eyebrow}
+          {t("eyebrow")}
         </span>
         <h2 className="mt-3 text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-slate-50 sm:text-5xl md:text-6xl">
-          {t.services.title1}{" "}
-          <span className="text-gradient">{t.services.titleAccent}</span>
+          {t("title1")} <span className="text-gradient">{t("titleAccent")}</span>
         </h2>
-        <p className="mt-5 text-base text-slate-400 sm:text-lg">{t.services.desc}</p>
+        <p className="mt-5 text-base text-slate-400 sm:text-lg">{t("desc")}</p>
       </motion.div>
 
       <div className="grid gap-6 md:grid-cols-3">

@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import Link from "next/link";
-import type { Route } from "next";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Loader2, KeyRound } from "lucide-react";
+import { Link, useRouter } from "@/i18n/navigation";
 import { resetPassword } from "@/lib/auth/client";
 
 export default function ResetPasswordForm() {
@@ -42,7 +41,7 @@ export default function ResetPasswordForm() {
         setError(messageFor(result.error.code, result.error.message));
         return;
       }
-      router.push("/sign-in?reset=ok" as Route);
+      router.push({ pathname: "/sign-in", query: { reset: "ok" } });
     } catch (err) {
       setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
     } finally {
@@ -127,7 +126,7 @@ export default function ResetPasswordForm() {
 
       <p className="mt-6 text-center text-sm text-slate-400">
         <Link
-          href={"/sign-in" as Route}
+          href="/sign-in"
           className="text-emerald-300 hover:text-emerald-200 transition-colors"
         >
           חזרה לכניסה

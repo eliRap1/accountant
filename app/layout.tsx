@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Heebo, Manrope } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
-import { LanguageProvider } from "@/components/site/i18n/LanguageProvider";
+
+// This is a *second* root layout used only for paths outside the
+// `[locale]` segment — currently just `/post-auth`, which is a synchronous
+// auth-bridge that immediately redirects to a localised route. Per the
+// Next.js 16 docs (file-conventions/layout.md §Root Layout) multiple
+// root layouts are supported; navigating between them triggers a full
+// page load, which is the desired behaviour for an auth bridge.
+//
+// Real i18n + locale-aware `<html lang dir>` lives in `app/[locale]/layout.tsx`.
+// Here we default to `lang="he" dir="rtl"` because the AccounTech audience
+// is IL-first and the bridge page only renders for a few hundred ms.
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,16 +36,7 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "AccounTech — Precision & Transparency",
-  description:
-    "Modern accounting, audit, tax, and strategic consulting — engineered with precision and delivered with transparency.",
-  metadataBase: new URL("https://accountech.example.com"),
-  openGraph: {
-    title: "AccounTech — Precision & Transparency",
-    description:
-      "Audit, tax, and consulting for ambitious companies. Built on data, delivered with clarity.",
-    type: "website",
-  },
+  title: "AccounTech",
 };
 
 export default function RootLayout({
@@ -44,17 +44,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      lang="en"
-      dir="ltr"
+      lang="he"
+      dir="rtl"
       className={`${geistSans.variable} ${geistMono.variable} ${heebo.variable} ${manrope.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <head>
-        <Script src="/locale-init.js" strategy="beforeInteractive" />
-      </head>
-      <body className="min-h-full flex flex-col">
-        <LanguageProvider>{children}</LanguageProvider>
-      </body>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }

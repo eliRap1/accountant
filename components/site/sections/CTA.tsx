@@ -1,12 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import Button from "../ui/Button";
 import { Mail, Phone, MapPin } from "lucide-react";
-import { useT } from "../i18n/LanguageProvider";
 
 export default function CTA() {
-  const t = useT();
+  const t = useTranslations("cta");
 
   return (
     <section id="contact" className="relative mx-auto w-full max-w-7xl px-6 py-32">
@@ -24,12 +24,12 @@ export default function CTA() {
         <div className="relative grid gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <span className="text-xs uppercase tracking-[0.22em] text-emerald-400">
-              {t.cta.eyebrow}
+              {t("eyebrow")}
             </span>
             <h2 className="mt-3 text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-slate-50 sm:text-5xl md:text-6xl">
-              {t.cta.title1} <br /> {t.cta.title2}
+              {t("title1")} <br /> {t("title2")}
             </h2>
-            <p className="mt-5 max-w-md text-slate-400">{t.cta.desc}</p>
+            <p className="mt-5 max-w-md text-slate-400">{t("desc")}</p>
 
             <ul className="mt-8 space-y-3 text-sm text-slate-300">
               <li className="flex items-center gap-3">
@@ -42,7 +42,7 @@ export default function CTA() {
               </li>
               <li className="flex items-center gap-3">
                 <MapPin size={16} className="text-emerald-400" />
-                {t.cta.address}
+                {t("address")}
               </li>
             </ul>
           </div>
@@ -51,23 +51,23 @@ export default function CTA() {
             onSubmit={(e) => e.preventDefault()}
             className="glass-strong space-y-4 rounded-2xl p-6 sm:p-8"
           >
-            <Field label={t.cta.nameLabel} type="text" placeholder={t.cta.namePh} />
-            <Field label={t.cta.emailLabel} type="email" placeholder={t.cta.emailPh} />
-            <Field label={t.cta.companyLabel} type="text" placeholder={t.cta.companyPh} />
+            <Field label={t("nameLabel")} type="text" placeholder={t("namePh")} />
+            <Field label={t("emailLabel")} type="email" placeholder={t("emailPh")} />
+            <Field label={t("companyLabel")} type="text" placeholder={t("companyPh")} />
             <div>
               <label className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-slate-400">
-                {t.cta.msgLabel}
+                {t("msgLabel")}
               </label>
               <textarea
                 rows={4}
-                placeholder={t.cta.msgPh}
+                placeholder={t("msgPh")}
                 className="w-full resize-none rounded-xl border border-white/10 bg-slate-950/60 px-3.5 py-3 text-sm text-slate-100 outline-none transition-colors placeholder:text-slate-600 focus:border-emerald-400/60"
               />
             </div>
             <Button type="submit" variant="primary" withArrow className="w-full">
-              {t.cta.submit}
+              {t("submit")}
             </Button>
-            <p className="text-center text-[11px] text-slate-500">{t.cta.note}</p>
+            <p className="text-center text-[11px] text-slate-500">{t("note")}</p>
           </form>
         </div>
       </motion.div>

@@ -1,11 +1,9 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
-import Link from "next/link";
-import type { Route } from "next";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
+import { Link, useRouter } from "@/i18n/navigation";
 import { signUp } from "@/lib/auth/client";
 
 // Cloudflare Turnstile global (loaded via <script> in useEffect).
@@ -123,9 +121,12 @@ export default function SignUpForm({ turnstileSiteKey }: Props) {
         }
         return;
       }
-      router.push(
-        `/verify-email?email=${encodeURIComponent(email.trim())}` as Route,
-      );
+      // verify-email lives inside the [locale] tree → next-intl router
+      // auto-prefixes the active locale.
+      router.push({
+        pathname: "/verify-email",
+        query: { email: email.trim() },
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
     } finally {
@@ -204,14 +205,14 @@ export default function SignUpForm({ turnstileSiteKey }: Props) {
           <span>
             אני מאשר/ת את{" "}
             <Link
-              href={"/terms" as Route}
+              href="/terms"
               className="text-emerald-300 hover:text-emerald-200"
             >
               תנאי השימוש
             </Link>{" "}
             ואת{" "}
             <Link
-              href={"/privacy" as Route}
+              href="/privacy"
               className="text-emerald-300 hover:text-emerald-200"
             >
               מדיניות הפרטיות
@@ -252,7 +253,7 @@ export default function SignUpForm({ turnstileSiteKey }: Props) {
       <p className="mt-6 text-center text-sm text-slate-400">
         כבר יש לכם חשבון?{" "}
         <Link
-          href={"/sign-in" as Route}
+          href="/sign-in"
           className="text-emerald-300 hover:text-emerald-200 transition-colors"
         >
           התחברו

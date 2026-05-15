@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import Link from "next/link";
-import type { Route } from "next";
 import { motion } from "framer-motion";
 import { Loader2, Check, KeyRound } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { requestPasswordReset } from "@/lib/auth/client";
 
 export default function ForgotPasswordForm() {
@@ -54,7 +53,7 @@ export default function ForgotPasswordForm() {
           אם הכתובת רשומה אצלנו, שלחנו אליה קישור לאיפוס סיסמה. תוקף הקישור — שעה אחת.
         </p>
         <Link
-          href={"/sign-in" as Route}
+          href="/sign-in"
           className="mt-8 inline-block text-sm text-emerald-300 hover:text-emerald-200"
         >
           חזרה לכניסה
@@ -129,7 +128,7 @@ export default function ForgotPasswordForm() {
       <p className="mt-6 text-center text-sm text-slate-400">
         נזכרתם בסיסמה?{" "}
         <Link
-          href={"/sign-in" as Route}
+          href="/sign-in"
           className="text-emerald-300 hover:text-emerald-200 transition-colors"
         >
           חזרה לכניסה

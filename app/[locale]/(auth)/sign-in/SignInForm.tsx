@@ -1,16 +1,19 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import Link from "next/link";
-import type { Route } from "next";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
+import { Link, useRouter } from "@/i18n/navigation";
 import { signIn } from "@/lib/auth/client";
 
 export default function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  // `redirect` is a relative path inside the [locale] tree; next-intl
+  // router auto-prefixes the active locale. `/post-auth` is the root-level
+  // bridge — for that we fall back to a full-page nav so the prefix
+  // logic doesn't kick in.
   const redirectTo = searchParams?.get("redirect") ?? "/post-auth";
 
   const [email, setEmail] = useState("");
@@ -32,8 +35,12 @@ export default function SignInForm() {
         setError(messageFor(result.error.code, result.error.message));
         return;
       }
-      router.push(redirectTo as Route);
-      router.refresh();
+      if (redirectTo.startsWith("/post-auth")) {
+        window.location.assign(redirectTo);
+      } else {
+        router.push(redirectTo);
+        router.refresh();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
     } finally {
@@ -81,7 +88,7 @@ export default function SignInForm() {
 
         <div className="flex items-center justify-between text-xs">
           <Link
-            href={"/forgot-password" as Route}
+            href="/forgot-password"
             className="text-emerald-300 hover:text-emerald-200 transition-colors"
           >
             שכחת סיסמה?
@@ -117,7 +124,7 @@ export default function SignInForm() {
       <p className="mt-6 text-center text-sm text-slate-400">
         אין לכם חשבון?{" "}
         <Link
-          href={"/sign-up" as Route}
+          href="/sign-up"
           className="text-emerald-300 hover:text-emerald-200 transition-colors"
         >
           צור חשבון

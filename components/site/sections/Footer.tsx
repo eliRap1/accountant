@@ -1,7 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Logo from "../ui/Logo";
-import { useT } from "../i18n/LanguageProvider";
 
 const Twitter = (p: { size?: number; className?: string }) => (
   <svg width={p.size ?? 16} height={p.size ?? 16} viewBox="0 0 24 24" fill="currentColor" className={p.className} aria-hidden>
@@ -23,26 +23,31 @@ const Github = (p: { size?: number; className?: string }) => (
 
 export default function Footer() {
   const year = new Date().getFullYear();
-  const t = useT();
+  const t = useTranslations("footer");
+  // Link-list arrays come back via the raw() accessor.
+  const practiceLinks = t.raw("practiceLinks") as readonly string[];
+  const companyLinks = t.raw("companyLinks") as readonly string[];
+  const resourceLinks = t.raw("resourceLinks") as readonly string[];
+
   return (
     <footer className="relative mx-auto mt-20 w-full max-w-7xl px-6 pb-12">
       <div className="rounded-3xl border border-white/5 bg-slate-950/50 p-10 backdrop-blur-xl">
         <div className="flex flex-col gap-10 md:flex-row md:justify-between">
           <div className="max-w-sm">
             <Logo />
-            <p className="mt-4 text-sm leading-relaxed text-slate-400">{t.footer.tagline}</p>
+            <p className="mt-4 text-sm leading-relaxed text-slate-400">{t("tagline")}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
-            <Column title={t.footer.practice} links={t.footer.practiceLinks as readonly string[]} />
-            <Column title={t.footer.company} links={t.footer.companyLinks as readonly string[]} />
-            <Column title={t.footer.resources} links={t.footer.resourceLinks as readonly string[]} />
+            <Column title={t("practice")} links={practiceLinks} />
+            <Column title={t("company")} links={companyLinks} />
+            <Column title={t("resources")} links={resourceLinks} />
           </div>
         </div>
 
         <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-white/5 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center">
           <span>
-            © {year} {t.footer.copy}
+            © {year} {t("copy")}
           </span>
           <div className="flex items-center gap-3" dir="ltr">
             <a className="rounded-lg p-2 hover:bg-white/5 hover:text-slate-200" aria-label="Twitter" href="#">

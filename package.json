@@ -11,6 +11,7 @@
     "lint:rule-meta": "tsx scripts/lint-rule-meta.ts",
     "lint:legal-text": "tsx scripts/lint-legal-text.ts",
     "lint:missing-translations": "tsx scripts/lint-missing-translations.ts",
+    "lint:ru-app-leak": "tsx scripts/lint-ru-app-leak.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",

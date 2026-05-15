@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import { setRequestLocale } from "next-intl/server";
 import Navbar from "@/components/site/ui/Navbar";
 import StickyCTA from "@/components/site/ui/StickyCTA";
 import Hero from "@/components/site/sections/Hero";
@@ -15,7 +16,16 @@ const Dashboard = dynamic(() => import("@/components/site/sections/Dashboard"), 
   ),
 });
 
-export default function Home() {
+type Props = {
+  params: Promise<{ locale: string }>;
+};
+
+export default async function Home({ params }: Props) {
+  // Per next-intl docs: call setRequestLocale before any translation
+  // hook fires so static rendering stays available for this route.
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <main className="relative flex min-h-screen flex-col">
       <Navbar />

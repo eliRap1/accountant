@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   Bar,
   BarChart,
@@ -15,7 +16,6 @@ import {
   AreaChart,
 } from "recharts";
 import { TrendingUp, Activity, PieChart, ArrowUpRight } from "lucide-react";
-import { useT } from "../i18n/LanguageProvider";
 
 type Row = { month: string; revenue: number; ebitda: number };
 
@@ -38,14 +38,18 @@ export default function Dashboard() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const parallax = useTransform(scrollYProgress, [0, 1], [40, -40]);
-  const t = useT();
+  const t = useTranslations("dashboard");
+  // `months` is an array — next-intl returns it via raw() or by reading
+  // the JSON literal. We use the typed-translation helper to get the
+  // array out and fall back to month index if anything goes sideways.
+  const months = t.raw("months") as string[];
 
   const [hovered, setHovered] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
   const data: Row[] = rawData.map((d) => ({
-    month: t.dashboard.months[d.idx] ?? "",
+    month: months[d.idx] ?? "",
     revenue: d.revenue,
     ebitda: d.ebitda,
   }));
@@ -69,18 +73,18 @@ export default function Dashboard() {
     return (
       <div className="glass-strong rounded-xl px-3.5 py-2.5 text-xs">
         <div className="mb-1 text-slate-400" dir="ltr">
-          {label} {t.dashboard.fy}
+          {label} {t("fy")}
         </div>
         <div className="flex items-center gap-2 text-emerald-300">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          {t.dashboard.revenue}:{" "}
+          {t("revenue")}:{" "}
           <span className="text-slate-100 font-semibold" dir="ltr">
             ${row.revenue}k
           </span>
         </div>
         <div className="flex items-center gap-2 text-slate-300">
           <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
-          {t.dashboard.ebitda}:{" "}
+          {t("ebitda")}:{" "}
           <span className="text-slate-100 font-semibold" dir="ltr">
             ${row.ebitda}k
           </span>
@@ -101,19 +105,18 @@ export default function Dashboard() {
       >
         <div className="max-w-xl">
           <span className="text-xs uppercase tracking-[0.22em] text-emerald-400">
-            {t.dashboard.eyebrow}
+            {t("eyebrow")}
           </span>
           <h2 className="mt-3 text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-slate-50 sm:text-5xl md:text-6xl">
-            {t.dashboard.title1}{" "}
-            <span className="text-gradient">{t.dashboard.titleAccent}</span>
+            {t("title1")} <span className="text-gradient">{t("titleAccent")}</span>
           </h2>
-          <p className="mt-4 text-slate-400">{t.dashboard.desc}</p>
+          <p className="mt-4 text-slate-400">{t("desc")}</p>
         </div>
         <a
           href="/sign-up"
           className="glass inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-slate-200 hover:text-white transition-colors"
         >
-          {t.dashboard.cta} <ArrowUpRight size={15} />
+          {t("cta")} <ArrowUpRight size={15} />
         </a>
       </motion.div>
 
@@ -129,22 +132,22 @@ export default function Dashboard() {
         <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
           <Kpi
             icon={TrendingUp}
-            label={t.dashboard.kpiArr}
+            label={t("kpiArr")}
             value={`$${((last.revenue * 12) / 1000).toFixed(1)}M`}
             delta="+18.4%"
           />
-          <Kpi icon={Activity} label={t.dashboard.kpiGm} value="74.2%" delta="+3.1 pts" />
+          <Kpi icon={Activity} label={t("kpiGm")} value="74.2%" delta="+3.1 pts" />
           <Kpi
             icon={PieChart}
-            label={t.dashboard.kpiEbitda}
+            label={t("kpiEbitda")}
             value={`$${data.reduce((a, d) => a + d.ebitda, 0)}k`}
             delta="+62%"
           />
           <Kpi
             icon={TrendingUp}
-            label={t.dashboard.kpiYoy}
+            label={t("kpiYoy")}
             value={`${yoy.toFixed(0)}%`}
-            delta={t.dashboard.kpiYoyDelta}
+            delta={t("kpiYoyDelta")}
             subtle
           />
         </div>
@@ -152,9 +155,9 @@ export default function Dashboard() {
         <div className="grid gap-8 lg:grid-cols-[1.6fr_1fr]">
           <div className="rounded-2xl border border-white/5 bg-slate-950/50 p-4 sm:p-5">
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-medium text-slate-200">{t.dashboard.barTitle}</h3>
+              <h3 className="text-sm font-medium text-slate-200">{t("barTitle")}</h3>
               <span className="text-xs text-slate-500" dir="ltr">
-                {t.dashboard.fy} · ${(total / 1000).toFixed(2)}M
+                {t("fy")} · ${(total / 1000).toFixed(2)}M
               </span>
             </div>
             <div className="h-72" dir="ltr">
@@ -213,7 +216,7 @@ export default function Dashboard() {
 
           <div className="flex flex-col gap-4">
             <div className="rounded-2xl border border-white/5 bg-slate-950/50 p-4 sm:p-5">
-              <h3 className="mb-2 text-sm font-medium text-slate-200">{t.dashboard.areaTitle}</h3>
+              <h3 className="mb-2 text-sm font-medium text-slate-200">{t("areaTitle")}</h3>
               <div className="h-44" dir="ltr">
                 {mounted && (
                   <ResponsiveContainer width="100%" height="100%">
@@ -243,12 +246,12 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="rounded-2xl border border-white/5 bg-slate-950/50 p-5">
-              <h3 className="mb-3 text-sm font-medium text-slate-200">{t.dashboard.cashTitle}</h3>
+              <h3 className="mb-3 text-sm font-medium text-slate-200">{t("cashTitle")}</h3>
               <ul className="space-y-3">
                 {[
-                  { label: t.dashboard.cashOperating, pct: 64, value: "$2.1M" },
-                  { label: t.dashboard.cashReserve, pct: 22, value: "$720k" },
-                  { label: t.dashboard.cashInvestment, pct: 14, value: "$460k" },
+                  { label: t("cashOperating"), pct: 64, value: "$2.1M" },
+                  { label: t("cashReserve"), pct: 22, value: "$720k" },
+                  { label: t("cashInvestment"), pct: 14, value: "$460k" },
                 ].map((r) => (
                   <li key={r.label} className="text-xs">
                     <div className="mb-1 flex justify-between text-slate-400">

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useT } from "../i18n/LanguageProvider";
+import { useTranslations } from "next-intl";
 
 type Props = {
   className?: string;
@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default function Logo({ className = "", showWordmark = true }: Props) {
-  const t = useT();
+  const t = useTranslations("logo");
   return (
     <a href="#top" className={`group flex items-center gap-2.5 ${className}`}>
       <motion.svg
@@ -58,7 +58,7 @@ export default function Logo({ className = "", showWordmark = true }: Props) {
             Accoun<span className="text-emerald-400">Tech</span>
           </span>
           <span className="mt-1 block text-[10px] uppercase tracking-[0.18em] text-slate-500">
-            {t.logo.tagline}
+            {t("tagline")}
           </span>
         </div>
       )}

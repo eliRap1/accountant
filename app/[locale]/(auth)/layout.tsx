@@ -1,20 +1,21 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
-// Auth route group — sign-in, sign-up, verify-email, etc. Hebrew is the
-// default language; English/Russian split lands with the next-intl
-// migration in Phase A.5. The route group `(auth)` keeps the URL clean
-// (no /auth segment) while letting this layout wrap every page below.
+// Auth route group — sign-in, sign-up, verify-email, etc. The wrapper
+// no longer hard-codes Hebrew chrome: the parent `[locale]/layout.tsx`
+// already sets `<html lang dir>` based on the URL segment, so this
+// component just provides the glass-strong card scaffolding.
+//
+// Russian is rewritten to en-US by `proxy.ts` (Plan v4 Risk #24 — no
+// CPA-reviewed Russian disclaimer surface yet), so when a user is on
+// /ru-RU/sign-in they see the URL stay on /ru-RU but the body renders
+// the English layout below.
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div
-      dir="rtl"
-      lang="he"
-      className="relative min-h-screen flex flex-col items-center justify-center px-4 py-12 overflow-hidden"
-    >
+    <div className="relative min-h-screen flex flex-col items-center justify-center px-4 py-12 overflow-hidden">
       <div className="absolute inset-0 bg-grid opacity-50 pointer-events-none" />
       <Link
         href="/"

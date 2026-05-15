@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import Link from "next/link";
-import type { Route } from "next";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Loader2, ShieldCheck } from "lucide-react";
+import { Link, useRouter } from "@/i18n/navigation";
 import { twoFactor } from "@/lib/auth/client";
 
 // Reached after sign-in when the user has 2FA enabled. The Better Auth
@@ -35,8 +34,12 @@ export default function TwoFactorVerifyForm() {
         setError(messageFor(result.error.code, result.error.message));
         return;
       }
-      router.push(redirectTo as Route);
-      router.refresh();
+      if (redirectTo.startsWith("/post-auth")) {
+        window.location.assign(redirectTo);
+      } else {
+        router.push(redirectTo);
+        router.refresh();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
     } finally {
@@ -145,7 +148,7 @@ export default function TwoFactorVerifyForm() {
             : "חזרה לאפליקציית המאמת"}
         </button>
         <Link
-          href={"/sign-in" as Route}
+          href="/sign-in"
           className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
         >
           התחברות עם חשבון אחר

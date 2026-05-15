@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import Link from "next/link";
-import type { Route } from "next";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Loader2, ShieldCheck, Copy, Check } from "lucide-react";
+import { Link, useRouter } from "@/i18n/navigation";
 import { twoFactor } from "@/lib/auth/client";
 
 type EnrollState =
@@ -66,7 +64,10 @@ export default function TwoFactorEnrollForm() {
         setError(messageFor(result.error.code, result.error.message));
         return;
       }
-      router.push("/recovery-codes?source=enroll" as Route);
+      router.push({
+        pathname: "/recovery-codes",
+        query: { source: "enroll" },
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
     } finally {
@@ -274,12 +275,12 @@ export default function TwoFactorEnrollForm() {
       </form>
 
       <p className="mt-6 text-center text-sm text-slate-400">
-        <Link
-          href={"/post-auth" as Route}
+        <a
+          href="/post-auth"
           className="text-slate-500 hover:text-slate-300 transition-colors"
         >
           דילוג להמשך
-        </Link>
+        </a>
       </p>
     </motion.section>
   );

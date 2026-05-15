@@ -2,26 +2,27 @@
 
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import Logo from "./Logo";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { Menu, X } from "lucide-react";
-import { useT } from "../i18n/LanguageProvider";
 
 export default function Navbar() {
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const t = useT();
+  const t = useTranslations("nav");
 
   useMotionValueEvent(scrollY, "change", (y) => {
     setScrolled(y > 24);
   });
 
   const links = [
-    { href: "#services", label: t.nav.services },
-    { href: "#dashboard", label: t.nav.dashboard },
-    { href: "#approach", label: t.nav.approach },
-    { href: "#contact", label: t.nav.contact },
+    { href: "#services", label: t("services") },
+    { href: "#dashboard", label: t("dashboard") },
+    { href: "#approach", label: t("approach") },
+    { href: "#contact", label: t("contact") },
   ];
 
   return (
@@ -54,20 +55,18 @@ export default function Navbar() {
 
         <div className="hidden md:flex items-center gap-2">
           <LanguageSwitcher />
-          <a
+          <Link
             href="/sign-in"
             className="rounded-lg px-3 py-2 text-sm text-slate-300 hover:text-white transition-colors"
           >
-            {t.nav.login}
-          </a>
-          <motion.a
+            {t("login")}
+          </Link>
+          <Link
             href="/sign-up"
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
             className="rounded-lg border border-emerald-400/40 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-300 shadow-[0_0_24px_-6px_rgba(16,185,129,0.6)] hover:bg-emerald-500/20 transition-colors"
           >
-            {t.nav.book}
-          </motion.a>
+            {t("book")}
+          </Link>
         </div>
 
         <div className="md:hidden flex items-center gap-2">
@@ -100,22 +99,22 @@ export default function Navbar() {
                 </li>
               ))}
               <li>
-                <a
+                <Link
                   href="/sign-in"
                   onClick={() => setOpen(false)}
                   className="mt-2 block rounded-lg px-3 py-2.5 text-center text-slate-200 hover:bg-white/5"
                 >
-                  {t.nav.login}
-                </a>
+                  {t("login")}
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/sign-up"
                   onClick={() => setOpen(false)}
                   className="mt-1 block rounded-lg border border-emerald-400/40 bg-emerald-500/10 px-3 py-2.5 text-center text-emerald-300"
                 >
-                  {t.nav.book}
-                </a>
+                  {t("book")}
+                </Link>
               </li>
             </ul>
           </motion.div>

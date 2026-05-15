@@ -2,32 +2,32 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { Target, Database, FileCheck, Compass } from "lucide-react";
-import { useT, useLocale } from "../i18n/LanguageProvider";
 
 export default function Approach() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const lineProgress = useTransform(scrollYProgress, [0.1, 0.9], [0, 1]);
-  const t = useT();
-  const { locale } = useLocale();
-  const isRtl = locale === "he";
+  const t = useTranslations("approach");
+  const locale = useLocale();
+  const isRtl = locale === "he-IL";
 
   const steps = [
-    { icon: Compass, title: t.approach.s1.title, desc: t.approach.s1.desc },
-    { icon: Database, title: t.approach.s2.title, desc: t.approach.s2.desc },
-    { icon: FileCheck, title: t.approach.s3.title, desc: t.approach.s3.desc },
-    { icon: Target, title: t.approach.s4.title, desc: t.approach.s4.desc },
+    { icon: Compass, title: t("s1.title"), desc: t("s1.desc") },
+    { icon: Database, title: t("s2.title"), desc: t("s2.desc") },
+    { icon: FileCheck, title: t("s3.title"), desc: t("s3.desc") },
+    { icon: Target, title: t("s4.title"), desc: t("s4.desc") },
   ];
 
   return (
     <section id="approach" ref={ref} className="relative mx-auto w-full max-w-7xl px-6 py-32">
       <div className="mb-16 max-w-2xl">
         <span className="text-xs uppercase tracking-[0.22em] text-emerald-400">
-          {t.approach.eyebrow}
+          {t("eyebrow")}
         </span>
         <h2 className="mt-3 text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-slate-50 sm:text-5xl">
-          {t.approach.title}
+          {t("title")}
         </h2>
       </div>
 

@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import Link from "next/link";
-import type { Route } from "next";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Loader2, ShieldAlert, Copy, Check } from "lucide-react";
@@ -91,12 +89,12 @@ export default function RecoveryCodesView() {
               {copied ? <Check size={16} /> : <Copy size={16} />}
               {copied ? "הועתק" : "העתקת כל הקודים"}
             </button>
-            <Link
-              href={"/post-auth" as Route}
+            <a
+              href="/post-auth"
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-medium tracking-tight text-slate-950 shadow-[0_10px_40px_-10px_rgba(16,185,129,0.7)] transition-colors hover:bg-emerald-400"
             >
               סיימתי לשמור — המשך
-            </Link>
+            </a>
           </div>
         </>
       ) : (
