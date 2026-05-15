@@ -45,13 +45,15 @@ export default function Dashboard() {
   useEffect(() => setMounted(true), []);
 
   const data: Row[] = rawData.map((d) => ({
-    month: t.dashboard.months[d.idx],
+    month: t.dashboard.months[d.idx] ?? "",
     revenue: d.revenue,
     ebitda: d.ebitda,
   }));
 
   const total = data.reduce((acc, d) => acc + d.revenue, 0);
-  const yoy = ((data[11].revenue - data[0].revenue) / data[0].revenue) * 100;
+  const last = data[data.length - 1]!;
+  const first = data[0]!;
+  const yoy = ((last.revenue - first.revenue) / first.revenue) * 100;
 
   function CustomTooltip({
     active,
@@ -63,7 +65,7 @@ export default function Dashboard() {
     label?: string;
   }) {
     if (!active || !payload || !payload.length) return null;
-    const row = payload[0].payload;
+    const row = payload[0]!.payload;
     return (
       <div className="glass-strong rounded-xl px-3.5 py-2.5 text-xs">
         <div className="mb-1 text-slate-400" dir="ltr">
@@ -128,7 +130,7 @@ export default function Dashboard() {
           <Kpi
             icon={TrendingUp}
             label={t.dashboard.kpiArr}
-            value={`$${((data[11].revenue * 12) / 1000).toFixed(1)}M`}
+            value={`$${((last.revenue * 12) / 1000).toFixed(1)}M`}
             delta="+18.4%"
           />
           <Kpi icon={Activity} label={t.dashboard.kpiGm} value="74.2%" delta="+3.1 pts" />
