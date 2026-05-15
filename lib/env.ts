@@ -30,9 +30,12 @@ const schema = z.object({
   // Transactional email (Resend)
   RESEND_API_KEY: optionalNonEmpty,
 
-  // CAPTCHA (Cloudflare Turnstile)
+  // CAPTCHA (Cloudflare Turnstile). Site key duplicated as NEXT_PUBLIC_*
+  // so client code can read it without it leaking through the server-only
+  // env() reader. Server still validates the legacy TURNSTILE_SITE_KEY.
   TURNSTILE_SITE_KEY: optionalNonEmpty,
   TURNSTILE_SECRET_KEY: optionalNonEmpty,
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY: optionalNonEmpty,
 
   // AI Gateway / OpenAI
   AI_GATEWAY_API_KEY: optionalNonEmpty,
