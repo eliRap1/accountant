@@ -9,9 +9,20 @@ let appServiceClient: postgres.Sql | null = null;
 function getAppUserClient(): postgres.Sql {
   if (!appUserClient) {
     appUserClient = postgres(env().DATABASE_URL, {
-      max: 10,
-      idle_timeout: 20,
-      prepare: false, // Neon pooler doesn't support prepared statements
+      // Council DB Architect: Neon Free caps at ~100 connections; Fluid
+      // Compute can warm-start dozens of instances. Keep per-instance pool
+      // tiny and rely on Neon's pgbouncer for concurrency upstream.
+      max: 2,
+      idle_timeout: 10,
+      max_lifetime: 60 * 30,
+      // Neon pooler (transaction mode) does not support prepared statements.
+      prepare: false,
+      // Make undefined === SQL NULL so omitted columns don't crash on NOT NULL
+      // checks during partial inserts (postgres-js default is to omit param,
+      // which produces "bind message supplies N parameters, but prepared
+      // statement requires M").
+      transform: { undefined: null },
+      connection: { application_name: "accountant-web" },
     });
   }
   return appUserClient;
@@ -20,8 +31,14 @@ function getAppUserClient(): postgres.Sql {
 function getAppServiceClient(): postgres.Sql {
   if (!appServiceClient) {
     appServiceClient = postgres(env().DATABASE_URL_UNPOOLED, {
-      max: 5,
-      idle_timeout: 20,
+      max: 1,
+      idle_timeout: 10,
+      // Direct (unpooled) endpoint *does* support prepared statements, but
+      // Fluid Compute instances are ephemeral — caching prepared statements
+      // across cold starts wastes server-side state. Disable.
+      prepare: false,
+      transform: { undefined: null },
+      connection: { application_name: "accountant-service" },
     });
   }
   return appServiceClient;
