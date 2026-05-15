@@ -3,7 +3,10 @@ import { routes, type VercelConfig } from "@vercel/config/v1";
 export const config: VercelConfig = {
   framework: "nextjs",
   buildCommand: "next build",
-  installCommand: "npm install",
+  // Project is pnpm-only (packageManager pin + pnpm-lock.yaml committed).
+  // Without this override Vercel auto-detects npm, which then conflicts
+  // with the pnpm-lock schema and fails the build.
+  installCommand: "pnpm install --frozen-lockfile",
   outputDirectory: ".next",
 
   headers: [
