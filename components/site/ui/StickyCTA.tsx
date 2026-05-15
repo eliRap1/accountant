@@ -14,7 +14,7 @@ export default function StickyCTA() {
 
   return (
     <motion.a
-      href="#contact"
+      href="/sign-up"
       style={{ opacity, y }}
       whileHover={{ scale: 1.04 }}
       whileTap={{ scale: 0.96 }}

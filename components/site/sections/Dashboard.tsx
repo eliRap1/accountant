@@ -110,7 +110,7 @@ export default function Dashboard() {
           <p className="mt-4 text-slate-400">{t.dashboard.desc}</p>
         </div>
         <a
-          href="#contact"
+          href="/sign-up"
           className="glass inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-slate-200 hover:text-white transition-colors"
         >
           {t.dashboard.cta} <ArrowUpRight size={15} />

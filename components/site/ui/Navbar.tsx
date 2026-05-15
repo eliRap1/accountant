@@ -55,13 +55,13 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-2">
           <LanguageSwitcher />
           <a
-            href="#contact"
+            href="/sign-in"
             className="rounded-lg px-3 py-2 text-sm text-slate-300 hover:text-white transition-colors"
           >
             {t.nav.login}
           </a>
           <motion.a
-            href="#contact"
+            href="/sign-up"
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
             className="rounded-lg border border-emerald-400/40 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-300 shadow-[0_0_24px_-6px_rgba(16,185,129,0.6)] hover:bg-emerald-500/20 transition-colors"
@@ -101,9 +101,18 @@ export default function Navbar() {
               ))}
               <li>
                 <a
-                  href="#contact"
+                  href="/sign-in"
                   onClick={() => setOpen(false)}
-                  className="mt-2 block rounded-lg border border-emerald-400/40 bg-emerald-500/10 px-3 py-2.5 text-center text-emerald-300"
+                  className="mt-2 block rounded-lg px-3 py-2.5 text-center text-slate-200 hover:bg-white/5"
+                >
+                  {t.nav.login}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/sign-up"
+                  onClick={() => setOpen(false)}
+                  className="mt-1 block rounded-lg border border-emerald-400/40 bg-emerald-500/10 px-3 py-2.5 text-center text-emerald-300"
                 >
                   {t.nav.book}
                 </a>
