@@ -4,7 +4,15 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import "../globals.css";
+import { PostHogProvider } from "@/components/observability/PostHogProvider";
 import { routing } from "@/i18n/routing";
+
+// PostHog config is read at module scope (server side) and forwarded to
+// the client provider. The provider gracefully no-ops when the key is
+// absent — see components/observability/PostHogProvider.tsx.
+const POSTHOG_KEY = process.env["NEXT_PUBLIC_POSTHOG_KEY"];
+const POSTHOG_HOST =
+  process.env["NEXT_PUBLIC_POSTHOG_HOST"] ?? "https://eu.i.posthog.com";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -75,7 +83,12 @@ export default async function LocaleRootLayout({ children, params }: Props) {
     >
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
+          <PostHogProvider
+            {...(POSTHOG_KEY ? { apiKey: POSTHOG_KEY } : {})}
+            apiHost={POSTHOG_HOST}
+          >
+            {children}
+          </PostHogProvider>
         </NextIntlClientProvider>
       </body>
     </html>

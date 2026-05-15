@@ -5,8 +5,28 @@ import { nextCookies } from "better-auth/next-js";
 import { passkey } from "@better-auth/passkey";
 import { db } from "@/db/client";
 import { env } from "@/lib/env";
+import { sendEmail } from "@/lib/email/client";
+import { pickTemplate, fillText, type EmailKey } from "@/lib/email/dispatch";
+import {
+  lookupLocaleForUser,
+  lookupLocaleForEmail,
+} from "@/lib/email/lookupLocale";
 
 const turnstileSecret = env().TURNSTILE_SECRET_KEY;
+
+// Map an emailOTP `type` to a template key. Better Auth's emailOTP plugin
+// reuses one send hook for sign-in / email-verification / forget-password /
+// change-email. We pick the closest CPA-safe template per type:
+//   - email-verification → reuses the signup verification template
+//   - forget-password    → password reset
+//   - sign-in            → reuses verification (passwordless sign-in)
+//   - change-email       → reuses verification (proving new mailbox)
+function templateForOtpType(
+  type: "sign-in" | "email-verification" | "forget-password" | "change-email",
+): EmailKey {
+  if (type === "forget-password") return "resetPassword";
+  return "verifyEmail";
+}
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
@@ -52,8 +72,8 @@ export const auth = betterAuth({
   // OAuth providers: deferred until we wire callbacks per locale.
   socialProviders: {},
 
-  // Email delivery via Resend. The actual sender is wired in lib/email/client.ts
-  // once it lands in Phase A.7 — until then these hooks log instead of sending.
+  // Email delivery via Resend. Sender lives in lib/email/client.ts; the
+  // locale dispatch + template selection lives in lib/email/dispatch.ts.
   emailVerification: {
     sendOnSignUp: true,
     // Council Security: with requireEmailVerification + autoSignIn:false,
@@ -62,10 +82,25 @@ export const auth = betterAuth({
     // hops. Verification IS the proof for a low-trust dev flow.
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
-      // TODO(A.7): swap for lib/email/client.ts sendVerification(user, url, locale).
-      // Note: do NOT log the verification URL once real email lands —
-      // it's a single-use credential. Log a hash for breadcrumb only.
-      console.info("[auth] sendVerificationEmail", { to: user.email });
+      // Council Security: do NOT log the verification URL — it's a
+      // single-use credential. The dispatch resolver picks the locale's
+      // template; sendEmail handles skip-mode when RESEND_API_KEY is unset.
+      const locale = await lookupLocaleForUser(user.id);
+      const tpl = pickTemplate(locale, "verifyEmail");
+      const result = await sendEmail({
+        to: user.email,
+        subject: tpl.subject,
+        kind: "verify",
+        react: <tpl.Component user={user} url={url} locale={locale} />,
+        text: fillText(tpl.text, { url }),
+        tags: [{ name: "type", value: "verifyEmail" }],
+      });
+      if ("error" in result) {
+        console.warn("[auth] sendVerificationEmail failed", {
+          to: user.email,
+          error: result.error.message,
+        });
+      }
     },
   },
 
@@ -90,11 +125,40 @@ export const auth = betterAuth({
       // Cut to 120s; brute-force window narrows 5x with no UX hit (Resend
       // typically delivers in under 5 seconds).
       expiresIn: 120,
-      sendVerificationOTP: async ({ email }) => {
-        // TODO(A.7): swap for lib/email/client.ts sendOtp(email, otp, locale).
+      sendVerificationOTP: async ({ email, otp, type }) => {
         // Council Security: never log the OTP — single-use credential in
         // a transcript-shareable channel. Log destination only.
-        console.info("[auth] sendVerificationOTP", { to: email });
+        const locale = await lookupLocaleForEmail(email);
+        const key = templateForOtpType(type);
+        const tpl = pickTemplate(locale, key);
+        // OTP appears in body via the `url` slot — for OTP flows it's a
+        // verbatim code, not a hyperlink. Wrap in a marker so the
+        // template's CTA still renders something meaningful.
+        const otpDisplay = `OTP: ${otp}`;
+        const result = await sendEmail({
+          to: email,
+          subject: `${tpl.subject} (${otp})`,
+          kind: type === "forget-password" ? "security" : "verify",
+          react: (
+            <tpl.Component
+              user={{ email }}
+              url={otpDisplay}
+              locale={locale}
+            />
+          ),
+          text: fillText(tpl.text, { url: otpDisplay }),
+          tags: [
+            { name: "type", value: key },
+            { name: "otp_flow", value: type },
+          ],
+        });
+        if ("error" in result) {
+          console.warn("[auth] sendVerificationOTP failed", {
+            to: email,
+            type,
+            error: result.error.message,
+          });
+        }
       },
     }),
     // Admin tooling for support flows. Reads gated by service role.

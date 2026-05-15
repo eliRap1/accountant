@@ -221,3 +221,63 @@ Before flipping `D:\accountant\lib\auth\better.ts` hooks from `console.info(...)
 - [ ] **Suppression check exists** — Better Auth's send hooks short-circuit when `user.email_invalid = true` or `user.email_suppressed = true`. Otherwise we burn API quota on dead addresses.
 
 Only when every box is ticked: edit `lib/email/client.ts` to call Resend, and replace the `console.info(...)` calls in `lib/auth/better.ts` with awaits on the real client.
+
+---
+
+## 7. Code wired by Agent
+
+Resend + the Better Auth send hooks are now wired. This section is the implementation map — what file does what, what env vars matter, and how to smoke-test without standing up the full DNS chain.
+
+### 7.1. Files
+
+| Path | Purpose |
+|---|---|
+| `lib/email/client.ts` | Thin Resend wrapper. Picks From: from `kind` (`verify`/`security`/`support`), defaults Reply-To to `support@<domain>`, renders React → HTML via a dynamic import of `react-dom/server.node` (Turbopack rejects static imports), short-circuits to a `dev-…` UUID when `RESEND_API_KEY` is unset or `NODE_ENV === "test"`. Marked `import "server-only"`. |
+| `lib/email/dispatch.ts` | `byLocale: Record<AppLocale, Record<EmailKey, EmailTemplate>>`. `pickTemplate(locale, key)` + `fillText(template, vars)`. `ru-RU` intentionally falls back to `en-US` per Plan v4 Risk #24 (no CPA-reviewed Russian transactional surface). |
+| `lib/email/lookupLocale.ts` | `lookupLocaleForUser(authUserId)` and `lookupLocaleForEmail(email)`. Both run under `withServiceRole` because Better Auth hooks fire before `app.current_user_id` is set. Both default to `he-IL` on miss / DB error — never throw, never crash signup. |
+| `lib/email/templates/types.ts` | `EmailTemplate` + `EmailTemplateProps` shared shape. |
+| `lib/email/templates/layout.tsx` | Inline-styled `<EmailLayout>` + `<EmailButton>` + `<Heading>` / `<Para>` / `<Muted>` primitives. No external CSS. 560px max width. |
+| `lib/email/templates/he-IL/*.tsx` | 4 HE templates: `verify-email`, `reset-password`, `mfa-enrolled`, `welcome`. |
+| `lib/email/templates/en-US/*.tsx` | 4 EN templates with same filenames. |
+| `lib/auth/better.tsx` | Was `better.ts`. Renamed because the `sendVerificationEmail` / `sendVerificationOTP` hooks now construct JSX (`<tpl.Component …/>`). Import path `@/lib/auth/better` is unchanged. |
+
+### 7.2. Env-var dependency graph
+
+```
+RESEND_API_KEY (optional)  ─┐
+                            ├─→ lib/email/client.ts ──→ Better Auth hooks ──→ Resend API
+BETTER_AUTH_URL  ───────────┘   (hostname → From: domain)
+
+NODE_ENV=test  ─────────────────→ skip-mode (no network call, returns dev-UUID)
+RESEND_API_KEY="" or unset ─────→ skip-mode
+```
+
+The wrapper never touches the network in skip-mode, so `pnpm test` / `pnpm dev` work without any Resend account configured. Production must have both `RESEND_API_KEY` and a `BETTER_AUTH_URL` whose hostname matches a Resend-verified domain (sections 1 + 3 of this runbook).
+
+### 7.3. Smoke-test recipe
+
+```bash
+# 1. Verify skip-mode (no API key needed):
+NODE_ENV=development RESEND_API_KEY="" pnpm dev
+# In another shell:
+curl -X POST http://localhost:3000/api/auth/forget-password \
+  -H 'content-type: application/json' \
+  -d '{"email":"you@example.com","redirectTo":"/he-IL/reset-password"}'
+# Expect: 200, server log: "[email] skip-mode would send { to: 'you@…', subject: '…', kind: 'security' }"
+
+# 2. Wire a real key and re-test:
+echo 'RESEND_API_KEY=re_test_…' >> .env.local
+pnpm dev
+curl -X POST http://localhost:3000/api/auth/sign-up/email \
+  -H 'content-type: application/json' \
+  -d '{"email":"you@example.com","password":"correct-horse-battery-staple","name":"QA"}'
+# Expect: 200 + email in inbox, From: AccounTech Verification <verify@<domain>>, Reply-To: support@<domain>
+```
+
+If the email arrives but DMARC fails, walk back through sections 1.2 + 5.2 — that's a DNS issue, not a code issue.
+
+### 7.4. Deviations from the original brief
+
+- **Resend `react` parameter NOT used.** Resend's `react` field requires the optional peer dep `@react-email/render`. Project policy is dependency-light templates, so `lib/email/client.ts` renders to HTML via `react-dom/server`'s `renderToStaticMarkup` and passes only `html`/`text` to Resend. The `react` field is accepted on `sendEmail`'s input for ergonomics but we render it ourselves.
+- **`lib/auth/better.ts` renamed to `better.tsx`.** The two send hooks now embed JSX expressions. Importers use `@/lib/auth/better` which TypeScript's bundler resolution handles either way.
+- **`react-dom/server` is dynamically imported.** Next 16 Turbopack refuses a static `import { renderToStaticMarkup } from "react-dom/server"` from any module reachable by a Server Component (see error "You're importing a component that imports react-dom/server"). `lib/email/client.ts` therefore builds the specifier at runtime: `const modName = "react-dom" + "/server.node"; await import(modName)`.
