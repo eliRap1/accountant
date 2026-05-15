@@ -1,0 +1,9 @@
+onlyBuiltDependencies:
+  - "@parcel/watcher"
+  - "@sentry/cli"
+  - "@swc/core"
+  - "esbuild"
+  - "protobufjs"
+  - "sharp"
+  - "unrs-resolver"
+verifyDepsBeforeRun: warn
