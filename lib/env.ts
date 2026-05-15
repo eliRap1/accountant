@@ -2,6 +2,12 @@ import { z } from "zod";
 
 const isProduction = process.env["NODE_ENV"] === "production";
 
+// Treat empty strings as "absent" for any optional field so .env.local
+// placeholders (e.g. `RESEND_API_KEY=`) don't trip min(1) validators.
+function nonEmptyString() {
+  return z.preprocess((v) => (typeof v === "string" && v === "" ? undefined : v), z.string());
+}
+
 const schema = z.object({
   // Runtime
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
@@ -18,21 +24,21 @@ const schema = z.object({
   DATA_ENCRYPTION_KEY: z.string().min(40),
 
   // Transactional email (Resend)
-  RESEND_API_KEY: z.string().min(1).optional(),
+  RESEND_API_KEY: nonEmptyString().min(1).optional(),
 
   // CAPTCHA (Cloudflare Turnstile)
-  TURNSTILE_SITE_KEY: z.string().min(1).optional(),
-  TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
+  TURNSTILE_SITE_KEY: nonEmptyString().min(1).optional(),
+  TURNSTILE_SECRET_KEY: nonEmptyString().min(1).optional(),
 
   // AI Gateway / OpenAI
-  AI_GATEWAY_API_KEY: z.string().min(1).optional(),
+  AI_GATEWAY_API_KEY: nonEmptyString().min(1).optional(),
   AI_MODEL: z.string().default("openai/gpt-5.4-mini"),
   AI_ESCALATION_MODEL: z.string().default("openai/gpt-5.4"),
 
   // Observability
-  NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
-  SENTRY_AUTH_TOKEN: z.string().optional(),
-  NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
+  NEXT_PUBLIC_SENTRY_DSN: nonEmptyString().optional(),
+  SENTRY_AUTH_TOKEN: nonEmptyString().optional(),
+  NEXT_PUBLIC_POSTHOG_KEY: nonEmptyString().optional(),
   NEXT_PUBLIC_POSTHOG_HOST: z.string().default("https://eu.i.posthog.com"),
 });
 
