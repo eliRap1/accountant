@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { twoFactor, emailOTP, admin, captcha } from "better-auth/plugins";
+import { nextCookies } from "better-auth/next-js";
 import { passkey } from "@better-auth/passkey";
 import { db } from "@/db/client";
 import { env } from "@/lib/env";
@@ -102,6 +103,9 @@ export const auth = betterAuth({
     ...(turnstileSecret
       ? [captcha({ provider: "cloudflare-turnstile", secretKey: turnstileSecret })]
       : []),
+    // MUST be last — wraps response cookies into the Next.js response
+    // headers that route handlers + middleware return.
+    nextCookies(),
   ],
 
   // Custom user table is created by our app schema in db/schema/users.ts. Better

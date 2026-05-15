@@ -147,7 +147,7 @@ async function main() {
         await tx`SET LOCAL ROLE app_service`;
         await tx`
           INSERT INTO plans (id, name, price_minor, currency, billing_interval, sort)
-          VALUES (${plan.id}, ${plan.name}, ${plan.priceMinor}, 'ILS', 'month', ${plan.sort})
+          VALUES (${plan.id}, ${plan.name}, ${plan.priceMinor.toString()}::bigint, 'ILS', 'month', ${plan.sort})
           ON CONFLICT (id) DO UPDATE SET
             name = EXCLUDED.name,
             price_minor = EXCLUDED.price_minor,

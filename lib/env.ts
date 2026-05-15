@@ -4,9 +4,12 @@ const isProduction = process.env["NODE_ENV"] === "production";
 
 // Treat empty strings as "absent" for any optional field so .env.local
 // placeholders (e.g. `RESEND_API_KEY=`) don't trip min(1) validators.
-const emptyToUndefined = z.preprocess(
+// .optional() lives inside the inner schema so undefined inputs pass
+// through cleanly in Zod v4 (chaining .optional() on a ZodEffects does
+// not short-circuit the inner validator for undefined).
+const optionalNonEmpty = z.preprocess(
   (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
-  z.string().min(1),
+  z.string().min(1).optional(),
 );
 
 const schema = z.object({
@@ -25,21 +28,21 @@ const schema = z.object({
   DATA_ENCRYPTION_KEY: z.string().min(40),
 
   // Transactional email (Resend)
-  RESEND_API_KEY: emptyToUndefined.optional(),
+  RESEND_API_KEY: optionalNonEmpty,
 
   // CAPTCHA (Cloudflare Turnstile)
-  TURNSTILE_SITE_KEY: emptyToUndefined.optional(),
-  TURNSTILE_SECRET_KEY: emptyToUndefined.optional(),
+  TURNSTILE_SITE_KEY: optionalNonEmpty,
+  TURNSTILE_SECRET_KEY: optionalNonEmpty,
 
   // AI Gateway / OpenAI
-  AI_GATEWAY_API_KEY: emptyToUndefined.optional(),
+  AI_GATEWAY_API_KEY: optionalNonEmpty,
   AI_MODEL: z.string().default("openai/gpt-5.4-mini"),
   AI_ESCALATION_MODEL: z.string().default("openai/gpt-5.4"),
 
   // Observability
-  NEXT_PUBLIC_SENTRY_DSN: emptyToUndefined.optional(),
-  SENTRY_AUTH_TOKEN: emptyToUndefined.optional(),
-  NEXT_PUBLIC_POSTHOG_KEY: emptyToUndefined.optional(),
+  NEXT_PUBLIC_SENTRY_DSN: optionalNonEmpty,
+  SENTRY_AUTH_TOKEN: optionalNonEmpty,
+  NEXT_PUBLIC_POSTHOG_KEY: optionalNonEmpty,
   NEXT_PUBLIC_POSTHOG_HOST: z.string().default("https://eu.i.posthog.com"),
 });
 
