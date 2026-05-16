@@ -94,7 +94,7 @@ export default function SignUpForm({ turnstileSiteKey }: Props) {
       setError(t("errors.passwordMismatch"));
       return;
     }
-    if (password.length < 12) {
+    if (password.length < 8) {
       setError(t("errors.passwordTooShortClient"));
       return;
     }

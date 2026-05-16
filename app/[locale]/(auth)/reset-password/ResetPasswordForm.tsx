@@ -31,7 +31,7 @@ export default function ResetPasswordForm() {
       setError(t("errors.mismatch"));
       return;
     }
-    if (password.length < 12) {
+    if (password.length < 8) {
       setError(t("errors.passwordTooShortClient"));
       return;
     }
