@@ -153,4 +153,66 @@ The product trajectory is sound. The current implementation is sound. The remain
 
 ---
 
-End of synthesis. Updated when Phase D + E + security-remediation agents land and after the first green Vercel deploy.
+End of synthesis v0.
+
+---
+
+## 9. Update — 2026-05-16 ~04:00 — all in-flight slices landed
+
+All 7 background agents completed. Mega-commit `c3775ee` pushed to `origin/main` with 131 files + 19,942 insertions covering:
+
+- **Phase B.2 chunks A+B** (AppShell + onboarding + dashboard + 4 CRUD resources)
+- **Phase B.3** (account-delete API + cron account-purge + EstimatesDisclaimer)
+- **Phase C libs** (allocationThreshold + ilValidate + osekMorshe + sequential + manual provider + react-pdf invoice + Bank-of-Israel FX + dedup; +88 unit tests)
+- **Phase D libs** (Amendment-288-verified tax engines + AI advisor; +30 unit tests). Every numeric in `lib/tax/il/rules-2026.ts` carries inline source URL + fetch date 2026-05-16.
+- **Phase E libs** (7 filing generators + custom CP1255 codec; all throw `SpecNotVerified` until ITA spec walk; +119 unit tests)
+- **F.1 Stripe billing** (SDK 22.1.1, API 2026-04-22.dahlia, webhook idempotency, success/cancel/portal). Israel NOT supported by Stripe Tax → VAT-inclusive prices, קבלה in Phase C.
+- **Security remediation** (all 6 council criticals C-1..C-6 closed)
+- **3 council memos** (product / security / CPA) + this synthesis
+
+### Final test totals
+| Gate | Status |
+|---|---|
+| `pnpm typecheck` | PASS |
+| `pnpm test:unit` | PASS 299/299 |
+| `pnpm test:integration` | PASS 31/31 on Neon dev branch |
+| `pnpm lint:missing-translations` | PASS (HE=372, EN=372, RU=98) |
+| `pnpm lint:ru-app-leak` | PASS |
+| `pnpm lint:legal-text` | PASS |
+| `pnpm lint:rule-meta` | **FAIL intentionally** until CPA signs off |
+| `pnpm build` | PASS — 38 routes; Proxy listed |
+
+### What's left to be "deeply needed and replace accountants"
+
+**Owner-blocking (no code can fix):**
+- Rotate the 5 compromised/Claude-generated secrets per `docs/runbooks/vercel-env-setup.md`
+- Set Vercel env vars (DATABASE_URL{,_UNPOOLED}, BETTER_AUTH_{SECRET,URL}, DATA_ENCRYPTION_KEY, RESEND_API_KEY, TURNSTILE_*, NEXT_PUBLIC_TURNSTILE_SITE_KEY, STRIPE_*, NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY, CRON_SECRET, AI_GATEWAY_API_KEY)
+- Create 4 Stripe Products + paste price IDs into env (`STRIPE_PRICE_{SOLO,PLUS,BUSINESS,ACCOUNTANT}`)
+- Configure Resend domain DNS (DKIM/SPF/DMARC) per `docs/runbooks/email-deliverability.md`
+- CPA signs off `lib/tax/il/rules-2026.meta.json` (flips `humanReviewed:true` + `reviewer` + `reviewedOn`) — unblocks `lint:rule-meta` and tax-UI release
+- First green Vercel production deploy
+
+**Next coding session(s) — scaffolding → product:**
+- Layer 3 schema migration (per CPA council finding): `tax_filings`, `tax_advances`, `client_wht_certificates`, `supplier_wht_rates`, `payroll_employees`, `payroll_runs`, `form_101_declarations`, `pension_contributions`, `severance_provisions`, `owner_compensation`, `risk_flags`, `inventory_counts`, `audit_packages`, `recurring_invoice_templates`, `invoice_reminders`
+- `app/[locale]/(app)/tax/page.tsx` — Phase D UI consumer
+- `app/[locale]/(app)/filings/` — Phase E UI consumer
+- **Morning Tax Brief** (Product killer feature): `lib/ai/morningBrief.ts` + `/api/cron/morning-brief` + email template + in-app card
+- **Audit Package Builder** (CPA killer feature, ₪399 tier): `lib/audit/packageBuilder.ts` + encrypted ZIP via Vercel Blob + step-up gate
+- Dashboard tile redesign (VAT due / cash / overdue / uncategorised / מקדמות / profit) per Product council
+- Onboarding cuts 10→2 steps per Product council
+- IA changes per Product council
+- CoA errata fixes per CPA council (codes 1030 / 2150 / 7400)
+- DEK migration of existing ciphertext to envelope encryption
+
+### Final verdict
+
+- **Technical foundation:** complete. Stronger than competitors at the bones level (RLS layered, envelope encryption ready, step-up registry, dated tax-rule history, AAD-bound ciphertexts, multi-business tenancy, accountant_engagements join, balance-trigger-enforced double-entry).
+- **Product surface:** ~80% there. Missing the two killer features + Layer 3 schema. With those, passes the "deeply needed" bar.
+- **Replaces accountants:** for 80% bookkeeping/filing — yes, once killer features + SHAAM partner ship. For 20% year-end strategy + audit defense + corporate structuring — the accountant remains; ₪399 tier invites them in as channel partner.
+- **Adds value beyond existing:** yes. Morning Tax Brief surfaces obligations + actions (competitors only show earnings). Audit Package Builder is unique. DEK-destruction-as-erasure is unique.
+
+### Deployment verification
+
+Build PASS locally. Vercel auto-redeploys on push; build will fail at env-var validation until owner sets required vars (see runbook). Once env vars set + secrets rotated, the runbook's manual smoke test (`/api/auth/get-session`, `/he-IL`, `/en-US/sign-in`) confirms green.
+
+End of synthesis v1.
