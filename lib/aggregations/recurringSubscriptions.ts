@@ -39,6 +39,8 @@ const MIN_OCCURRENCES = 3;
 const MAX_VENDORS = 30;
 const MONTHLY_BAND = { min: 27, max: 33 };
 const WEEKLY_BAND = { min: 6, max: 8 };
+// 365 / 7 / 12 ≈ 4.345 — average number of weeks per calendar month
+const WEEKS_PER_MONTH = 365 / 7 / 12;
 
 function median(values: number[]): number {
   if (values.length === 0) return 0;
@@ -106,10 +108,13 @@ export async function getRecurringSubscriptions(
     const amounts = list.map((r) => Number(BigInt(r.amount_minor)));
     const minAmt = Math.min(...amounts);
     const maxAmt = Math.max(...amounts);
-    if (minAmt > 0 && maxAmt / minAmt > 2) continue;
+    // A zero-amount row almost always indicates a void / data-quality bug.
+    // Including it in a "subscription" group would understate the median.
+    if (minAmt === 0) continue;
+    if (maxAmt / minAmt > 2) continue;
 
     const medianMinor = median(amounts);
-    const occurrencesPerMonth = cadence === "weekly" ? 4.345 : 1;
+    const occurrencesPerMonth = cadence === "weekly" ? WEEKS_PER_MONTH : 1;
     const monthlyCostMinor = medianMinor * occurrencesPerMonth;
 
     subs.push({

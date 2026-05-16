@@ -46,7 +46,7 @@ describe("getRecurringSubscriptions", () => {
     queryResponses = [];
   });
 
-  it("detects monthly Netflix and weekly grocery as recurring", async () => {
+  it("detects monthly Netflix and weekly grocery, ignores single-occurrence vendor", async () => {
     queryResponses = [
       {
         match: /FROM transactions/i,
