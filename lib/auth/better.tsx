@@ -46,10 +46,21 @@ function templateForOtpType(
   return "verifyEmail";
 }
 
+// Vercel attaches a fresh hostname (`<project>-<hash>-<team>.vercel.app`)
+// to every preview deploy AND to each new production deploy before the
+// `<project>-kappa.vercel.app` alias is re-pointed. Without explicitly
+// trusting those hostnames Better Auth rejects every request with
+// "Invalid origin". Patterns mirror the deploy-URL grammar.
+const trustedOriginPatterns: string[] = [
+  "https://accountant-*.vercel.app",
+  "https://*.elirap1s-projects.vercel.app",
+];
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
   secret: env().BETTER_AUTH_SECRET,
   baseURL: env().BETTER_AUTH_URL,
+  trustedOrigins: trustedOriginPatterns,
 
   // Email + password is the default sign-in path. OTP / passkey are alternatives.
   emailAndPassword: {
