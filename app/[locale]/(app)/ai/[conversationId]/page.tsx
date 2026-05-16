@@ -16,14 +16,15 @@ import type { UIMessage } from "ai";
 // Single conversation surface. Renders the panel pre-loaded with the
 // stored messages so the user picks up where they left off.
 //
-// Layer 1 dep: `ai_conversations` + `ai_messages`. When either is
-// missing the page falls back to "thread not found" + a CTA to start
-// a new conversation.
+// Backed by `ai_conversations` + `ai_messages` (migrations 0011 + 0012).
+// When the schema is missing (fresh install pre-migration) the page
+// falls back to "thread not found" + a CTA to start a new conversation.
+// RLS hides conversations owned by another user, so a spoofed URL id
+// simply renders the empty state.
 //
-// Decryption: messages may live in `content_ciphertext` with a
-// `dek_id` ref + AAD bound to {table:'ai_messages',
-// column:'content_ciphertext', rowId}. The legacy `content_plaintext`
-// column is honoured for mid-migration safety.
+// Decryption: `ai_messages.content_ciphertext` lives under a per-user
+// envelope DEK (purpose `ai:user:<userId>:messages`). AAD per spec:
+// {table:'ai_messages', column:'content_ciphertext', rowId}.
 //
 // Disclaimer literal (matched by HE_DISCLAIMER in lint-legal-text.ts):
 // אומדנים בלבד · אינו ייעוץ מס
@@ -32,9 +33,8 @@ type ProbeRow = { exists_count: string };
 type MsgRow = {
   id: string;
   role: string;
-  content_plaintext: string | null;
-  content_ciphertext: string | null;
-  dek_id: string | null;
+  content_ciphertext: string;
+  content_dek_id: string;
   created_at: string;
 };
 
@@ -56,9 +56,21 @@ async function loadConversation(userId: string, conversationId: string): Promise
       if (Number(probe[0]?.exists_count ?? "0") === 0) {
         return { found: false, rows: [] as MsgRow[] };
       }
+      // RLS hides conversations owned by another user — if the SELECT
+      // returns no row the page renders "thread not found", not the
+      // chat panel (defence in depth on top of the policy itself).
+      const conv = (await tx.execute(
+        sql`SELECT id::text AS id
+            FROM ai_conversations
+            WHERE id = ${conversationId}::uuid
+            LIMIT 1`,
+      )) as unknown as Array<{ id: string }>;
+      if (conv.length === 0) {
+        return { found: false, rows: [] as MsgRow[] };
+      }
       const rows = (await tx.execute(
         sql`SELECT id::text, role::text,
-                   content_plaintext, content_ciphertext, dek_id,
+                   content_ciphertext, content_dek_id::text,
                    created_at::text
             FROM ai_messages
             WHERE conversation_id = ${conversationId}
@@ -96,16 +108,16 @@ export default async function AiConversationPage({
   // Materialise stored messages → AI SDK v6 UIMessage shape.
   const initialMessages: UIMessage[] = [];
   for (const row of conversation.rows) {
-    let text = row.content_plaintext ?? "";
+    let text = "";
     if (
       row.content_ciphertext &&
       isCiphertext(row.content_ciphertext) &&
-      row.dek_id
+      row.content_dek_id
     ) {
       try {
         text = await decryptStringWithDek({
           ciphertext: row.content_ciphertext,
-          dekId: row.dek_id,
+          dekId: row.content_dek_id,
           aad: {
             table: "ai_messages",
             column: "content_ciphertext",

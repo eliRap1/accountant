@@ -74,6 +74,13 @@ export const STEP_UP_OPS = [
   "engagement.elevate_role",
   // Ledger immutability override (Plan v4 § 5.2)
   "ledger.post_to_closed_period",
+  // Audit Package Builder (CPA council § 8 — Q3 binding decision).
+  // Build is the moment that touches decrypted PII across multiple
+  // tables; download merely streams an opaque ciphertext blob. Both
+  // are step-up gated so the audit-trail surfaces every access on
+  // the `audit_packages` artifact.
+  "audit.build_package",
+  "audit.download_package",
 ] as const;
 
 export type StepUpOp = (typeof STEP_UP_OPS)[number];

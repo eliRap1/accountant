@@ -350,6 +350,8 @@
         "ledger": "Ledger",
         "invoices": "Invoices",
         "receipts": "Receipts",
+        "filings": "Filings",
+        "audit": "Audit pack",
         "settings": "Settings"
       },
       "user": {
@@ -942,6 +944,231 @@
         "prepPackCta": "Open prep pack"
       }
     },
+    "filings": {
+      "metaTitle": "Filings · AccounTech",
+      "title": "Filings",
+      "subtitle": "Generate PCN874, 6111 and other tax-authority files. Estimates only — review with a CPA before uploading to the regulator's portal.",
+      "addCta": "New filing",
+      "emptyState": "No filings yet — generate your first.",
+      "groupHeading": {
+        "pcn874": "PCN874 (monthly VAT)",
+        "form_6111": "Form 6111 (annual uniform file)",
+        "form_102": "Form 102 (BTL monthly)",
+        "form_1301": "Form 1301 (annual individual)",
+        "form_1214": "Form 1214 (annual company)",
+        "form_126": "Form 126 (annual employer)",
+        "form_856": "Form 856 (annual WHT)"
+      },
+      "kindLabel": {
+        "pcn874": "PCN874",
+        "form_6111": "Form 6111",
+        "form_102": "Form 102",
+        "form_1301": "Form 1301",
+        "form_1214": "Form 1214",
+        "form_126": "Form 126",
+        "form_856": "Form 856"
+      },
+      "kindDesc": {
+        "pcn874": "Online VAT digital report — fixed-width windows-1255 file uploaded to the SHAAM portal.",
+        "form_6111": "Uniform digital annual file — bilingual XML mapped from your chart of accounts.",
+        "form_102": "Monthly Bituach Leumi employer report — depends on payroll module.",
+        "form_1301": "Annual personal tax-return prep pack — printable PDF for portal upload.",
+        "form_1214": "Annual corporate tax-return prep pack — printable PDF for portal upload.",
+        "form_126": "Annual unified employer file — depends on payroll module.",
+        "form_856": "Annual withholding-tax-to-suppliers file — depends on supplier WHT tagging."
+      },
+      "kindLockedDesc": "Available on the {plan} plan and above.",
+      "planName": {
+        "solo": "Solo",
+        "plus": "Plus"
+      },
+      "upgradeCta": "Upgrade plan",
+      "statusBadge": {
+        "draft": "draft",
+        "generated": "ready for upload",
+        "downloaded": "downloaded",
+        "submitted": "submitted to portal"
+      },
+      "readyForPortalUpload": "Ready for portal upload",
+      "neverFiled": "We never submit on your behalf — you upload the file to the regulator's portal.",
+      "col": {
+        "kind": "Form",
+        "period": "Period",
+        "generatedAt": "Generated",
+        "status": "Status",
+        "asmachta": "Asmachta",
+        "actions": "Actions",
+        "view": "View"
+      },
+      "wizard": {
+        "title": "New filing",
+        "stepKind": "Pick form",
+        "stepPeriod": "Pick period",
+        "stepReview": "Review totals",
+        "stepGenerate": "Generate file",
+        "kindLegend": "Which filing do you need?",
+        "businessLabel": "Business",
+        "businessHelp": "Filings are scoped to a single business.",
+        "periodStartLabel": "Period start",
+        "periodEndLabel": "Period end",
+        "periodHelp": "Date range in the form's calendar. PCN874 is monthly or bi-monthly; annual forms use Jan 1 – Dec 31.",
+        "fiscalYearLabel": "Fiscal year",
+        "fiscalYearHelp": "The tax year being reported.",
+        "acknowledgeTitle": "Spec status",
+        "acknowledgeBody": "These generators reflect the public shape of each format. The exact byte layouts must still be reconfirmed against the regulator's canonical spec before any real submission.",
+        "acknowledgeCheckbox": "I acknowledge these are estimates pending CPA review",
+        "previewTitle": "Preview totals",
+        "previewEmpty": "Nothing to preview yet — pick a business and a period.",
+        "previewInvoiceCount": "Invoices in period",
+        "previewSumPreVat": "Pre-VAT total",
+        "previewSumVat": "VAT total",
+        "previewFiscalYear": "Fiscal year",
+        "previewLayerNote": "Some forms depend on data layers that aren't built yet. The wizard will surface a clear error at generate-time.",
+        "submitGenerate": "Generate file",
+        "submitting": "Generating...",
+        "back": "Back",
+        "next": "Next",
+        "cancel": "Cancel",
+        "lockedTitle": "Plan upgrade required",
+        "lockedBody": "Generating this form is part of a higher plan.",
+        "missingBusiness": "Select a business before continuing.",
+        "missingPeriod": "Period start and end are required.",
+        "missingAcknowledge": "Acknowledge the spec status before generating.",
+        "specUnverified": "The byte-level spec for this form has not been confirmed against a regulator primary source. Tick the acknowledgement to proceed in testing.",
+        "layerNotReady": "This form depends on a data layer that isn't built yet — please come back once the payroll / supplier-WHT modules ship.",
+        "notApplicable": "This form is not applicable for the selected business (e.g. an osek patur does not file PCN874).",
+        "sequenceGap": "Sequence gap detected in the invoice stream — please fix the underlying invoices before generating.",
+        "unknownError": "Could not generate the file — see logs for details."
+      },
+      "detail": {
+        "headerSection": "Filing details",
+        "business": "Business",
+        "kind": "Form",
+        "period": "Period",
+        "generatedAt": "Generated at",
+        "generatedBy": "Generated by",
+        "totalsSection": "Totals",
+        "inputsSection": "Provenance",
+        "inputsInvoiceCount": "Source invoices",
+        "inputsReceiptCount": "Source receipts",
+        "inputsTransactionCount": "Source transactions",
+        "inputsEmpty": "No row-level inputs recorded for this filing.",
+        "downloadCta": "Download file",
+        "downloadHelp": "Download the regulator-ready file. Requires step-up verification.",
+        "markSubmittedCta": "Mark as submitted",
+        "markSubmittedHelp": "After you upload the file to the regulator's portal, paste the asmachta (confirmation number) here.",
+        "submittedHeading": "Submission record",
+        "submittedAtLabel": "Submitted at",
+        "submittedAsmachtaLabel": "Asmachta (portal confirmation)",
+        "submittedBanner": "This filing was reported as submitted to the portal.",
+        "asmachtaLabel": "Asmachta",
+        "asmachtaPlaceholder": "Paste the portal confirmation number",
+        "asmachtaHelp": "Optional but recommended — kept on file for the audit trail.",
+        "submitConfirm": "Record submission",
+        "cancel": "Cancel"
+      },
+      "errors": {
+        "notFound": "Filing not found, or not visible to your account.",
+        "stepUpRequired": "Additional verification required — please re-authenticate before downloading.",
+        "planLocked": "Your current plan does not allow this filing — upgrade to continue.",
+        "alreadySubmitted": "This filing has already been recorded as submitted.",
+        "generic": "Something went wrong — please try again."
+      },
+      "disclaimer": "Files are produced from your bookkeeping data. They are NOT a regulatory submission — review them, then upload to the SHAAM / ITA / BTL portal yourself."
+    },
+    "receipts": {
+      "metaTitle": "Receipts · AccounTech",
+      "title": "Receipts",
+      "subtitle": "Upload, OCR, review and approve expense receipts. Encrypted at rest.",
+      "uploadCta": "Upload receipt",
+      "emptyState": "No receipts yet — upload your first.",
+      "filter": {
+        "business": "Business",
+        "allBusinesses": "All businesses",
+        "status": "Status",
+        "allStatuses": "All statuses",
+        "from": "From",
+        "to": "To",
+        "apply": "Filter",
+        "clear": "Clear"
+      },
+      "status": {
+        "pending_review": "Pending review",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "section": {
+        "pending": "Pending review",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "ocr": {
+        "applied": "OCR applied",
+        "pending": "OCR pending"
+      },
+      "col": {
+        "date": "Date",
+        "business": "Business",
+        "category": "Category",
+        "amount": "Amount",
+        "ocr": "OCR",
+        "actions": "Actions",
+        "view": "View"
+      },
+      "upload": {
+        "metaTitle": "Upload receipt · AccounTech",
+        "title": "Upload receipt",
+        "subtitle": "Drop an image or PDF, or take a photo. We'll OCR vendor, total and VAT.",
+        "business": "Business",
+        "noBusinesses": "Create a business before uploading receipts.",
+        "dropHint": "Drop file here, or pick one below.",
+        "allowed": "JPEG, PNG, WebP, PDF · max 4 MB",
+        "pickFile": "Choose file",
+        "openCamera": "Take photo",
+        "clear": "Clear selection",
+        "submit": "Upload and OCR",
+        "statusUploading": "Uploading...",
+        "statusParsing": "Reading receipt...",
+        "error": {
+          "generic": "Could not upload — please try again.",
+          "network": "Network error — check your connection.",
+          "tooLarge": "File is larger than 4 MB.",
+          "missing_file": "No file selected.",
+          "missing_business": "Pick a business first.",
+          "empty_file": "File is empty.",
+          "file_too_large": "File is larger than 4 MB.",
+          "unsupported_media_type": "Only JPEG / PNG / WebP / PDF are supported.",
+          "forbidden_business": "You don't have access to that business.",
+          "blob_upload_failed": "Storage upload failed — please try again."
+        }
+      },
+      "detail": {
+        "metaTitle": "Receipt · AccounTech",
+        "title": "Receipt detail",
+        "backToList": "Back to receipts",
+        "ocrTextTitle": "OCR output",
+        "ocrPendingTitle": "OCR is being prepared",
+        "ocrPendingDesc": "We'll fill in vendor, amount and VAT in a moment. Refresh to see the result."
+      },
+      "review": {
+        "title": "Review and correct",
+        "subtitle": "OCR is a starting point — verify amounts before approving.",
+        "vendor": "Vendor",
+        "date": "Date",
+        "amount": "Total (₪)",
+        "vat": "VAT amount (₪)",
+        "category": "Category code",
+        "businessUsePct": "Business-use %",
+        "save": "Save changes",
+        "approve": "Approve",
+        "reject": "Reject",
+        "linkTransaction": "Open linked transaction",
+        "linkInvoice": "Open linked invoice",
+        "errors": {
+          "generic": "Could not save — please try again."
+        }
+      }
+    },
     "ai": {
       "title": "AI Advisor",
       "subtitle": "Plain-language answers about your numbers. Estimates only.",
@@ -973,6 +1200,188 @@
       "snapshot": {
         "toggle": "What does the advisor see?",
         "description": "This is the exact input we send to the model. Identifiers are removed — no bank values or national IDs."
+      }
+    },
+    "audit": {
+      "metaTitle": "Audit package · AccounTech",
+      "eyebrow": "ITA inspection",
+      "title": "Audit package",
+      "subtitle": "One-click bundle for an Israeli Tax Authority inspector visit. Estimates only — review with a CPA before handing over.",
+      "addCta": "New package",
+      "newTitle": "Build a new audit package",
+      "detailTitle": "Audit package",
+      "formIntro": "Pick a business and a period. We collect invoices, receipts, transactions, tax filings, payroll and owner compensation into an encrypted ZIP.",
+      "emptyState": "No audit packages yet — build your first.",
+      "noBusinessYet": "Create a business or accept an accountant engagement before building.",
+      "business": "Business",
+      "periodStart": "Period start",
+      "periodEnd": "Period end",
+      "buildSubmit": "Build package",
+      "buildSubmitting": "Building...",
+      "downloadCta": "Download ZIP",
+      "downloadingLabel": "Preparing...",
+      "manifestSummary": "Manifest summary",
+      "sha256": "Plaintext ZIP SHA-256",
+      "backToList": "Back to packages",
+      "col": {
+        "business": "Business",
+        "period": "Period",
+        "generatedAt": "Generated",
+        "artifacts": "Artifacts",
+        "actions": "Actions",
+        "view": "View"
+      },
+      "counts": {
+        "totalArtifacts": "Total artifacts",
+        "invoices": "Invoices",
+        "receipts": "Receipts",
+        "transactions": "Transactions",
+        "taxFilings": "Tax filings",
+        "payrollRuns": "Payroll runs",
+        "ownerCompensation": "Owner compensation",
+        "bankReconciliations": "Bank reconciliations",
+        "riskFlags": "Risk flags"
+      },
+      "errors": {
+        "generic": "Unexpected error — please try again.",
+        "forbidden": "You do not have permission to build packages for this business.",
+        "stepUpRequired": "Additional verification required — please confirm with your password.",
+        "dekRetired": "This package has been sealed (crypto-erasure). Contents are unrecoverable.",
+        "notReady": "Package is still being prepared — refresh in a moment."
+      }
+    },
+    "bankImports": {
+      "title": "Bank imports",
+      "subtitle": "Upload bank statements (PDF/CSV/XLSX/OFX) and migrate from Greeninvoice.",
+      "addCta": "New import",
+      "emptyState": "No bank imports yet — upload your first statement.",
+      "uploadTitle": "New bank import",
+      "uploadSubtitle": "Drop a statement file, pick the bank, and we'll parse the rows for review.",
+      "reviewTitle": "Review parsed transactions",
+      "alreadyCommitted": "This import has already been committed to your transactions.",
+      "noBusinessYet": "Create a business before importing statements.",
+      "noRowsParsed": "No rows could be parsed from this file.",
+      "business": "Business",
+      "financialAccount": "Financial account",
+      "accountUnallocated": "No account (inbox)",
+      "bankLabel": "Bank",
+      "formatLabel": "Export format",
+      "dropZone": "Drop a file here or click to pick",
+      "parseCta": "Parse file",
+      "parsing": "Parsing...",
+      "commitCta": "Commit {count} rows",
+      "committing": "Committing...",
+      "bank": {
+        "leumi": "Leumi",
+        "hapoalim": "Hapoalim",
+        "mizrahi": "Mizrahi Tefahot",
+        "discount": "Discount",
+        "ofx": "OFX (any bank)",
+        "greeninvoice": "Greeninvoice migration",
+        "other": "Other (CSV with column mapping)"
+      },
+      "format": {
+        "leumi_pdf": "Leumi PDF",
+        "hapoalim_csv": "Hapoalim CSV",
+        "mizrahi_xlsx": "Mizrahi XLSX",
+        "discount_csv": "Discount CSV",
+        "ofx": "OFX 1.x/2.x",
+        "csv": "Generic CSV",
+        "greeninvoice_csv": "Greeninvoice CSV"
+      },
+      "col": {
+        "importedAt": "Imported at",
+        "business": "Business",
+        "bank": "Bank",
+        "format": "Format",
+        "fileName": "File",
+        "rowCount": "Rows",
+        "status": "Status",
+        "actions": "Actions",
+        "view": "Review",
+        "toggleAll": "Toggle all",
+        "toggleRow": "Toggle row",
+        "date": "Date",
+        "amount": "Amount",
+        "description": "Description",
+        "dedup": "Duplicate?"
+      },
+      "dedup": {
+        "candidateOf": "Possible duplicate of {date} — {desc}"
+      },
+      "errors": {
+        "fileTooLarge": "File is too large (max 25 MB)",
+        "fileMissing": "Pick a file before parsing",
+        "businessMissing": "Select a business",
+        "readFile": "Could not read the file",
+        "noRowsSelected": "Select at least one row to commit",
+        "alreadyCommitted": "Import already committed"
+      }
+    },
+    "processorSync": {
+      "title": "Processor sync",
+      "subtitle": "Pull receipts (קבלות) from Hyp, Grow, and PayPlus — paired against your invoices.",
+      "connectCta": "Connect processor",
+      "connectTitle": "Connect a payment processor",
+      "connectSubtitle": "We encrypt your API key under a per-business key. View requires step-up auth.",
+      "connectedHeading": "Connected processors",
+      "emptyState": "No processors connected yet.",
+      "noBusinessYet": "Create a business before connecting a processor.",
+      "business": "Business",
+      "processorLabel": "Processor",
+      "apiKeyLabel": "API key",
+      "connectSubmit": "Test & connect",
+      "connecting": "Testing...",
+      "syncNow": "Sync now",
+      "syncing": "Syncing...",
+      "neverSynced": "Never synced",
+      "hoursAgo": "Synced {hours}h ago",
+      "failing": "Sync failing ({count} attempts)",
+      "processor": {
+        "hyp": "Hyp",
+        "grow": "Grow Payments",
+        "payplus": "PayPlus"
+      },
+      "apiKeyPlaceholder": {
+        "hyp": "Hyp API key",
+        "grow": "Grow API key",
+        "payplus": "API_KEY:SECRET_KEY"
+      },
+      "apiKeyHelp": {
+        "hyp": "From Hyp dashboard → Developer → API keys.",
+        "grow": "From Grow Payments dashboard → API access.",
+        "payplus": "PayPlus uses two keys — paste them joined by a colon (apiKey:secretKey)."
+      },
+      "col": {
+        "processor": "Processor",
+        "business": "Business",
+        "lastSynced": "Last synced",
+        "actions": "Actions"
+      },
+      "orphans": {
+        "heading": "Unpaired receipts",
+        "subtitle": "Receipts the processor returned that we could not match to an invoice.",
+        "empty": "No unpaired receipts.",
+        "col": {
+          "date": "Date",
+          "amount": "Amount",
+          "customer": "Customer",
+          "receiptNo": "Receipt #",
+          "reason": "Reason"
+        },
+        "reason": {
+          "no_match": "No invoice with that amount",
+          "ambiguous": "Multiple invoices match",
+          "amount_date": "Amount+date only",
+          "exact": "Matched"
+        }
+      },
+      "errors": {
+        "businessMissing": "Select a business",
+        "apiKeyMissing": "Enter an API key",
+        "connectionFailed": "Connection test failed",
+        "alreadyConnected": "Already connected — disconnect first",
+        "syncFailed": "Sync failed"
       }
     }
   },

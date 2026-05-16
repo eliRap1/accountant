@@ -2,10 +2,12 @@ import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { hasLocale } from "next-intl";
+import { sql } from "drizzle-orm";
 import AppShell from "@/components/app/AppShell";
 import EstimatesDisclaimerBanner from "@/components/app/legal/EstimatesDisclaimerBanner.server";
 import { routing } from "@/i18n/routing";
 import { currentUser } from "@/lib/auth/serverSession";
+import { withServiceRole } from "@/lib/db/withServiceRole";
 
 // Authenticated-only route group. The (auth) tree is reachable
 // anonymously; everything under (app) requires a Better Auth session.
@@ -39,12 +41,20 @@ export default async function AppLayout({
     redirect(`/${locale}/sign-in` as Route);
   }
 
+  // CPA-council § 8 "killer feature": show the audit-package sidebar
+  // item only to (a) any business owner (so the moment they have
+  // bookkeeping data, the export-for-inspector flow is one click
+  // away) OR (b) any plan with `audit.package_builder = true` —
+  // currently Business and Accountant per scripts/db-seed.ts.
+  const auditEnabled = await resolveAuditEnabled(user.appUserId);
+
   return (
     <AppShell
       user={{
         email: user.email,
         name: user.name,
       }}
+      auditEnabled={auditEnabled}
     >
       <div className="mx-auto mb-4 w-full max-w-7xl">
         <EstimatesDisclaimerBanner />
@@ -52,4 +62,49 @@ export default async function AppLayout({
       {children}
     </AppShell>
   );
+}
+
+async function resolveAuditEnabled(appUserId: string): Promise<boolean> {
+  try {
+    return await withServiceRole(async (tx) => {
+      const ownerRows = (await tx.execute(
+        sql`SELECT 1 AS x
+              FROM businesses
+             WHERE owner_user_id = ${appUserId}::uuid
+               AND deleted_at IS NULL
+             LIMIT 1`,
+      )) as unknown as Array<{ x: number }>;
+      if (ownerRows.length > 0) return true;
+
+      // Active subscription on a plan that has audit.package_builder=true.
+      const planRows = (await tx.execute(
+        sql`SELECT 1 AS x
+              FROM subscriptions s
+              JOIN plan_entitlements pe ON pe.plan_id = s.plan_id
+             WHERE s.user_id = ${appUserId}::uuid
+               AND s.status IN ('active', 'trialing')
+               AND pe.key = 'audit.package_builder'
+               AND pe.value_bool IS TRUE
+             LIMIT 1`,
+      )) as unknown as Array<{ x: number }>;
+      if (planRows.length > 0) return true;
+
+      // Active accountant engagement with filings+ledger scopes — they
+      // need the sidebar entry to actually build packages for clients.
+      const engRows = (await tx.execute(
+        sql`SELECT 1 AS x
+              FROM accountant_engagements
+             WHERE accountant_user_id = ${appUserId}::uuid
+               AND accepted_at IS NOT NULL
+               AND revoked_at IS NULL
+               AND role = 'accountant'
+               AND (scopes_jsonb->>'filings')::boolean IS TRUE
+               AND (scopes_jsonb->>'ledger')::boolean IS TRUE
+             LIMIT 1`,
+      )) as unknown as Array<{ x: number }>;
+      return engRows.length > 0;
+    });
+  } catch {
+    return false;
+  }
 }

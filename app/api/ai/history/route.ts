@@ -1,9 +1,10 @@
 // GET /api/ai/history
 //
 // Returns the caller's AI conversations + the messages on the active
-// conversation. Layer 1 dependency: `ai_conversations` + `ai_messages`
-// tables. When either is missing we fall through to an empty payload
-// so the client can render the "no history yet" empty state.
+// conversation. Backed by `ai_conversations` + `ai_messages` (migrations
+// 0011 + 0012). When the schema is missing (fresh install pre-migration)
+// the route still returns an empty payload so the client renders the
+// "no history yet" empty state instead of crashing.
 //
 // Response shape:
 //   {
@@ -13,12 +14,9 @@
 //     schemaPresent: boolean,
 //   }
 //
-// Decryption: `ai_messages` will eventually hold `content_ciphertext`
-// columns encrypted with an envelope DEK (AAD = {table:'ai_messages',
-// column:'content_ciphertext', rowId}). For Phase D the column is named
-// `content_plaintext` in the migration plan, so the route reads either
-// column and decrypts via `decryptColumn(...)` when the ciphertext
-// variant is present.
+// Decryption: `ai_messages.content_ciphertext` is AES-256-GCM under an
+// envelope DEK (purpose `ai:user:<userId>:messages`). AAD per spec:
+// {table:'ai_messages', column:'content_ciphertext', rowId:<id>}.
 
 import { sql } from "drizzle-orm";
 import { requireCurrentUser } from "@/lib/auth/serverSession";
@@ -26,8 +24,10 @@ import { withUser } from "@/lib/db/withUser";
 import { decryptStringWithDek } from "@/lib/security/encryption";
 
 // `v1:<iv>:<authTag>:<ciphertext>` per encodeAesGcmString — recognising
-// this prefix lets us distinguish encrypted ai_messages rows from
-// legacy plaintext-only rows mid-migration.
+// this prefix lets us distinguish a real encrypted ai_messages row from
+// the empty-string placeholder used by the insert-then-update flow in
+// the chat route (a placeholder slipped past the UPDATE step is a bug
+// but we render it as empty rather than crashing the conversation).
 function isEncryptedColumnValue(value: string): boolean {
   return /^v1:/.test(value);
 }
@@ -40,14 +40,13 @@ type ConvRow = {
   id: string;
   title: string | null;
   created_at: string;
-  last_message_at: string | null;
+  updated_at: string | null;
 };
 type MsgRow = {
   id: string;
   role: string;
-  content_plaintext: string | null;
-  content_ciphertext: string | null;
-  dek_id: string | null;
+  content_ciphertext: string;
+  content_dek_id: string;
   created_at: string;
 };
 
@@ -97,9 +96,9 @@ export async function GET(request: Request): Promise<Response> {
     async (tx) => {
       const convRows = (await tx.execute(
         sql`SELECT id::text, title, created_at::text,
-                   last_message_at::text
+                   updated_at::text
             FROM ai_conversations
-            ORDER BY COALESCE(last_message_at, created_at) DESC
+            ORDER BY updated_at DESC
             LIMIT 50`,
       )) as unknown as ConvRow[];
 
@@ -108,7 +107,7 @@ export async function GET(request: Request): Promise<Response> {
         try {
           msgRows = (await tx.execute(
             sql`SELECT id::text, role::text,
-                       content_plaintext, content_ciphertext, dek_id,
+                       content_ciphertext, content_dek_id::text,
                        created_at::text
                 FROM ai_messages
                 WHERE conversation_id = ${conversationId}
@@ -116,7 +115,7 @@ export async function GET(request: Request): Promise<Response> {
                 LIMIT 200`,
           )) as unknown as MsgRow[];
         } catch (err) {
-          // Either column name drift mid-migration or RLS-empty result.
+          // RLS-empty result OR conversation belongs to another user.
           // Silent: client treats as empty conversation.
           msgRows = [];
           // eslint-disable-next-line no-console
@@ -132,16 +131,16 @@ export async function GET(request: Request): Promise<Response> {
   // {table:'ai_messages', column:'content_ciphertext', rowId:<id>}.
   const decryptedMessages = await Promise.all(
     messages.map(async (m) => {
-      let text = m.content_plaintext ?? "";
+      let text = "";
       if (
         m.content_ciphertext &&
         isEncryptedColumnValue(m.content_ciphertext) &&
-        m.dek_id
+        m.content_dek_id
       ) {
         try {
           text = await decryptStringWithDek({
             ciphertext: m.content_ciphertext,
-            dekId: m.dek_id,
+            dekId: m.content_dek_id,
             aad: {
               table: "ai_messages",
               column: "content_ciphertext",
@@ -168,7 +167,7 @@ export async function GET(request: Request): Promise<Response> {
       id: c.id,
       title: c.title,
       createdAt: c.created_at,
-      lastMessageAt: c.last_message_at,
+      lastMessageAt: c.updated_at,
     })),
     messages: decryptedMessages,
     conversationId,

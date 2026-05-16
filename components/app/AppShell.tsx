@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import {
   ChevronDown,
+  FileArchive,
   FileText,
   LayoutDashboard,
   LogOut,
@@ -45,6 +46,7 @@ type NavKey =
   | "ledger"
   | "invoices"
   | "receipts"
+  | "audit"
   | "settings";
 
 type NavItem = {
@@ -53,7 +55,7 @@ type NavItem = {
   icon: typeof LayoutDashboard;
 };
 
-const NAV_ITEMS: NavItem[] = [
+const BASE_NAV_ITEMS: NavItem[] = [
   { key: "dashboard", href: "/dashboard", icon: LayoutDashboard },
   { key: "businesses", href: "/businesses", icon: ShieldCheck },
   { key: "clients", href: "/clients", icon: Users },
@@ -61,8 +63,19 @@ const NAV_ITEMS: NavItem[] = [
   { key: "ledger", href: "/ledger", icon: Wallet },
   { key: "invoices", href: "/invoices", icon: FileText },
   { key: "receipts", href: "/receipts", icon: Receipt },
-  { key: "settings", href: "/settings", icon: Settings },
 ];
+
+const AUDIT_NAV_ITEM: NavItem = {
+  key: "audit",
+  href: "/audit",
+  icon: FileArchive,
+};
+
+const SETTINGS_NAV_ITEM: NavItem = {
+  key: "settings",
+  href: "/settings",
+  icon: Settings,
+};
 
 function initialsFor(email: string, name: string | null): string {
   const cleaned = (name ?? email).trim();
@@ -76,9 +89,11 @@ function initialsFor(email: string, name: string | null): string {
 
 export default function AppShell({
   user,
+  auditEnabled = false,
   children,
 }: {
   user: UserShell;
+  auditEnabled?: boolean;
   children: React.ReactNode;
 }) {
   const t = useTranslations("app.shell");
@@ -86,6 +101,14 @@ export default function AppShell({
   const isRtl = locale === "he-IL";
   const pathname = usePathname();
   const router = useRouter();
+
+  // Audit-Package Builder is gated on (a) plan_entitlements
+  // `audit.package_builder = true` (Business + Accountant tiers)
+  // OR (b) the user owns any business — see (app)/layout.tsx for
+  // the resolution. The nav item slips in just before Settings.
+  const navItems = auditEnabled
+    ? [...BASE_NAV_ITEMS, AUDIT_NAV_ITEM, SETTINGS_NAV_ITEM]
+    : [...BASE_NAV_ITEMS, SETTINGS_NAV_ITEM];
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -126,7 +149,7 @@ export default function AppShell({
       <div className="pointer-events-none absolute inset-0 bg-grid opacity-30" />
 
       <Sidebar
-        navItems={NAV_ITEMS}
+        navItems={navItems}
         currentPath={pathname}
         labels={(key) => t(`nav.${key}` as const)}
         isRtl={isRtl}

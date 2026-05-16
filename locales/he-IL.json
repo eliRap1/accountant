@@ -350,6 +350,8 @@
         "ledger": "ספר חשבונות",
         "invoices": "חשבוניות",
         "receipts": "קבלות",
+        "filings": "דיווחים",
+        "audit": "תיק ביקורת",
         "settings": "הגדרות"
       },
       "user": {
@@ -942,6 +944,231 @@
         "prepPackCta": "פתח את חבילת ההכנה"
       }
     },
+    "filings": {
+      "metaTitle": "דיווחים · AccounTech",
+      "title": "דיווחים לרשויות",
+      "subtitle": "הפקת קבצי PCN874, 6111 ועוד — להעלאה ידנית לפורטל. אומדנים בלבד — לפני העלאה התייעצו עם רואה חשבון מורשה.",
+      "addCta": "דיווח חדש",
+      "emptyState": "עדיין אין דיווחים — צרו את הראשון.",
+      "groupHeading": {
+        "pcn874": "PCN874 (מע״מ חודשי)",
+        "form_6111": "טופס 6111 (קובץ אחיד שנתי)",
+        "form_102": "טופס 102 (ביטוח לאומי חודשי)",
+        "form_1301": "טופס 1301 (דו״ח אישי שנתי)",
+        "form_1214": "טופס 1214 (דו״ח חברה שנתי)",
+        "form_126": "טופס 126 (דיווח מעסיק שנתי)",
+        "form_856": "טופס 856 (ניכוי במקור שנתי)"
+      },
+      "kindLabel": {
+        "pcn874": "PCN874",
+        "form_6111": "טופס 6111",
+        "form_102": "טופס 102",
+        "form_1301": "טופס 1301",
+        "form_1214": "טופס 1214",
+        "form_126": "טופס 126",
+        "form_856": "טופס 856"
+      },
+      "kindDesc": {
+        "pcn874": "דיווח מע״מ מקוון — קובץ windows-1255 ברוחב קבוע להעלאה לפורטל שע״ם.",
+        "form_6111": "קובץ אחיד שנתי — XML דו-לשוני המופק מתרשים החשבונות.",
+        "form_102": "דו״ח חודשי לביטוח לאומי — תלוי במודול שכר.",
+        "form_1301": "חבילת הכנה לדו״ח שנתי אישי — PDF להעלאה לפורטל.",
+        "form_1214": "חבילת הכנה לדו״ח שנתי לחברה — PDF להעלאה לפורטל.",
+        "form_126": "קובץ מאוחד שנתי למעסיק — תלוי במודול שכר.",
+        "form_856": "דיווח ניכוי במקור מספקים שנתי — תלוי בתיוג WHT לספקים."
+      },
+      "kindLockedDesc": "זמין במסלול {plan} ומעלה.",
+      "planName": {
+        "solo": "Solo",
+        "plus": "Plus"
+      },
+      "upgradeCta": "שדרוג מסלול",
+      "statusBadge": {
+        "draft": "טיוטה",
+        "generated": "מוכן להעלאה",
+        "downloaded": "הורד",
+        "submitted": "הוגש לפורטל"
+      },
+      "readyForPortalUpload": "מוכן להעלאה לפורטל",
+      "neverFiled": "אנחנו לא מגישים בשמכם — תעלו את הקובץ בעצמכם לפורטל הרשות.",
+      "col": {
+        "kind": "טופס",
+        "period": "תקופה",
+        "generatedAt": "הופק בתאריך",
+        "status": "סטטוס",
+        "asmachta": "אסמכתא",
+        "actions": "פעולות",
+        "view": "צפייה"
+      },
+      "wizard": {
+        "title": "דיווח חדש",
+        "stepKind": "בחירת טופס",
+        "stepPeriod": "בחירת תקופה",
+        "stepReview": "סקירת סכומים",
+        "stepGenerate": "יצירת קובץ",
+        "kindLegend": "איזה דיווח להפיק?",
+        "businessLabel": "עסק",
+        "businessHelp": "הדיווח מוגבל לעסק יחיד.",
+        "periodStartLabel": "תחילת תקופה",
+        "periodEndLabel": "סוף תקופה",
+        "periodHelp": "טווח תאריכים לפי הטופס. PCN874 חודשי או דו-חודשי; דיווחים שנתיים בין 1.1 ל-31.12.",
+        "fiscalYearLabel": "שנת מס",
+        "fiscalYearHelp": "שנת המס שעליה מדווחים.",
+        "acknowledgeTitle": "סטטוס מפרט",
+        "acknowledgeBody": "המחוללים משקפים את המבנה הציבורי של כל פורמט. המבנה המדויק חייב להתאשר מול מפרט קנוני של הרשות לפני הגשה אמיתית.",
+        "acknowledgeCheckbox": "מאשר/ת שמדובר באומדנים בכפוף לסקירת רו״ח",
+        "previewTitle": "סקירת סכומים",
+        "previewEmpty": "אין מה לסקור — בחרו עסק ותקופה.",
+        "previewInvoiceCount": "חשבוניות בתקופה",
+        "previewSumPreVat": "סך לפני מע״מ",
+        "previewSumVat": "סך מע״מ",
+        "previewFiscalYear": "שנת מס",
+        "previewLayerNote": "טפסים מסוימים תלויים במודולים שעדיין לא נבנו. תופיע הודעת שגיאה ברורה בשלב היצירה.",
+        "submitGenerate": "צור קובץ",
+        "submitting": "מייצר...",
+        "back": "חזור",
+        "next": "המשך",
+        "cancel": "ביטול",
+        "lockedTitle": "נדרש שדרוג מסלול",
+        "lockedBody": "הפקת הטופס הזה זמינה במסלול גבוה יותר.",
+        "missingBusiness": "בחרו עסק כדי להמשיך.",
+        "missingPeriod": "חובה לציין תאריך התחלה וסיום.",
+        "missingAcknowledge": "אישור סטטוס המפרט חובה לפני יצירה.",
+        "specUnverified": "מפרט הבייטים של הטופס לא אומת מול מקור רשמי. סמנו את האישור כדי להמשיך בבדיקה.",
+        "layerNotReady": "הטופס תלוי במודול שעדיין לא נבנה — אנא חזרו אחרי שמודולי השכר / WHT יעלו.",
+        "notApplicable": "הטופס לא רלוונטי לעסק שנבחר (לדוגמה: עוסק פטור לא מגיש PCN874).",
+        "sequenceGap": "נמצא חוסר רצף בחשבוניות — תקנו את החשבוניות לפני יצירת הקובץ.",
+        "unknownError": "לא הצלחנו ליצור את הקובץ — בדקו את היומנים."
+      },
+      "detail": {
+        "headerSection": "פרטי הדיווח",
+        "business": "עסק",
+        "kind": "טופס",
+        "period": "תקופה",
+        "generatedAt": "הופק בתאריך",
+        "generatedBy": "הופק על ידי",
+        "totalsSection": "סיכומים",
+        "inputsSection": "מקור הנתונים",
+        "inputsInvoiceCount": "חשבוניות שתרמו",
+        "inputsReceiptCount": "קבלות שתרמו",
+        "inputsTransactionCount": "תנועות שתרמו",
+        "inputsEmpty": "לא נשמרו מקורות ברמת שורה לדיווח הזה.",
+        "downloadCta": "הורדת קובץ",
+        "downloadHelp": "הורידו את הקובץ המוכן להעלאה לרשות. דורש אימות נוסף.",
+        "markSubmittedCta": "סימון כהוגש",
+        "markSubmittedHelp": "אחרי שתעלו את הקובץ לפורטל, הדביקו את האסמכתא (מספר אישור) כאן.",
+        "submittedHeading": "רישום הגשה",
+        "submittedAtLabel": "תאריך הגשה",
+        "submittedAsmachtaLabel": "אסמכתא (אישור פורטל)",
+        "submittedBanner": "הדיווח הזה דווח כהוגש לפורטל.",
+        "asmachtaLabel": "אסמכתא",
+        "asmachtaPlaceholder": "הדביקו את מספר האישור מהפורטל",
+        "asmachtaHelp": "רשות אך מומלץ — נשמר לתיעוד.",
+        "submitConfirm": "רישום הגשה",
+        "cancel": "ביטול"
+      },
+      "errors": {
+        "notFound": "הדיווח לא נמצא, או שאינו זמין לחשבון שלכם.",
+        "stepUpRequired": "נדרש אימות נוסף — אנא אמתו זהות מחדש לפני ההורדה.",
+        "planLocked": "המסלול הנוכחי שלכם לא מאפשר את הדיווח הזה — שדרגו כדי להמשיך.",
+        "alreadySubmitted": "הדיווח כבר נרשם כהוגש.",
+        "generic": "משהו השתבש — נסו שוב."
+      },
+      "disclaimer": "הקבצים מופקים מנתוני הנהלת החשבונות שלכם. הם אינם הגשה רגולטורית — סקרו אותם, ואז העלו לפורטל שע״ם / רשות המסים / ביטוח לאומי בעצמכם."
+    },
+    "receipts": {
+      "metaTitle": "קבלות · AccounTech",
+      "title": "קבלות",
+      "subtitle": "העלו, סרקו OCR, סקרו ואשרו קבלות הוצאות. מוצפנות באחסון.",
+      "uploadCta": "העלאת קבלה",
+      "emptyState": "אין קבלות עדיין — העלו את הראשונה.",
+      "filter": {
+        "business": "עסק",
+        "allBusinesses": "כל העסקים",
+        "status": "סטטוס",
+        "allStatuses": "כל הסטטוסים",
+        "from": "מתאריך",
+        "to": "עד תאריך",
+        "apply": "סינון",
+        "clear": "ניקוי"
+      },
+      "status": {
+        "pending_review": "ממתין לסקירה",
+        "approved": "מאושר",
+        "rejected": "נדחה"
+      },
+      "section": {
+        "pending": "ממתינות לסקירה",
+        "approved": "מאושרות",
+        "rejected": "נדחו"
+      },
+      "ocr": {
+        "applied": "OCR בוצע",
+        "pending": "OCR ממתין"
+      },
+      "col": {
+        "date": "תאריך",
+        "business": "עסק",
+        "category": "קטגוריה",
+        "amount": "סכום",
+        "ocr": "OCR",
+        "actions": "פעולות",
+        "view": "פתיחה"
+      },
+      "upload": {
+        "metaTitle": "העלאת קבלה · AccounTech",
+        "title": "העלאת קבלה",
+        "subtitle": "גררו תמונה או PDF, או צלמו. נחלץ ספק, סך הכל ומע״מ באמצעות OCR.",
+        "business": "עסק",
+        "noBusinesses": "יש ליצור עסק לפני העלאת קבלות.",
+        "dropHint": "גררו קובץ לכאן, או בחרו למטה.",
+        "allowed": "JPEG, PNG, WebP, PDF · עד 4 MB",
+        "pickFile": "בחירת קובץ",
+        "openCamera": "צילום קבלה",
+        "clear": "ניקוי בחירה",
+        "submit": "העלאה וסריקה",
+        "statusUploading": "מעלה...",
+        "statusParsing": "קורא את הקבלה...",
+        "error": {
+          "generic": "ההעלאה נכשלה — נסו שוב.",
+          "network": "שגיאת רשת — בדקו את החיבור.",
+          "tooLarge": "הקובץ גדול מ-4 MB.",
+          "missing_file": "לא נבחר קובץ.",
+          "missing_business": "בחרו עסק קודם.",
+          "empty_file": "הקובץ ריק.",
+          "file_too_large": "הקובץ גדול מ-4 MB.",
+          "unsupported_media_type": "רק JPEG / PNG / WebP / PDF נתמכים.",
+          "forbidden_business": "אין לכם גישה לעסק הזה.",
+          "blob_upload_failed": "העלאה לאחסון נכשלה — נסו שוב."
+        }
+      },
+      "detail": {
+        "metaTitle": "קבלה · AccounTech",
+        "title": "פרטי קבלה",
+        "backToList": "חזרה לרשימה",
+        "ocrTextTitle": "פלט OCR",
+        "ocrPendingTitle": "OCR בעיבוד",
+        "ocrPendingDesc": "נמלא ספק, סכום ומע״מ בעוד רגע. רעננו לראות את התוצאה."
+      },
+      "review": {
+        "title": "סקירה ותיקון",
+        "subtitle": "OCR הוא נקודת התחלה — אמתו את הסכומים לפני אישור.",
+        "vendor": "ספק",
+        "date": "תאריך",
+        "amount": "סכום כולל (₪)",
+        "vat": "סכום מע״מ (₪)",
+        "category": "קוד קטגוריה",
+        "businessUsePct": "אחוז שימוש עסקי",
+        "save": "שמירה",
+        "approve": "אישור",
+        "reject": "דחייה",
+        "linkTransaction": "פתח תנועה מקושרת",
+        "linkInvoice": "פתח חשבונית מקושרת",
+        "errors": {
+          "generic": "השמירה נכשלה — נסו שוב."
+        }
+      }
+    },
     "ai": {
       "title": "יועץ AI",
       "subtitle": "שאלות על המספרים שלכם, בעברית פשוטה. אומדנים בלבד.",
@@ -973,6 +1200,188 @@
       "snapshot": {
         "toggle": "מה היועץ רואה?",
         "description": "זה הקלט המדויק שאנחנו שולחים למודל. נתוני זיהוי הוסרו, ואין כאן ערכי בנק או ת.ז."
+      }
+    },
+    "audit": {
+      "metaTitle": "תיק ביקורת · AccounTech",
+      "eyebrow": "ביקורת רשות המסים",
+      "title": "תיק ביקורת",
+      "subtitle": "חבילה אחת לחיצה לביקורת של רשות המסים. אומדנים בלבד — בדקו עם רואה חשבון מורשה לפני העברה.",
+      "addCta": "תיק חדש",
+      "newTitle": "בניית תיק ביקורת חדש",
+      "detailTitle": "תיק ביקורת",
+      "formIntro": "בחרו עסק ותקופה. נאסוף חשבוניות, קבלות, תנועות, דיווחי מס, שכר ותגמולי בעלים לקובץ ZIP מוצפן.",
+      "emptyState": "אין עדיין תיקי ביקורת — בנו את התיק הראשון.",
+      "noBusinessYet": "צרו עסק או אשרו שיתוף רואה חשבון לפני בניית תיק.",
+      "business": "עסק",
+      "periodStart": "תחילת תקופה",
+      "periodEnd": "סוף תקופה",
+      "buildSubmit": "בניית תיק",
+      "buildSubmitting": "בונה...",
+      "downloadCta": "הורדת ZIP",
+      "downloadingLabel": "מכין...",
+      "manifestSummary": "תקציר מניפסט",
+      "sha256": "SHA-256 של ה-ZIP",
+      "backToList": "חזרה לרשימת תיקים",
+      "col": {
+        "business": "עסק",
+        "period": "תקופה",
+        "generatedAt": "נוצר",
+        "artifacts": "פריטים",
+        "actions": "פעולות",
+        "view": "צפייה"
+      },
+      "counts": {
+        "totalArtifacts": "סך פריטים",
+        "invoices": "חשבוניות",
+        "receipts": "קבלות",
+        "transactions": "תנועות",
+        "taxFilings": "דיווחי מס",
+        "payrollRuns": "ריצות שכר",
+        "ownerCompensation": "תגמולי בעלים",
+        "bankReconciliations": "התאמות בנק",
+        "riskFlags": "התראות"
+      },
+      "errors": {
+        "generic": "שגיאה לא צפויה — נסו שוב.",
+        "forbidden": "אין לכם הרשאה לבנות תיק עבור עסק זה.",
+        "stepUpRequired": "נדרש אימות נוסף — אשרו עם הסיסמה שלכם.",
+        "dekRetired": "התיק נסגר (מחיקה קריפטוגרפית). התוכן בלתי-משחזר.",
+        "notReady": "התיק עדיין בהכנה — רעננו בעוד מספר שניות."
+      }
+    },
+    "bankImports": {
+      "title": "ייבוא מבנק",
+      "subtitle": "העלאת דפי חשבון (PDF/CSV/XLSX/OFX) ומעבר מ-Greeninvoice.",
+      "addCta": "ייבוא חדש",
+      "emptyState": "אין ייבואים — העלו דף חשבון ראשון.",
+      "uploadTitle": "ייבוא חדש מבנק",
+      "uploadSubtitle": "גררו קובץ דף חשבון, בחרו בנק, ונסרוק את השורות לסקירה.",
+      "reviewTitle": "סקירת תנועות שנקראו",
+      "alreadyCommitted": "הייבוא הזה כבר הוסף לתנועות שלכם.",
+      "noBusinessYet": "צריך ליצור עסק לפני ייבוא דפי חשבון.",
+      "noRowsParsed": "לא הצלחנו לקרוא שורות מהקובץ הזה.",
+      "business": "עסק",
+      "financialAccount": "חשבון פיננסי",
+      "accountUnallocated": "ללא חשבון (אינבוקס)",
+      "bankLabel": "בנק",
+      "formatLabel": "פורמט ייצוא",
+      "dropZone": "גררו קובץ לכאן או לחצו לבחירה",
+      "parseCta": "ניתוח הקובץ",
+      "parsing": "מנתח...",
+      "commitCta": "אישור {count} שורות",
+      "committing": "מאשר...",
+      "bank": {
+        "leumi": "לאומי",
+        "hapoalim": "הפועלים",
+        "mizrahi": "מזרחי טפחות",
+        "discount": "דיסקונט",
+        "ofx": "OFX (כל בנק)",
+        "greeninvoice": "מעבר מ-Greeninvoice",
+        "other": "אחר (CSV עם מיפוי עמודות)"
+      },
+      "format": {
+        "leumi_pdf": "לאומי PDF",
+        "hapoalim_csv": "הפועלים CSV",
+        "mizrahi_xlsx": "מזרחי XLSX",
+        "discount_csv": "דיסקונט CSV",
+        "ofx": "OFX 1.x/2.x",
+        "csv": "CSV כללי",
+        "greeninvoice_csv": "Greeninvoice CSV"
+      },
+      "col": {
+        "importedAt": "תאריך ייבוא",
+        "business": "עסק",
+        "bank": "בנק",
+        "format": "פורמט",
+        "fileName": "קובץ",
+        "rowCount": "שורות",
+        "status": "סטטוס",
+        "actions": "פעולות",
+        "view": "סקירה",
+        "toggleAll": "סמן הכל",
+        "toggleRow": "סמן שורה",
+        "date": "תאריך",
+        "amount": "סכום",
+        "description": "תיאור",
+        "dedup": "כפילות?"
+      },
+      "dedup": {
+        "candidateOf": "כפילות אפשרית של {date} — {desc}"
+      },
+      "errors": {
+        "fileTooLarge": "הקובץ גדול מדי (מקסימום 25MB)",
+        "fileMissing": "בחרו קובץ לפני הניתוח",
+        "businessMissing": "בחרו עסק",
+        "readFile": "לא הצלחנו לקרוא את הקובץ",
+        "noRowsSelected": "בחרו לפחות שורה אחת לאישור",
+        "alreadyCommitted": "הייבוא כבר אושר"
+      }
+    },
+    "processorSync": {
+      "title": "סנכרון מסולקים",
+      "subtitle": "משיכת קבלות מ-Hyp, Grow ו-PayPlus — שיוך לחשבוניות הקיימות שלכם.",
+      "connectCta": "חיבור סולק",
+      "connectTitle": "חיבור סולק תשלומים",
+      "connectSubtitle": "אנחנו מצפינים את ה-API key תחת מפתח לכל עסק. צפייה דורשת אימות נוסף.",
+      "connectedHeading": "סולקים מחוברים",
+      "emptyState": "אין סולקים מחוברים עדיין.",
+      "noBusinessYet": "צריך ליצור עסק לפני חיבור סולק.",
+      "business": "עסק",
+      "processorLabel": "סולק",
+      "apiKeyLabel": "מפתח API",
+      "connectSubmit": "בדיקה וחיבור",
+      "connecting": "בודק...",
+      "syncNow": "סנכרון עכשיו",
+      "syncing": "מסנכרן...",
+      "neverSynced": "טרם סונכרן",
+      "hoursAgo": "סונכרן לפני {hours}ש׳",
+      "failing": "סנכרון נכשל ({count} ניסיונות)",
+      "processor": {
+        "hyp": "Hyp",
+        "grow": "Grow Payments",
+        "payplus": "PayPlus"
+      },
+      "apiKeyPlaceholder": {
+        "hyp": "מפתח Hyp API",
+        "grow": "מפתח Grow API",
+        "payplus": "API_KEY:SECRET_KEY"
+      },
+      "apiKeyHelp": {
+        "hyp": "מתוך לוח הבקרה של Hyp → Developer → API keys.",
+        "grow": "מתוך לוח הבקרה של Grow → API access.",
+        "payplus": "PayPlus משתמש בשני מפתחות — הדביקו אותם מופרדים בנקודתיים (apiKey:secretKey)."
+      },
+      "col": {
+        "processor": "סולק",
+        "business": "עסק",
+        "lastSynced": "סנכרון אחרון",
+        "actions": "פעולות"
+      },
+      "orphans": {
+        "heading": "קבלות ללא שיוך",
+        "subtitle": "קבלות שהסולק החזיר ולא הצלחנו לשייך לחשבונית.",
+        "empty": "אין קבלות ללא שיוך.",
+        "col": {
+          "date": "תאריך",
+          "amount": "סכום",
+          "customer": "לקוח",
+          "receiptNo": "מס׳ קבלה",
+          "reason": "סיבה"
+        },
+        "reason": {
+          "no_match": "אין חשבונית עם הסכום הזה",
+          "ambiguous": "מספר חשבוניות מתאימות",
+          "amount_date": "סכום ותאריך בלבד",
+          "exact": "שויך"
+        }
+      },
+      "errors": {
+        "businessMissing": "בחרו עסק",
+        "apiKeyMissing": "הזינו מפתח API",
+        "connectionFailed": "בדיקת חיבור נכשלה",
+        "alreadyConnected": "כבר מחובר — נתקו לפני חיבור מחדש",
+        "syncFailed": "הסנכרון נכשל"
       }
     }
   },
