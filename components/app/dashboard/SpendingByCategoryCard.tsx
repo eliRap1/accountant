@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import type { SpendingByCategory } from "@/lib/aggregations/spendingByCategory";
@@ -36,6 +37,8 @@ export default function SpendingByCategoryCard({
   locale: string;
 }) {
   const t = useTranslations("app.dashboard.spendingByCategory");
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const slices = data.rows.map((r, idx) => ({
     name: r.categoryName ?? t("uncategorised"),
@@ -47,9 +50,10 @@ export default function SpendingByCategoryCard({
   const isEmpty = data.rows.length === 0;
 
   return (
-    <motion.div
+    <motion.article
       initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       className="glass-strong flex flex-col gap-3 rounded-2xl p-5"
     >
@@ -72,23 +76,27 @@ export default function SpendingByCategoryCard({
       ) : (
         <div className="flex items-center gap-4">
           <div className="h-32 w-32 shrink-0">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={slices}
-                  innerRadius={32}
-                  outerRadius={56}
-                  paddingAngle={2}
-                  dataKey="value"
-                  isAnimationActive={false}
-                  stroke="none"
-                >
-                  {slices.map((s) => (
-                    <Cell key={s.code} fill={s.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
+            {mounted ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={slices}
+                    innerRadius={32}
+                    outerRadius={56}
+                    paddingAngle={2}
+                    dataKey="value"
+                    isAnimationActive={false}
+                    stroke="none"
+                  >
+                    {slices.map((s) => (
+                      <Cell key={s.code} fill={s.color} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full w-full" aria-hidden />
+            )}
           </div>
           <ul className="flex-1 space-y-1.5">
             {slices.slice(0, 5).map((s) => (
@@ -112,6 +120,6 @@ export default function SpendingByCategoryCard({
           </ul>
         </div>
       )}
-    </motion.div>
+    </motion.article>
   );
 }

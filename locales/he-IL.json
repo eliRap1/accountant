@@ -449,9 +449,7 @@
       "spendingByCategory": {
         "title": "הוצאות לפי קטגוריה",
         "subtitle": "30 הימים האחרונים",
-        "total": "סך הכול",
         "empty": "אין הוצאות בחלון הזה.",
-        "viewAll": "כל ההוצאות",
         "uncategorised": "ללא קטגוריה"
       },
       "chart": {
