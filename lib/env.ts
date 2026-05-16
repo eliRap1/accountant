@@ -75,6 +75,23 @@ const schema = z.object({
 
 type Env = z.infer<typeof schema>;
 
+// Detect Next.js build phase. Next sets NEXT_PHASE=phase-production-build
+// while running `next build` page-data collection. Route-handler modules
+// get imported during that pass even though they never serve a real
+// request — throwing inside env() at that moment kills the deploy even
+// when production env vars ARE configured to be injected at runtime.
+//
+// Behaviour:
+//   - build phase: warn-and-stub. Returns a pass-through view of
+//     process.env. Routes that hit env() get whatever string the build
+//     environment exposed (often undefined). They MUST guard their own
+//     module-level reads for build-time safety, OR rely on the fact that
+//     handler bodies only run at request time when real env values exist.
+//   - runtime production: strict — throw if validation fails. The
+//     deployed app refuses to serve requests with missing env.
+//   - dev / test: warn + pass-through (existing behaviour).
+const isNextBuildPhase = process.env["NEXT_PHASE"] === "phase-production-build";
+
 let cached: Env | null = null;
 
 export function env(): Env {
@@ -82,13 +99,14 @@ export function env(): Env {
 
   const parsed = schema.safeParse(process.env);
   if (!parsed.success) {
-    if (isProduction) {
+    if (isProduction && !isNextBuildPhase) {
       throw new Error(
         `Invalid environment variables: ${JSON.stringify(parsed.error.flatten().fieldErrors)}`,
       );
     }
-    // In dev/test, surface the issue but don't crash so that
-    // partial setups (e.g., no Sentry yet) keep working.
+    // Dev / test / build phase: surface the issue but don't crash so
+    // that partial setups (e.g., no Sentry yet) and prerender passes
+    // keep working. Runtime in production is still strict above.
     console.warn(
       "Environment variable validation failed:",
       parsed.error.flatten().fieldErrors,
