@@ -85,6 +85,13 @@ function emailDomain(): string {
 }
 
 function fromAddress(kind: EmailKind): string {
+  // Owner can pin a literal from-address (e.g. Resend's sandbox sender
+  // `AccounTech <onboarding@resend.dev>`) until DKIM lands on the
+  // production domain. Same address is used for every `kind`; the
+  // Reply-To still routes to `support@<domain>` so users hitting Reply
+  // land on the monitored mailbox.
+  const override = env().EMAIL_FROM_OVERRIDE;
+  if (override) return override;
   const domain = emailDomain();
   switch (kind) {
     case "verify":

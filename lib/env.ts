@@ -29,6 +29,11 @@ const schema = z.object({
 
   // Transactional email (Resend)
   RESEND_API_KEY: optionalNonEmpty,
+  // Optional sender override. When set, replaces the
+  // `verify@<host>` / `security@<host>` / `support@<host>` triple with
+  // a single literal address — e.g. `AccounTech <onboarding@resend.dev>`
+  // for sandbox-only sends before DKIM lands. Display name is honoured.
+  EMAIL_FROM_OVERRIDE: optionalNonEmpty,
 
   // CAPTCHA (Cloudflare Turnstile). Site key duplicated as NEXT_PUBLIC_*
   // so client code can read it without it leaking through the server-only
