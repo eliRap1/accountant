@@ -43,8 +43,13 @@ export type SubscriptionStatus =
 function mapStatus(s: Stripe.Subscription.Status): SubscriptionStatus {
   switch (s) {
     case "trialing":
-    case "incomplete":
       return "trialing";
+    case "incomplete":
+      // Stripe `incomplete` = the first PaymentIntent has NOT succeeded
+      // yet. Mapping to `trialing` grants entitlements before the user
+      // pays — surface as past_due so plan-gates lock the customer out
+      // until the payment finalises.
+      return "past_due";
     case "active":
       return "active";
     case "past_due":

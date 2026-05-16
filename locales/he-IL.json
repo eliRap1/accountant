@@ -602,6 +602,13 @@
         "effectiveFrom": "מתאריך",
         "effectiveTo": "עד תאריך",
         "reason": "סיבה"
+      },
+      "entityTypeOption": {
+        "patur": "עוסק פטור",
+        "morshe": "עוסק מורשה",
+        "hevra_baam": "חברה בע״מ",
+        "amuta": "עמותה",
+        "shutfut": "שותפות"
       }
     },
     "clients": {

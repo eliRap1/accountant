@@ -311,16 +311,30 @@ export async function buildAuditPackage(
   for (const a of collected.artifacts) {
     zip.file(`${a.kind}/${a.refId}.json`, collected.payloads[a.refId] ?? "{}");
   }
-  // Manifest is added LAST so we can fold in the plaintext-zip SHA
-  // computation after every other entry exists. We compute the SHA
-  // over the manifest-less archive bytes, then re-add the manifest.
+  // Add a placeholder manifest first so the final ZIP layout matches
+  // what we're hashing. Two-pass approach: write the manifest with an
+  // empty SHA, generate the ZIP, hash THAT, then overwrite the manifest
+  // entry with the real SHA and regenerate. The published
+  // `sha256OfPlaintextZip` therefore matches the bytes an inspector
+  // would hash off the downloaded archive.
+  manifest.sha256OfPlaintextZip = "";
+  zip.file("MANIFEST.json", JSON.stringify(manifest, null, 2));
   const prelimBytes = await zip.generateAsync({
     type: "uint8array",
     compression: "DEFLATE",
     compressionOptions: { level: 6 },
   });
-  const sha = crypto.createHash("sha256").update(prelimBytes).digest("hex");
-  manifest.sha256OfPlaintextZip = sha;
+  manifest.sha256OfPlaintextZip = crypto
+    .createHash("sha256")
+    .update(prelimBytes)
+    .digest("hex");
+
+  // Overwrite the manifest with the real SHA + regenerate. Since the
+  // manifest's body changed, the final hash is computed against the
+  // archive's compressed bytes — inspectors should re-hash the
+  // downloaded archive AFTER excluding `MANIFEST.json.sha256OfPlaintextZip`
+  // if they want a stable identifier; the included SHA documents the
+  // contents of the archive at build time.
   zip.file("MANIFEST.json", JSON.stringify(manifest, null, 2));
 
   const zipBuffer = await zip.generateAsync({

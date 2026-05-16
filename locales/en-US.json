@@ -602,6 +602,13 @@
         "effectiveFrom": "Effective from",
         "effectiveTo": "Effective to",
         "reason": "Reason"
+      },
+      "entityTypeOption": {
+        "patur": "Osek Patur (VAT-exempt)",
+        "morshe": "Osek Morshe (VAT-liable)",
+        "hevra_baam": "Limited company (Ltd)",
+        "amuta": "Non-profit (Amuta)",
+        "shutfut": "Partnership"
       }
     },
     "clients": {

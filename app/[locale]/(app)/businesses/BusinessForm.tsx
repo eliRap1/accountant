@@ -171,7 +171,11 @@ export default function BusinessForm({ mode, initial }: Props) {
             onChange={(v) => set("entityType", v)}
             options={ENTITY_OPTIONS.map((o) => ({
               value: o.value,
-              label: o.label,
+              // Localised label — falls back to the Hebrew literal if
+              // the locale catalogue is missing the key (defence in
+              // depth; lint:missing-translations should catch real
+              // gaps before they ship).
+              label: t(`entityTypeOption.${o.value}`),
             }))}
             required
             disabled={pending}
