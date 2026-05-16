@@ -549,3 +549,96 @@ Region fix (`iad1` → `fra1`/`cdg1` for IL traffic) is also still outstanding, 
 - `D:\accountant\lib\env.ts` lines 93-118 — pass 2 patch, still working (warns only during build)
 - `D:\accountant\lib\auth\better.tsx` — patches 3/4/5 all working: Turnstile guard #1 build-exempt, `new URL` fallback, captcha-plugin attachment guard build-exempt
 - `D:\accountant\lib\auth\selfTest.ts` — **still untouched**; did not execute during this build (build phase short-circuit kept it from running). Will execute at next runtime request; whether it throws depends on whether the owner's rotated secrets match the embedded SHA-256 hashes.
+
+---
+
+# Final Owner Punch-list — 6 gates blocking production sign-up
+
+Updated 2026-05-16 after architecture v5 landed (HEAD `4929267`). All code-side work complete: 30+ commits pushed, `pnpm typecheck` + `pnpm build` + `pnpm lint:missing-translations` PASS, deploy reaches READY at `accountant-kappa.vercel.app`. Six owner-side actions remain — execute top-to-bottom.
+
+## Gate 1 — Rotate the 5 compromised secrets
+
+Two Claude-generated secrets (rotate locally, no portal needed):
+
+```powershell
+$NEW_BETTER_AUTH_SECRET = [Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))
+$NEW_DATA_ENCRYPTION_KEY = [Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))
+```
+
+Three chat-pasted secrets must rotate in source portals — `lib/auth/selfTest.ts` SHA-256-blocks prod boot if any of these three keep their original values:
+
+| Secret | Portal | Action |
+|---|---|---|
+| Neon DB password `npg_3QhHDxJwGg2m` | Neon console → project → Settings → Reset Password | reset → grab new pooled + unpooled URLs |
+| Resend API key `re_JAJTW…` | resend.com → API Keys | revoke + issue new |
+| Turnstile secret `0x4AAAAAADQD3tcqcRai8ZygM67sL9MDGyQ` | Cloudflare → Turnstile → site → Rotate Secret | rotate |
+
+## Gate 2 — Set Vercel env vars (12+ required)
+
+Vercel → Project → Settings → Environment Variables → **Production** scope. Full table in `vercel-env-setup.md`. Minimum boot set:
+
+```
+BETTER_AUTH_SECRET, BETTER_AUTH_URL, DATA_ENCRYPTION_KEY,
+DATABASE_URL, DATABASE_URL_UNPOOLED,
+RESEND_API_KEY,
+TURNSTILE_SECRET_KEY, NEXT_PUBLIC_TURNSTILE_SITE_KEY,
+CRON_SECRET, AI_GATEWAY_API_KEY,
+STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET,
+STRIPE_PRICE_SOLO, STRIPE_PRICE_PLUS, STRIPE_PRICE_BUSINESS, STRIPE_PRICE_ACCOUNTANT,
+NEXT_PUBLIC_DEFAULT_LOCALE=he-IL
+```
+
+`BETTER_AUTH_URL` MUST NOT have a trailing slash and must match the production deploy URL.
+
+## Gate 3 — Create 4 Stripe Products
+
+Stripe Dashboard → Products → New:
+
+| Product | Price (₪/mo) | Env var for price ID |
+|---|---:|---|
+| AccounTech Solo | 49 | `STRIPE_PRICE_SOLO` |
+| AccounTech Plus | 99 | `STRIPE_PRICE_PLUS` |
+| AccounTech Business | 199 | `STRIPE_PRICE_BUSINESS` |
+| AccounTech Accountant | 399 | `STRIPE_PRICE_ACCOUNTANT` |
+
+Israel is NOT in Stripe Tax — set prices as **VAT-inclusive**. Webhook: `https://<deploy>/api/billing/webhook` → copy signing secret into `STRIPE_WEBHOOK_SECRET`.
+
+## Gate 4 — Resend DKIM / SPF / DMARC
+
+DNS records in `docs/runbooks/email-deliverability.md`. Verify in Resend dashboard before sign-up traffic.
+
+## Gate 5 — CPA sign-off on tax rules
+
+Once a licensed CPA reviews `lib/tax/il/rules-2026.ts` and confirms every numeric, edit `lib/tax/il/rules-2026.meta.json`:
+
+```json
+{
+  "humanReviewed": true,
+  "reviewedBy": "<CPA full name + license #>",
+  "reviewedOn": "<YYYY-MM-DD>"
+}
+```
+
+Then `pnpm lint:rule-meta` passes and `/tax` UI ships to prod.
+
+## Gate 6 — Apply Layer 3 migrations to production Neon
+
+```powershell
+# DATABASE_URL_UNPOOLED must point at prod Neon branch (gate 1 output):
+$env:DATABASE_URL_UNPOOLED = "<prod-unpooled-url>"
+pnpm db:migrate
+```
+
+Applies `0007_modern_karma.sql` through `0012_rls_ai.sql` — Layer 3 (13 tables) + CoA errata + `ai_conversations`. Forward-only, idempotent on a fresh prod branch.
+
+## Verification after all 6 close
+
+```powershell
+# Should return 200 with {"user":null,"session":null}
+curl https://<deploy>/api/auth/get-session
+
+# Should reach the sign-up form (HE/EN locale)
+start https://<deploy>/he-IL/sign-up
+```
+
+Sign-up → Turnstile → email verify → TOTP enroll → onboarding (1 step) → dashboard with 6 tiles. End-to-end live.
