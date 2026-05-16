@@ -27,6 +27,10 @@ export const users = pgTable(
     country: text("country").notNull().default("IL"),
     dobCiphertext: text("dob_ciphertext"),
     nationalIdCiphertext: text("national_id_ciphertext"),
+    // Cached Stripe customer id (`cus_…`) written immediately after
+    // `stripe.customers.create` so a missed webhook never causes a
+    // duplicate Stripe customer for the same user. See migration 0016.
+    stripeCustomerId: text("stripe_customer_id"),
     consentJsonb: jsonb("consent_jsonb").$type<UserConsentJsonb>().notNull().default(sql`'{}'::jsonb`),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")

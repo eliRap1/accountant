@@ -43,7 +43,21 @@ async function findExistingCustomerId(
   appUserId: string,
 ): Promise<string | null> {
   return withServiceRole(async (tx) => {
-    const rows = (await tx.execute(
+    // Primary: `users.stripe_customer_id` — written immediately after
+    // every successful `stripe.customers.create` so a missed webhook
+    // never causes a duplicate customer.
+    const userRows = (await tx.execute(
+      sql`SELECT stripe_customer_id
+            FROM users
+           WHERE id = ${appUserId}::uuid
+           LIMIT 1`,
+    )) as unknown as Array<{ stripe_customer_id: string | null }>;
+    const fromUser = userRows[0]?.stripe_customer_id ?? null;
+    if (fromUser) return fromUser;
+
+    // Legacy fallback: rows created before migration 0016 only
+    // recorded the customer id on the subscriptions table.
+    const subRows = (await tx.execute(
       sql`SELECT provider_customer_id
             FROM subscriptions
            WHERE user_id = ${appUserId}::uuid
@@ -52,7 +66,23 @@ async function findExistingCustomerId(
            ORDER BY created_at DESC
            LIMIT 1`,
     )) as unknown as Array<{ provider_customer_id: string | null }>;
-    return rows[0]?.provider_customer_id ?? null;
+    return subRows[0]?.provider_customer_id ?? null;
+  });
+}
+
+/** Cache the customer_id on `users.stripe_customer_id` so the next
+ *  resolve call returns it without touching Stripe. Idempotent. */
+async function cacheCustomerId(
+  appUserId: string,
+  customerId: string,
+): Promise<void> {
+  await withServiceRole(async (tx) => {
+    await tx.execute(
+      sql`UPDATE users
+            SET stripe_customer_id = ${customerId}
+          WHERE id = ${appUserId}::uuid
+            AND stripe_customer_id IS NULL`,
+    );
   });
 }
 
@@ -123,5 +153,10 @@ export async function resolveStripeCustomer(
   };
   if (contact.name) params.name = contact.name;
   const customer = await stripe.customers.create(params);
+  // Persist immediately so a webhook race or outright failure
+  // doesn't cause the next checkout to fork a new customer for the
+  // same user. Idempotent — partial-unique index protects against
+  // concurrent inserts.
+  await cacheCustomerId(args.appUserId, customer.id);
   return { customerId: customer.id, created: true };
 }

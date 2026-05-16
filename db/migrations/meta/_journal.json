@@ -113,6 +113,13 @@
       "when": 1779897604000,
       "tag": "0015_force_rls",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1779897605000,
+      "tag": "0016_users_stripe_customer",
+      "breakpoints": true
     }
   ]
 }
