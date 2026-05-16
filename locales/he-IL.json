@@ -452,6 +452,13 @@
         "empty": "אין הוצאות בחלון הזה.",
         "uncategorised": "ללא קטגוריה"
       },
+      "recurringSubs": {
+        "title": "מנויים קבועים",
+        "subtitle": "180 הימים האחרונים",
+        "monthlyTotal": "סך חודשי",
+        "occurrences": "{count} חיובים",
+        "empty": "לא זוהו מנויים חוזרים."
+      },
       "chart": {
         "eyebrow": "סקירה",
         "title": "הכנסות מול רווח",

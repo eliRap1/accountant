@@ -452,6 +452,13 @@
         "empty": "No expenses in this window.",
         "uncategorised": "Uncategorised"
       },
+      "recurringSubs": {
+        "title": "Recurring subscriptions",
+        "subtitle": "Last 180 days",
+        "monthlyTotal": "Monthly total",
+        "occurrences": "{count} charges",
+        "empty": "No recurring charges detected."
+      },
       "chart": {
         "eyebrow": "Overview",
         "title": "Revenue vs profit",

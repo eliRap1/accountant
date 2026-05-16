@@ -12,6 +12,7 @@
 import { tool } from "ai";
 import { z } from "zod";
 import { sql } from "drizzle-orm";
+import { getRecurringSubscriptions } from "@/lib/aggregations/recurringSubscriptions";
 import { getSpendingByCategory } from "@/lib/aggregations/spendingByCategory";
 import { withUser } from "@/lib/db/withUser";
 import { runFullTaxEngine } from "@/lib/tax/il/runEngineForUser";
@@ -194,6 +195,28 @@ export function buildGetSpendingByCategory(ctx: ToolContext) {
 }
 
 /**
+ * `getRecurringSubscriptions(windowDays)` — detects recurring expense
+ * subscriptions (Netflix-style monthly charges, weekly groceries, etc.)
+ * over a rolling window (default 180 days).
+ */
+export function buildGetRecurringSubscriptions(ctx: ToolContext) {
+  return tool({
+    description:
+      "Detect recurring expense subscriptions (Netflix-style monthly charges, weekly groceries, etc.) for the user's active business. Returns vendor name, cadence (monthly|weekly), occurrence count, and estimated monthly cost.",
+    inputSchema: z.object({
+      windowDays: z.number().int().min(60).max(365).default(180),
+    }),
+    execute: async ({ windowDays }) => {
+      const result = await getRecurringSubscriptions(ctx.userId, {
+        windowDays,
+        ...(ctx.now ? { now: ctx.now } : {}),
+      });
+      return jsonifyBigints(result);
+    },
+  });
+}
+
+/**
  * Aggregate factory — returns a `ToolSet` (record of tools) keyed by
  * the names the model invokes. Pass directly to `generateText`/
  * `streamText` as the `tools` option.
@@ -206,6 +229,7 @@ export function buildAdvisorTools(ctx: ToolContext) {
     getVatPayableThisPeriod: buildGetVatPayableThisPeriod(ctx),
     getMakdamotStatus: buildGetMakdamotStatus(ctx),
     getSpendingByCategory: buildGetSpendingByCategory(ctx),
+    getRecurringSubscriptions: buildGetRecurringSubscriptions(ctx),
   } as const;
 }
 
