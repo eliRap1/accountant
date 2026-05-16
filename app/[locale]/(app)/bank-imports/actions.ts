@@ -245,11 +245,15 @@ export async function commitImport(
               ${direction}::transaction_direction,
               ${absAmount.toString()}::bigint,
               ${r.currency},
-              ${r.description},
+              -- Prefer counterparty when present so subsequent imports
+              -- can dedup against the same canonical string. Falling
+              -- back to description keeps legacy formats (CSV without
+              -- counterparty) working.
+              ${r.counterparty || r.description},
               ${r.txnDate}::date,
               'bank_import'::transaction_source,
               ${`bank_import:${fingerprint}`},
-              ${JSON.stringify({ fingerprint, importId: imp.id })}::jsonb
+              ${JSON.stringify({ fingerprint, importId: imp.id, counterparty: r.counterparty, originalDescription: r.description })}::jsonb
             )
             ON CONFLICT (source, source_external_id) WHERE source_external_id IS NOT NULL
             DO NOTHING
