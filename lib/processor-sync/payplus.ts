@@ -125,9 +125,13 @@ export const payplusAdapter: ProcessorAdapter = {
       receiptNumber: r.document_number,
       rawMetadata: r as unknown as Record<string, unknown>,
     }));
-    // PayPlus paginates per-page; we use document_date as cursor. The
-    // cron picks up where we left off on the next run.
-    const lastDate = rows.length > 0 ? rows[rows.length - 1]?.issuedDate : null;
-    return { rows, nextCursor: lastDate ?? null };
+    // PayPlus does not guarantee result ordering; the cursor must be
+    // the MAX issuedDate across rows or the next run regresses to
+    // earlier dates and re-fetches the same window forever.
+    const maxDate = rows.reduce<string | null>((acc, r) => {
+      if (!r.issuedDate) return acc;
+      return acc === null || r.issuedDate > acc ? r.issuedDate : acc;
+    }, null);
+    return { rows, nextCursor: maxDate };
   },
 };

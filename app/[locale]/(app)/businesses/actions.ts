@@ -151,22 +151,33 @@ export async function updateBusiness(
   // state in a service-style probe (RLS-scoped via withUser later for
   // the write); a separate select keeps the step-up check off the
   // critical write path.
-  let priorBeforeStepUp: { entityType: string; vatStatus: string } | null = null;
+  let priorBeforeStepUp:
+    | { entityType: string; vatStatus: string; defaultCurrency: string }
+    | null = null;
   await withUser(me.appUserId, async (tx) => {
     const rows = (await tx
       .select({
         entityType: businesses.entityType,
         vatStatus: businesses.vatStatus,
+        defaultCurrency: businesses.defaultCurrency,
       })
       .from(businesses)
       .where(and(eq(businesses.id, id), isNull(businesses.deletedAt)))
-      .limit(1)) as Array<{ entityType: string; vatStatus: string }>;
+      .limit(1)) as Array<{
+      entityType: string;
+      vatStatus: string;
+      defaultCurrency: string;
+    }>;
     priorBeforeStepUp = rows[0] ?? null;
   });
   if (!priorBeforeStepUp) {
     return { error: "app.errors.invalidInput" };
   }
-  const priorSnapshot: { entityType: string; vatStatus: string } = priorBeforeStepUp;
+  const priorSnapshot: {
+    entityType: string;
+    vatStatus: string;
+    defaultCurrency: string;
+  } = priorBeforeStepUp;
   const vatStatusChanging =
     priorSnapshot.vatStatus !== input.vatStatus ||
     priorSnapshot.entityType !== input.entityType;
@@ -180,6 +191,28 @@ export async function updateBusiness(
           vatStatusAfter: input.vatStatus,
           entityTypeBefore: priorSnapshot.entityType,
           entityTypeAfter: input.entityType,
+        }),
+      });
+    } catch (err) {
+      if (err instanceof StepUpRequired) {
+        return {
+          stepUpRequired: { op: err.op, payloadHash: err.payloadHash },
+        };
+      }
+      throw err;
+    }
+  }
+  // Default currency change is also tax-regime-facing: it affects how
+  // every subsequent invoice + transaction is denominated. Council
+  // step-up registry already lists `business.update_default_currency`.
+  if (priorSnapshot.defaultCurrency !== input.defaultCurrency) {
+    try {
+      await requireFreshSession({
+        op: "business.update_default_currency",
+        payloadHash: computePayloadHash({
+          businessId: id,
+          before: priorSnapshot.defaultCurrency,
+          after: input.defaultCurrency,
         }),
       });
     } catch (err) {

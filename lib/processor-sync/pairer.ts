@@ -76,7 +76,24 @@ export async function pairReceipts(args: {
   // in a single query. We don't try to do per-receipt filtering at the
   // SQL layer because (a) the IN list would be long, (b) the dataset
   // is small (a business issues a few hundred invoices a year, max).
-  const dates = receipts.map((r) => r.issuedDate).sort();
+  //
+  // Reject malformed dates up-front — a single undefined / "" row
+  // poisoned the previous implementation (NaN propagated through
+  // `new Date(...)` and the SQL window became `BETWEEN NaN..NaN`,
+  // returning zero candidates and silently marking every receipt as
+  // `no_match`).
+  const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+  const dates = receipts
+    .map((r) => r.issuedDate)
+    .filter((d): d is string => typeof d === "string" && datePattern.test(d))
+    .sort();
+  if (dates.length === 0) {
+    return receipts.map((r) => ({
+      receipt: r,
+      matchedInvoiceId: null,
+      reason: "no_match" as const,
+    }));
+  }
   const minDate = dates[0]!;
   const maxDate = dates[dates.length - 1]!;
   // Widen the SQL window by ±2 days (the match tolerance).

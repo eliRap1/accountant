@@ -87,9 +87,14 @@ export const growAdapter: ProcessorAdapter = {
       rawMetadata: r as unknown as Record<string, unknown>,
     }));
     // Grow paginates via hasMore — for the MVP cron we fetch only the
-    // first page and let the next cron run pick up the rest. The cursor
-    // we persist is the date of the last row.
-    const lastDate = rows.length > 0 ? rows[rows.length - 1]?.issuedDate : null;
-    return { rows, nextCursor: body.hasMore && lastDate ? lastDate : null };
+    // first page and let the next cron run pick up the rest. Take the
+    // MAX issuedDate as the cursor (rather than the last row), since
+    // Grow does not guarantee result ordering and an un-sorted "last
+    // row" with the earliest date would make the cursor regress.
+    const maxDate = rows.reduce<string | null>((acc, r) => {
+      if (!r.issuedDate) return acc;
+      return acc === null || r.issuedDate > acc ? r.issuedDate : acc;
+    }, null);
+    return { rows, nextCursor: body.hasMore && maxDate ? maxDate : null };
   },
 };
