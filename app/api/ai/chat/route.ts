@@ -209,26 +209,14 @@ async function persistMessageBestEffort(args: {
 }): Promise<void> {
   if (!args.conversationId) return;
   try {
-    // 1. Insert with placeholder ciphertext to discover the row id.
-    const messageId = await withUser(args.userId, async (tx) => {
-      const inserted = (await tx.execute(
-        sql`INSERT INTO ai_messages
-              (conversation_id, role, content_ciphertext, content_dek_id)
-            VALUES
-              (${args.conversationId}::uuid,
-               ${args.role},
-               '',
-               '00000000-0000-0000-0000-000000000000'::uuid)
-            RETURNING id::text AS id`,
-      )) as unknown as Array<{ id: string }>;
-      return inserted[0]?.id ?? null;
-    });
-    if (!messageId) {
-      log.warn({ role: args.role }, "ai.persist.no_row_id");
-      return;
-    }
+    // Allocate the row id up-front so AAD can bind to it BEFORE the
+    // row exists. Encryption then runs outside the DB transaction
+    // (pure compute, no extra round-trip). The entire persist happens
+    // in a single tx — if any step fails the placeholder is never
+    // committed, so no orphan rows survive on encrypt failure.
+    const { randomUUID } = await import("node:crypto");
+    const messageId = randomUUID();
 
-    // 2. Encrypt under the user's per-thread DEK with row-bound AAD.
     const { ciphertext, dekId } = await encryptStringWithDek({
       purpose: `ai:user:${args.userId}:messages`,
       plaintext: args.text,
@@ -239,15 +227,16 @@ async function persistMessageBestEffort(args: {
       },
     });
 
-    // 3. Update the row with the real ciphertext + dek ref. Also touch
-    // the parent conversation's updated_at so the history list sorts
-    // by most-recent-activity.
     await withUser(args.userId, async (tx) => {
       await tx.execute(
-        sql`UPDATE ai_messages
-              SET content_ciphertext = ${ciphertext},
-                  content_dek_id = ${dekId}::uuid
-            WHERE id = ${messageId}::uuid`,
+        sql`INSERT INTO ai_messages
+              (id, conversation_id, role, content_ciphertext, content_dek_id)
+            VALUES
+              (${messageId}::uuid,
+               ${args.conversationId}::uuid,
+               ${args.role},
+               ${ciphertext},
+               ${dekId}::uuid)`,
       );
       await tx.execute(
         sql`UPDATE ai_conversations
