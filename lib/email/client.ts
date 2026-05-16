@@ -20,21 +20,18 @@ import type { ReactElement } from "react";
 import { Resend } from "resend";
 import { env } from "@/lib/env";
 
-// react-dom/server is imported lazily because Next 16's Turbopack flags any
-// top-level import of it from a module reachable by Server Components.
-// Emails are the legitimate edge-case for static rendering. Awaiting the
-// module on first send is fine — verification emails are not on a hot
-// latency path.
-async function renderReactToHtml(element: ReactElement): Promise<string> {
-  // Build the specifier dynamically so Turbopack's static analyzer cannot
-  // trace it. We still get the real runtime module — Node's resolver
-  // works the same either way. Without this indirection Next 16 refuses
-  // to build (`You're importing a component that imports react-dom/server`).
-  const modName = "react-dom" + "/server.node";
-  const mod = (await import(/* webpackIgnore: true */ modName)) as {
-    renderToStaticMarkup: (e: ReactElement) => string;
-  };
-  return mod.renderToStaticMarkup(element);
+// React-to-HTML rendering is currently disabled. The previous approach
+// did a dynamic `import("react-dom" + "/server.node")` to bypass
+// Turbopack's static analyzer, which then dropped react-dom from the
+// Vercel lambda bundle ("Cannot find package 'react-dom'" on first
+// send). The fix is to ship transactional mail as text-only — every
+// template already exports a `text` array used as fallback, and
+// Resend is happy with just `text`. When a richer HTML layout becomes
+// product-critical, swap in `@react-email/render` (Resend's
+// own peer dep) which handles the bundling without leaning on
+// react-dom directly.
+function renderReactToHtml(_element: ReactElement): null {
+  return null;
 }
 
 // Kind selects the From: address per the deliverability runbook §3. New email
@@ -148,20 +145,15 @@ export async function sendEmail(
     return { id: `dev-${crypto.randomUUID()}`, skipped: true };
   }
 
-  // Render React → HTML once, before passing to Resend. We never pass
-  // `react` to Resend because Resend's `react` path requires the
-  // `@react-email/render` peer dep (see runbook §"Code wired by Agent")
-  // and we are deliberately keeping templates dependency-light.
-  let html = input.html;
-  if (!html && input.react) {
-    // renderToStaticMarkup omits React-internal data-* attributes which is
-    // exactly what we want for an email — every byte matters for clipping.
-    html = `<!DOCTYPE html>${await renderReactToHtml(input.react)}`;
-  }
+  // React render path is disabled (see renderReactToHtml above). Use
+  // pre-rendered html if a caller supplied one; otherwise lean on the
+  // template's text fallback which Resend accepts on its own.
+  const html = input.html;
+  void renderReactToHtml; // keep import alive while the bypass is in place
   if (!html && !input.text) {
     return {
       error: {
-        message: "sendEmail: must provide one of {react, html, text}",
+        message: "sendEmail: must provide one of {html, text}",
       },
     };
   }
