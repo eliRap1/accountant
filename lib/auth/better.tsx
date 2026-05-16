@@ -197,7 +197,7 @@ export const auth = betterAuth({
     // so contributors without a Turnstile account can run the stack.
     ...(turnstileSecret
       ? [captcha({ provider: "cloudflare-turnstile", secretKey: turnstileSecret })]
-      : isProduction
+      : isProduction && !isNextBuildPhase
         ? (() => {
             throw new Error(
               "Turnstile secret missing in production — captcha plugin cannot be omitted.",
