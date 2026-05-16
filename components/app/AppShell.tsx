@@ -337,8 +337,30 @@ function Sidebar({
   mobileOpen: boolean;
   onCloseMobile: () => void;
 }) {
+  // Sidebar is split into two so framer-motion's inline transform
+  // (used for the mobile drawer slide) cannot fight the desktop layout.
+  // Previously a single <motion.aside> kept `x:-100%` on desktop because
+  // the inline transform wins over `lg:translate-x-0`, so the nav was
+  // permanently offscreen.
   return (
     <>
+      {/* Desktop: static, always visible. */}
+      <aside
+        className={`glass-strong sticky top-0 hidden h-screen w-64 flex-col gap-1 px-3 py-5 lg:flex ${
+          isRtl ? "border-l border-white/5" : "border-r border-white/5"
+        }`}
+      >
+        <SidebarBrand />
+        <SidebarNav
+          navItems={navItems}
+          currentPath={currentPath}
+          labels={labels}
+          isRtl={isRtl}
+          scope="desktop"
+        />
+      </aside>
+
+      {/* Mobile: animated drawer + backdrop. */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -358,93 +380,95 @@ function Sidebar({
           x: mobileOpen ? 0 : isRtl ? "100%" : "-100%",
         }}
         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-        className={`glass-strong fixed top-0 z-40 flex h-screen w-64 flex-col gap-1 border-white/5 px-3 py-5 lg:static lg:translate-x-0 lg:border-${isRtl ? "l" : "r"} ${
-          isRtl ? "end-0 border-l" : "start-0 border-r"
+        className={`glass-strong fixed top-0 z-40 flex h-screen w-64 flex-col gap-1 px-3 py-5 lg:hidden ${
+          isRtl ? "end-0 border-l border-white/5" : "start-0 border-r border-white/5"
         }`}
-        style={{ pointerEvents: mobileOpen ? "auto" : undefined }}
+        style={{ pointerEvents: mobileOpen ? "auto" : "none" }}
+        aria-hidden={!mobileOpen}
       >
-        <div className="mb-4 flex items-center gap-2.5 px-2 pt-1">
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 40 40"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs>
-              <linearGradient
-                id="acg-app-shell"
-                x1="0"
-                y1="0"
-                x2="1"
-                y2="1"
-              >
-                <stop offset="0%" stopColor="#34d399" />
-                <stop offset="100%" stopColor="#059669" />
-              </linearGradient>
-            </defs>
-            <polygon
-              points="20,2 36,11 36,29 20,38 4,29 4,11"
-              fill="none"
-              stroke="url(#acg-app-shell)"
-              strokeWidth="1.5"
-            />
-            <rect
-              x="13"
-              y="14"
-              width="14"
-              height="2.4"
-              rx="1"
-              fill="url(#acg-app-shell)"
-            />
-            <rect
-              x="13"
-              y="19"
-              width="10"
-              height="2.4"
-              rx="1"
-              fill="#10b981"
-              opacity="0.85"
-            />
-            <rect
-              x="13"
-              y="24"
-              width="14"
-              height="2.4"
-              rx="1"
-              fill="url(#acg-app-shell)"
-            />
-          </svg>
-          <div className="leading-none" dir="ltr">
-            <span className="block text-sm font-semibold tracking-tight text-slate-100">
-              Accoun<span className="text-emerald-400">Tech</span>
-            </span>
-            <span className="mt-0.5 block text-[9px] uppercase tracking-[0.16em] text-slate-500">
-              app
-            </span>
-          </div>
-        </div>
-
-        <nav className="mt-2 flex flex-col gap-0.5" aria-label="Primary">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const active =
-              currentPath === item.href ||
-              (item.href !== "/dashboard" &&
-                currentPath.startsWith(item.href));
-            return (
-              <SidebarLink
-                key={item.key}
-                href={item.href}
-                label={labels(item.key)}
-                Icon={Icon}
-                active={active}
-                isRtl={isRtl}
-              />
-            );
-          })}
-        </nav>
+        <SidebarBrand />
+        <SidebarNav
+          navItems={navItems}
+          currentPath={currentPath}
+          labels={labels}
+          isRtl={isRtl}
+          scope="mobile"
+        />
       </motion.aside>
     </>
+  );
+}
+
+function SidebarBrand() {
+  return (
+    <div className="mb-4 flex items-center gap-2.5 px-2 pt-1">
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 40 40"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id="acg-app-shell" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#34d399" />
+            <stop offset="100%" stopColor="#059669" />
+          </linearGradient>
+        </defs>
+        <polygon
+          points="20,2 36,11 36,29 20,38 4,29 4,11"
+          fill="none"
+          stroke="url(#acg-app-shell)"
+          strokeWidth="1.5"
+        />
+        <rect x="13" y="14" width="14" height="2.4" rx="1" fill="url(#acg-app-shell)" />
+        <rect x="13" y="19" width="10" height="2.4" rx="1" fill="#10b981" opacity="0.85" />
+        <rect x="13" y="24" width="14" height="2.4" rx="1" fill="url(#acg-app-shell)" />
+      </svg>
+      <div className="leading-none" dir="ltr">
+        <span className="block text-sm font-semibold tracking-tight text-slate-100">
+          Accoun<span className="text-emerald-400">Tech</span>
+        </span>
+        <span className="mt-0.5 block text-[9px] uppercase tracking-[0.16em] text-slate-500">
+          app
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function SidebarNav({
+  navItems,
+  currentPath,
+  labels,
+  isRtl,
+  scope,
+}: {
+  navItems: NavItem[];
+  currentPath: string;
+  labels: (key: NavKey) => string;
+  isRtl: boolean;
+  scope: "desktop" | "mobile";
+}) {
+  return (
+    <nav className="mt-2 flex flex-col gap-0.5" aria-label="Primary">
+      {navItems.map((item) => {
+        const Icon = item.icon;
+        const active =
+          currentPath === item.href ||
+          (item.href !== "/dashboard" && currentPath.startsWith(item.href));
+        return (
+          <SidebarLink
+            key={item.key}
+            href={item.href}
+            label={labels(item.key)}
+            Icon={Icon}
+            active={active}
+            isRtl={isRtl}
+            scope={scope}
+          />
+        );
+      })}
+    </nav>
   );
 }
 
@@ -454,12 +478,14 @@ function SidebarLink({
   Icon,
   active,
   isRtl,
+  scope,
 }: {
   href: string;
   label: string;
   Icon: typeof LayoutDashboard;
   active: boolean;
   isRtl: boolean;
+  scope: "desktop" | "mobile";
 }) {
   return (
     <Link
@@ -478,7 +504,7 @@ function SidebarLink({
     >
       {active && (
         <motion.span
-          layoutId="appShellActiveBar"
+          layoutId={`appShellActiveBar-${scope}`}
           aria-hidden
           transition={{ type: "spring", stiffness: 380, damping: 32 }}
           className={`absolute top-1.5 bottom-1.5 w-[3px] rounded-full bg-emerald-400 ${

@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import Button from "../ui/Button";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 
@@ -19,6 +20,15 @@ export default function Hero() {
   const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
   const t = useTranslations("hero");
+  const router = useRouter();
+
+  function scrollToDashboard() {
+    if (typeof document === "undefined") return;
+    const el = document.getElementById("dashboard");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
 
   const kpis = [
     { k: t("kpi1Value"), v: t("kpi1Label") },
@@ -84,10 +94,20 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:gap-4"
         >
-          <Button variant="primary" withArrow className="group">
+          <Button
+            type="button"
+            variant="primary"
+            withArrow
+            className="group"
+            onClick={() => router.push("/sign-up")}
+          >
             {t("ctaPrimary")}
           </Button>
-          <Button variant="ghost">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={scrollToDashboard}
+          >
             <span className="inline-flex items-center gap-2">
               {t("ctaSecondary")} <ArrowRight size={16} />
             </span>
