@@ -130,11 +130,21 @@ export const auth = betterAuth({
     }),
     // WebAuthn / passkeys for passwordless sign-in.
     passkey({
+      // Use a hardcoded placeholder when BETTER_AUTH_URL is undefined
+      // (Next.js build-phase reads env() in a relaxed mode). At runtime
+      // the URL is always present — selfTest gates that earlier.
       rpID: env().NODE_ENV === "production"
-        ? new URL(env().BETTER_AUTH_URL).hostname
+        ? (() => {
+            try {
+              return new URL(env().BETTER_AUTH_URL ?? "https://placeholder.invalid")
+                .hostname;
+            } catch {
+              return "placeholder.invalid";
+            }
+          })()
         : "localhost",
       rpName: "AccounTech",
-      origin: env().BETTER_AUTH_URL,
+      origin: env().BETTER_AUTH_URL ?? "https://placeholder.invalid",
     }),
     // One-time email codes — used by recovery and as a passwordless option.
     emailOTP({
