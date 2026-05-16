@@ -73,7 +73,20 @@
     "cashInvestment": "Other",
     "revenue": "Revenue",
     "ebitda": "Profit",
-    "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    "months": [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ]
   },
   "approach": {
     "eyebrow": "How it works",
@@ -115,11 +128,26 @@
   "footer": {
     "tagline": "AccounTech — software that handles invoices, receipts and VAT estimates for Israeli self-employed. Estimates only · Not tax advice · Consult a licensed CPA.",
     "practice": "Product",
-    "practiceLinks": ["Invoicing", "Receipts & OCR", "VAT estimates", "Accountant mode"],
+    "practiceLinks": [
+      "Invoicing",
+      "Receipts & OCR",
+      "VAT estimates",
+      "Accountant mode"
+    ],
     "company": "Company",
-    "companyLinks": ["About", "Pricing", "Security", "Contact"],
+    "companyLinks": [
+      "About",
+      "Pricing",
+      "Security",
+      "Contact"
+    ],
     "resources": "Resources",
-    "resourceLinks": ["Help center", "2026 allocation №", "SHAAM guide", "Status"],
+    "resourceLinks": [
+      "Help center",
+      "2026 allocation №",
+      "SHAAM guide",
+      "Status"
+    ],
     "copy": "AccounTech Ltd · Software, not a CPA firm. Estimates only — not tax advice."
   },
   "sticky": {
@@ -430,7 +458,20 @@
         "kpiYoyDelta": "estimate",
         "barTitle": "Monthly revenue"
       },
-      "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+      "months": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      ]
     },
     "onboarding": {
       "metaTitle": "Onboarding · AccounTech",
@@ -445,17 +486,20 @@
         "legalNamePh": "Registered business name",
         "vatId": "ע.מ. / ח.פ.",
         "vatIdPh": "9 digits",
-        "entityType": "Business type",
-        "entityType.patur": "Osek Patur",
-        "entityType.paturHint": "Exempt dealer · single-entry",
-        "entityType.morshe": "Osek Morshe",
-        "entityType.morsheHint": "Licensed dealer · single-entry",
-        "entityType.hevra_baam": "Limited company",
-        "entityType.hevra_baamHint": "ח.פ. · double-entry",
+        "entityType": {
+          "patur": "Osek Patur",
+          "paturHint": "Exempt dealer · single-entry",
+          "morshe": "Osek Morshe",
+          "morsheHint": "Licensed dealer · single-entry",
+          "hevra_baam": "Limited company",
+          "hevra_baamHint": "ח.פ. · double-entry"
+        },
         "addressCity": "City",
         "submit": "Continue",
-        "errors.vatIdInvalid": "Invalid VAT/business ID",
-        "errors.required": "Required field"
+        "errors": {
+          "vatIdInvalid": "Invalid VAT/business ID",
+          "required": "Required field"
+        }
       },
       "complete": {
         "title": "All set",
