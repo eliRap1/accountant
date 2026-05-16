@@ -90,27 +90,25 @@ export async function runSyncForCredential(args: {
     let orphans = 0;
 
     for (const p of pairing) {
-      // Upsert into receipts. The (processor, externalId) tuple is
-      // unique enough — we collide on it via metadata_jsonb lookup.
-      // The receipts table doesn't have an enforce-unique on external
-      // ids today, so we do a manual existence check.
+      // Dedup against `receipts.external_ref` (added in migration
+      // 0013). Partial-unique index `receipts_external_ref_idx`
+      // additionally enforces idempotence at the DB layer.
       const existing = (await tx.execute(
         sql`SELECT id FROM receipts
              WHERE business_id = ${args.businessId}::uuid
                AND source = 'processor_sync'::receipt_source
-               AND metadata_jsonb->>'externalId' = ${p.receipt.externalId}
+               AND external_ref = ${p.receipt.externalId}
              LIMIT 1`,
       )) as unknown as Array<{ id: string }>;
       if (existing[0]) continue;
 
-      // Note: receipts table doesn't expose a metadata_jsonb column in
-      // the current schema (db/schema/money-flows.ts). For now we stash
-      // the external id + customer in receipts.parsed_vendor_ciphertext
-      // as a plaintext-marker (it's not actually encrypted — the column
-      // is reserved for PII vendor names and a processor-side receipt
-      // doesn't carry one). The unique-by-external-id check above is
-      // therefore conditional on the legacy column NOT being present.
-      // <verify-this:receipts-external-id-column>
+      // Auxiliary metadata (customer label, receipt number, match
+      // reason) lives in `parsed_vendor_ciphertext` as a JSON string
+      // for the UI. NOTE: this is NOT real ciphertext — the column
+      // name is legacy. Receipt customer labels are not PII for the
+      // processor-sync ingest path (they're already cleartext on the
+      // processor side). When PII vendor names are introduced via
+      // OCR ingest, that path encrypts with a proper DEK.
       const metadataJson = JSON.stringify({
         externalId: p.receipt.externalId,
         customerLabel: p.receipt.customerLabel,
@@ -121,7 +119,7 @@ export async function runSyncForCredential(args: {
         sql`INSERT INTO receipts (
               business_id, status, source,
               parsed_amount_minor, parsed_date,
-              parsed_vendor_ciphertext,
+              parsed_vendor_ciphertext, external_ref,
               linked_transaction_id
             ) VALUES (
               ${args.businessId}::uuid,
@@ -130,6 +128,7 @@ export async function runSyncForCredential(args: {
               ${p.receipt.amountMinor.toString()}::bigint,
               ${p.receipt.issuedDate}::date,
               ${metadataJson},
+              ${p.receipt.externalId},
               NULL
             )
             RETURNING id`,

@@ -130,6 +130,11 @@ export const receipts = pgTable(
     // No FK declared — receipts can exist without a paired transaction
     // (e.g. expense awaiting categorisation). The app layer links them.
     linkedTransactionId: uuid("linked_transaction_id"),
+    // Stable handle on the processor-side receipt id for the
+    // processor-sync ingest path. Populated only when source =
+    // 'processor_sync'. Partial unique on (business_id, source,
+    // external_ref) enforces idempotency — see migration 0013.
+    externalRef: text("external_ref"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
