@@ -472,7 +472,11 @@
         "Oct",
         "Nov",
         "Dec"
-      ]
+      ],
+      "readiness": {
+        "title": "{count} owner gate(s) still blocking live traffic",
+        "hint": "This panel hides automatically once every gate closes."
+      }
     },
     "onboarding": {
       "metaTitle": "Onboarding · AccounTech",

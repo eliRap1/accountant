@@ -18,6 +18,7 @@ import { getMonthlyProfitTrend } from "@/lib/aggregations/monthlyProfitTrend";
 import { runFullTaxEngine } from "@/lib/tax/il/runEngineForUser";
 import { getCurrentVatWindow, daysBetween } from "@/lib/scheduler/businessQuotedRevenueWindow";
 import MorningBriefCardServer from "@/components/app/dashboard/MorningBriefCard.server";
+import ReadinessBanner from "@/components/app/dashboard/ReadinessBanner";
 
 export async function generateMetadata({
   params,
@@ -96,6 +97,9 @@ export default async function DashboardPage({
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+      {/* Owner-side production blockers (domain / Turnstile / Stripe /
+          CPA / Resend). Hidden automatically once every check passes. */}
+      <ReadinessBanner />
       {/* Morning Tax Brief — Product council pick (docs/council/
           2026-05-16-product-review.md §7). Renders above the KPI grid so
           the user sees "what to do today" before "how am I doing overall". */}
