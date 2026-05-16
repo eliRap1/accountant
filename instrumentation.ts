@@ -22,7 +22,12 @@ export async function register() {
         await runStartupSelfTest();
         console.info("[selfTest] passed");
       } catch (err) {
-        console.error("[selfTest] FAILED — refusing to start:", err);
+        // Put the actionable cause first so the Vercel log-row preview
+        // (truncated at ~30 chars) names the failing check instead of
+        // showing "[selfTest] FAILED — refusin...".
+        const cause = err instanceof Error ? err.message : String(err);
+        console.error(`[selfTest] ${cause}`);
+        console.error("[selfTest] full error:", err);
         // Re-throw so Next surfaces it as a startup error rather than a
         // silent half-broken server.
         throw err;
