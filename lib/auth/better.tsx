@@ -15,12 +15,18 @@ import {
 const turnstileSecret = env().TURNSTILE_SECRET_KEY;
 const isProduction = env().NODE_ENV === "production";
 
+// Next.js sets NEXT_PHASE=phase-production-build during build's page-data
+// collection. Module-level imports run there even though no real request
+// is served — throwing during build kills the deploy chain. Skip the
+// guard during build; selfTest.ts re-enforces it at runtime boot.
+const isNextBuildPhase = process.env["NEXT_PHASE"] === "phase-production-build";
+
 // Council C-5: in production, Turnstile MUST be configured. selfTest.ts
 // already enforces this at boot, but if a future contributor wires a
 // route past instrumentation.ts (e.g. an Edge route) the captcha plugin
 // would silently disappear. Defense in depth: refuse to construct the
 // auth handler at module-load when prod env is missing the secret.
-if (isProduction && !turnstileSecret) {
+if (isProduction && !isNextBuildPhase && !turnstileSecret) {
   throw new Error(
     "Turnstile secret missing in production — refusing to construct Better Auth handler.",
   );
