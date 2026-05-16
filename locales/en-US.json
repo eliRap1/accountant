@@ -1464,6 +1464,37 @@
         "alreadyConnected": "Already connected — disconnect first",
         "syncFailed": "Sync failed"
       }
+    },
+    "settings": {
+      "pageTitle": "Settings",
+      "pageSubtitle": "Manage account, security, billing and business profile.",
+      "profile": {
+        "editHint": "Edit name & email from /billing → manage account."
+      },
+      "businesses": {
+        "title": "Businesses",
+        "desc": "Profile, VAT status, bookkeeping method."
+      },
+      "billing": {
+        "title": "Billing & plan",
+        "desc": "Active plan, payment method, invoices."
+      },
+      "twoFactor": {
+        "title": "Two-factor auth",
+        "desc": "Enable / disable TOTP."
+      },
+      "passkeys": {
+        "title": "Passkeys",
+        "desc": "Hardware keys and passkeys."
+      },
+      "recoveryCodes": {
+        "title": "Recovery codes",
+        "desc": "Generate emergency sign-in codes."
+      },
+      "locale": {
+        "title": "Interface language",
+        "desc": "Change language from the switcher in the header."
+      }
     }
   },
   "email": {
