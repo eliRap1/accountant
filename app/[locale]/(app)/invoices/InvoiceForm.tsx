@@ -20,6 +20,9 @@ import InvoiceTypeRadio, {
   type InvoiceType,
 } from "@/components/app/invoices/InvoiceTypeRadio";
 import AllocationBanner from "@/components/app/invoices/AllocationBanner";
+import StepUpModal, {
+  type StepUpEnvelope,
+} from "@/components/app/StepUpModal";
 import { createInvoice, updateDraftInvoice } from "./actions";
 
 export type BusinessOption = {
@@ -140,6 +143,8 @@ export default function InvoiceForm({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [stepUp, setStepUp] = useState<StepUpEnvelope | null>(null);
+  const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
 
   const defaultBusinessId =
     initial?.businessId ??
@@ -254,11 +259,45 @@ export default function InvoiceForm({
     if (allocationNumber) fd.set("allocationNumber", allocationNumber);
     fd.set("linesJson", linesJson);
 
+    setPendingFormData(fd);
     startTransition(async () => {
       const result =
         mode === "new"
           ? await createInvoice(fd)
           : await updateDraftInvoice(fd);
+      if (result && "stepUpRequired" in result) {
+        setStepUp(result.stepUpRequired);
+        return;
+      }
+      if (result && "error" in result) {
+        setError(translateError(result.error, tCommon, t));
+        return;
+      }
+      if (result && "ok" in result) {
+        router.push(`/invoices/${result.id}`);
+        router.refresh();
+      }
+    });
+  }
+
+  // After step-up grant succeeds, re-run the original submission with
+  // the captured FormData (the action's payload hash binding is
+  // unchanged on retry — same canonical fields → same hash → grant
+  // applies).
+  function onStepUpGranted() {
+    setStepUp(null);
+    if (!pendingFormData) return;
+    const fd = pendingFormData;
+    startTransition(async () => {
+      const result =
+        mode === "new"
+          ? await createInvoice(fd)
+          : await updateDraftInvoice(fd);
+      if (result && "stepUpRequired" in result) {
+        // Shouldn't happen — grant just landed. Surface as generic.
+        setError(translateError("app.errors.stepUpRequired", tCommon, t));
+        return;
+      }
       if (result && "error" in result) {
         setError(translateError(result.error, tCommon, t));
         return;
@@ -564,6 +603,11 @@ export default function InvoiceForm({
               : t("submitUpdate")}
         </motion.button>
       </form>
+      <StepUpModal
+        envelope={stepUp}
+        onClose={() => setStepUp(null)}
+        onGranted={onStepUpGranted}
+      />
     </motion.section>
   );
 }
