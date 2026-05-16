@@ -171,6 +171,31 @@ export function buildGetMakdamotStatus(ctx: ToolContext) {
 }
 
 /**
+ * `getSpendingByCategory(windowDays)` — surfaces the dashboard's
+ * spending-by-category donut data to the model so it can answer "what
+ * did I spend on X this month" questions.
+ */
+export function buildGetSpendingByCategory(ctx: ToolContext) {
+  return tool({
+    description:
+      "Group the user's expense transactions by chart-of-accounts category over a rolling window (default 30 days, max 365). Returns top 12 categories with totals in major ILS units.",
+    inputSchema: z.object({
+      windowDays: z.number().int().min(7).max(365).default(30),
+    }),
+    execute: async ({ windowDays }) => {
+      const { getSpendingByCategory } = await import(
+        "@/lib/aggregations/spendingByCategory"
+      );
+      const result = await getSpendingByCategory(ctx.userId, {
+        windowDays,
+        ...(ctx.now ? { now: ctx.now } : {}),
+      });
+      return jsonifyBigints(result);
+    },
+  });
+}
+
+/**
  * Aggregate factory — returns a `ToolSet` (record of tools) keyed by
  * the names the model invokes. Pass directly to `generateText`/
  * `streamText` as the `tools` option.
@@ -182,6 +207,7 @@ export function buildAdvisorTools(ctx: ToolContext) {
     getOverdueInvoices: buildGetOverdueInvoices(ctx),
     getVatPayableThisPeriod: buildGetVatPayableThisPeriod(ctx),
     getMakdamotStatus: buildGetMakdamotStatus(ctx),
+    getSpendingByCategory: buildGetSpendingByCategory(ctx),
   } as const;
 }
 
