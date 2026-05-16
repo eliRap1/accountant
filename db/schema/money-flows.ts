@@ -118,6 +118,17 @@ export const receipts = pgTable(
     parsedVatMinor: bigint("parsed_vat_minor", { mode: "bigint" }),
     parsedDate: date("parsed_date"),
     parsedVendorCiphertext: text("parsed_vendor_ciphertext"),
+    // DEK rows used at encrypt time, so decrypt no longer depends on
+    // `getActiveDek(purpose)` (which silently breaks across rotations).
+    // Nullable for backfill compatibility.
+    parsedVendorDekId: uuid("parsed_vendor_dek_id").references(
+      () => dataEncryptionKeys.id,
+      { onDelete: "restrict" },
+    ),
+    ocrTextDekId: uuid("ocr_text_dek_id").references(
+      () => dataEncryptionKeys.id,
+      { onDelete: "restrict" },
+    ),
     categoryCode: text("category_code"),
     businessUsePct: numeric("business_use_pct", { precision: 5, scale: 2 })
       .notNull()

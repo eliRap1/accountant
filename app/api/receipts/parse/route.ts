@@ -135,7 +135,9 @@ export async function POST(request: Request): Promise<Response> {
                 parsed_vat_minor = ${ocr.vat_minor === null ? null : ocr.vat_minor.toString()}::bigint,
                 parsed_date = ${ocr.date}::date,
                 parsed_vendor_ciphertext = ${vendorEnc.ciphertext},
+                parsed_vendor_dek_id = ${vendorEnc.dekId}::uuid,
                 ocr_text_ciphertext = ${ocrTextEnc.ciphertext},
+                ocr_text_dek_id = ${ocrTextEnc.dekId}::uuid,
                 updated_at = NOW()
           WHERE id = ${row.id}::uuid`,
     );

@@ -19,7 +19,9 @@ type ReceiptHead = {
   parsedVatMinor: string | null;
   parsedDate: string | null;
   parsedVendorCiphertext: string | null;
+  parsedVendorDekId: string | null;
   ocrTextCiphertext: string | null;
+  ocrTextDekId: string | null;
   categoryCode: string | null;
   businessUsePct: string;
   fileBlobUrl: string | null;
@@ -38,38 +40,23 @@ function minorToMajorString(minor: string | null): string {
 
 async function decryptIfPresent(
   ciphertext: string | null,
-  businessId: string,
+  dekId: string | null,
   rowId: string,
   column: "parsed_vendor_ciphertext" | "ocr_text_ciphertext",
 ): Promise<string | null> {
-  if (!ciphertext) return null;
+  if (!ciphertext || !dekId) return null;
   try {
-    // The DEK id is recovered from the v1:iv:tag:ct envelope encoded
-    // inside the column? No — encryptStringWithDek embeds the dekId in
-    // the `data_encryption_keys` row, not in the wire format. The
-    // wire format only carries iv:tag:ct under the purpose-bound DEK.
-    // We resolve via the active DEK for that purpose (Plan v4 contract:
-    // each receipt encrypts with the active per-purpose DEK at write
-    // time; rotation creates a new DEK row, so reads always use the
-    // dekId persisted in *_key_id columns OR re-resolve via purpose).
-    //
-    // For receipt vendor + ocr text columns we currently lack a
-    // dedicated *_key_id (the schema only has file_key_id for the
-    // blob). So we re-resolve through the per-purpose lookup — which
-    // is identical to encryptStringWithDek's read path semantics.
-    const { getActiveDek } = await import("@/lib/security/dek");
-    const purpose =
-      column === "parsed_vendor_ciphertext"
-        ? `business:${businessId}:receipt_vendor`
-        : `business:${businessId}:receipt_ocr_text`;
-    const active = await getActiveDek(purpose);
-    if (!active) return null;
+    // Use the DEK row that was active when the row was written
+    // (persisted in `parsed_vendor_dek_id` / `ocr_text_dek_id` since
+    // migration 0014). Falling back to `getActiveDek(purpose)` would
+    // silently fail to decrypt after any rotation.
     return await decryptStringWithDek({
-      dekId: active.dekId,
+      dekId,
       ciphertext,
       aad: { table: "receipts", column, rowId },
     });
-  } catch {
+  } catch (err) {
+    console.warn("[receipts] decrypt failed", { rowId, column, err });
     return null;
   }
 }
@@ -100,7 +87,9 @@ export default async function ReceiptDetailPage(props: Props) {
                  r.parsed_vat_minor::text AS "parsedVatMinor",
                  r.parsed_date::text AS "parsedDate",
                  r.parsed_vendor_ciphertext AS "parsedVendorCiphertext",
+                 r.parsed_vendor_dek_id::text AS "parsedVendorDekId",
                  r.ocr_text_ciphertext AS "ocrTextCiphertext",
+                 r.ocr_text_dek_id::text AS "ocrTextDekId",
                  r.category_code AS "categoryCode",
                  r.business_use_pct::text AS "businessUsePct",
                  r.file_blob_url AS "fileBlobUrl",
@@ -118,13 +107,13 @@ export default async function ReceiptDetailPage(props: Props) {
 
   const vendor = await decryptIfPresent(
     head.parsedVendorCiphertext,
-    head.businessId,
+    head.parsedVendorDekId,
     head.id,
     "parsed_vendor_ciphertext",
   );
   const ocrText = await decryptIfPresent(
     head.ocrTextCiphertext,
-    head.businessId,
+    head.ocrTextDekId,
     head.id,
     "ocr_text_ciphertext",
   );
