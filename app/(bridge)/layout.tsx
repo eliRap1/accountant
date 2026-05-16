@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Heebo, Manrope } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 
 // This is a *second* root layout used only for paths outside the
 // `[locale]` segment — currently just `/post-auth`, which is a synchronous
