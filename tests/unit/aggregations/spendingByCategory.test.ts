@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 type Row = Record<string, unknown>;
 let queryResponses: Array<{ match: RegExp; rows: Row[] }> = [];
@@ -42,7 +42,11 @@ const { getSpendingByCategory } = await import(
 );
 
 describe("getSpendingByCategory", () => {
-  it("groups expense totals by COA category code, sorts descending, clamps to top 12", async () => {
+  beforeEach(() => {
+    queryResponses = [];
+  });
+
+  it("maps DB rows to major-unit category totals and echoes windowDays", async () => {
     queryResponses = [
       {
         match: /FROM transactions/i,
@@ -70,5 +74,6 @@ describe("getSpendingByCategory", () => {
     const result = await getSpendingByCategory("user-1", { windowDays: 90 });
     expect(result.rows).toEqual([]);
     expect(result.totalMajor).toBe(0);
+    expect(result.windowDays).toBe(90);
   });
 });
