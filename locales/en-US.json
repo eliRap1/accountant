@@ -344,20 +344,29 @@
     "shell": {
       "nav": {
         "dashboard": "Dashboard",
-        "businesses": "Businesses",
-        "clients": "Clients",
-        "transactions": "Transactions",
-        "ledger": "Ledger",
         "invoices": "Invoices",
-        "receipts": "Receipts",
+        "receipts": "Receipts & expenses",
+        "transactions": "Transactions",
+        "clients": "Clients",
+        "tax": "Tax",
         "filings": "Filings",
         "audit": "Audit pack",
+        "processorSync": "Processor sync",
+        "bankImports": "Bank imports",
+        "ledger": "Ledger",
         "settings": "Settings"
       },
       "user": {
         "signOut": "Sign out",
         "settings": "Settings",
         "account": "Account"
+      },
+      "businessSwitcher": {
+        "heading": "Your businesses",
+        "empty": "No business",
+        "emptyAria": "No business yet",
+        "manage": "Manage businesses",
+        "kindEngaged": "Engagement"
       }
     },
     "dashboard": {
@@ -368,6 +377,44 @@
         "title": "No data yet",
         "desc": "Add your first transaction or invoice to see estimates here.",
         "cta": "Add first transaction"
+      },
+      "tiles": {
+        "vatDue": {
+          "label": "VAT due this period",
+          "daysLeft": "{days} days until filing · due {due}",
+          "daysOverdue": "Overdue by {days} days · was due {due}"
+        },
+        "cashOnHand": {
+          "label": "Cash on hand",
+          "accountCount": "Across {count} accounts"
+        },
+        "overdueInvoices": {
+          "label": "Overdue invoices",
+          "hasOverdue": "Clients past due",
+          "allClear": "No overdue invoices",
+          "cta": "Review"
+        },
+        "uncategorisedReceipts": {
+          "label": "Uncategorised receipts",
+          "pending": "Waiting for review",
+          "allCategorised": "All receipts categorised",
+          "cta": "Categorise"
+        },
+        "makdamot": {
+          "label": "Advance tax (מקדמות)",
+          "paid": "Paid",
+          "due": "Due",
+          "installments": "{count} installments",
+          "balanceOwed": "{amount} still owed",
+          "upToDate": "Up to date",
+          "cta": "Open advances",
+          "notAvailable": "No advance-tax history yet",
+          "notAvailableHint": "Once you log advance payments, the running balance shows up here."
+        },
+        "monthlyProfitTrend": {
+          "label": "Profit trend",
+          "window": "Last 6 months"
+        }
       },
       "chart": {
         "eyebrow": "Overview",
@@ -387,9 +434,9 @@
     },
     "onboarding": {
       "metaTitle": "Onboarding · AccounTech",
-      "title": "Welcome to AccounTech",
-      "subtitle": "A few details about your business — we'll set things up for עוסק פטור / מורשה / ח.פ.",
-      "step1": "Language",
+      "title": "Tell us about your business",
+      "subtitle": "Four details and you're in — we apply the right VAT and bookkeeping defaults automatically.",
+      "step1": "Account",
       "step2": "Business profile",
       "step3": "Done",
       "business": {
@@ -398,25 +445,14 @@
         "legalNamePh": "Registered business name",
         "vatId": "ע.מ. / ח.פ.",
         "vatIdPh": "9 digits",
-        "entityType": "Entity type",
-        "entityType.patur": "Osek Patur (exempt dealer)",
-        "entityType.morshe": "Osek Morshe (licensed dealer)",
-        "entityType.hevra_baam": "Limited company (ח.פ.)",
-        "entityType.amuta": "Nonprofit (amuta)",
-        "entityType.shutfut": "Partnership",
-        "vatStatus": "VAT status",
-        "vatStatus.liable": "Liable for VAT",
-        "vatStatus.osek_patur": "Osek Patur",
-        "vatStatus.osek_morshe": "Osek Morshe",
-        "vatStatus.exporter": "Exporter",
-        "vatStatus.nonprofit": "Nonprofit",
-        "bookkeeping": "Bookkeeping method",
-        "bookkeeping.single_entry": "Single-entry",
-        "bookkeeping.double_entry": "Double-entry",
-        "address": "Address",
-        "addressStreet": "Street and number",
+        "entityType": "Business type",
+        "entityType.patur": "Osek Patur",
+        "entityType.paturHint": "Exempt dealer · single-entry",
+        "entityType.morshe": "Osek Morshe",
+        "entityType.morsheHint": "Licensed dealer · single-entry",
+        "entityType.hevra_baam": "Limited company",
+        "entityType.hevra_baamHint": "ח.פ. · double-entry",
         "addressCity": "City",
-        "addressPostalCode": "Postal code",
         "submit": "Continue",
         "errors.vatIdInvalid": "Invalid VAT/business ID",
         "errors.required": "Required field"

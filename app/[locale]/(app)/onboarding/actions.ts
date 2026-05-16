@@ -6,6 +6,7 @@ import { z } from "zod";
 import { businesses, businessVatStatusHistory } from "@/db/schema/businesses";
 import { withUser } from "@/lib/db/withUser";
 import { requireCurrentUser } from "@/lib/auth/serverSession";
+import { defaultsFor } from "@/lib/onboarding/defaults";
 
 // Server Action result contract. `error` is a single human-readable
 // message; the form layer maps zod errors to translated copy. We don't
@@ -15,23 +16,11 @@ export type CreateBusinessResult =
   | { ok: true; businessId: string }
   | { ok: false; error: string };
 
-const entityTypeValues = [
-  "patur",
-  "morshe",
-  "hevra_baam",
-  "amuta",
-  "shutfut",
-] as const;
-
-const vatStatusValues = [
-  "liable",
-  "osek_patur",
-  "osek_morshe",
-  "exporter",
-  "nonprofit",
-] as const;
-
-const bookkeepingValues = ["single_entry", "double_entry"] as const;
+// Council Q5: drop the picker-driven vat_status + bookkeeping_method;
+// the user only chooses entity_type (patur / morshe / hevra_baam). We
+// still accept the legacy values from settings later, but the
+// onboarding form only sends these three.
+const entityTypeValues = ["patur", "morshe", "hevra_baam"] as const;
 
 const schema = z.object({
   legalName: z.string().trim().min(1, "legalName"),
@@ -45,12 +34,7 @@ const schema = z.object({
     .max(9, "vatId")
     .regex(/^\d+$/, "vatId"),
   entityType: z.enum(entityTypeValues),
-  vatStatus: z.enum(vatStatusValues),
-  bookkeepingMethod: z.enum(bookkeepingValues),
-  addressStreet: z.string().trim().optional().default(""),
   addressCity: z.string().trim().optional().default(""),
-  addressPostalCode: z.string().trim().optional().default(""),
-  taxYearEndMonth: z.coerce.number().int().min(1).max(12).default(12),
 });
 
 export async function createBusinessAction(
@@ -62,12 +46,7 @@ export async function createBusinessAction(
     legalName: formData.get("legalName"),
     vatId: formData.get("vatId"),
     entityType: formData.get("entityType"),
-    vatStatus: formData.get("vatStatus"),
-    bookkeepingMethod: formData.get("bookkeepingMethod"),
-    addressStreet: formData.get("addressStreet") ?? undefined,
     addressCity: formData.get("addressCity") ?? undefined,
-    addressPostalCode: formData.get("addressPostalCode") ?? undefined,
-    taxYearEndMonth: formData.get("taxYearEndMonth") ?? 12,
   });
 
   if (!parsed.success) {
@@ -78,6 +57,7 @@ export async function createBusinessAction(
     };
   }
   const data = parsed.data;
+  const derived = defaultsFor(data.entityType);
 
   try {
     const businessId = await withUser(user.appUserId, async (tx) => {
@@ -88,18 +68,14 @@ export async function createBusinessAction(
           legalName: data.legalName,
           vatId: data.vatId,
           entityType: data.entityType,
-          vatStatus: data.vatStatus,
-          bookkeepingMethod: data.bookkeepingMethod,
-          taxYearEndMonth: data.taxYearEndMonth,
-          // Optional address fields: drop empty strings so the column
-          // stays NULL rather than blank text.
-          ...(data.addressStreet
-            ? { addressStreet: data.addressStreet }
-            : {}),
+          // Derived from entity_type per council Q5 — user never picks
+          // these in the onboarding form.
+          vatStatus: derived.vatStatus,
+          bookkeepingMethod: derived.bookkeepingMethod,
+          taxYearEndMonth: derived.taxYearEndMonth,
+          defaultCurrency: derived.defaultCurrency,
+          addressCountry: derived.addressCountry,
           ...(data.addressCity ? { addressCity: data.addressCity } : {}),
-          ...(data.addressPostalCode
-            ? { addressPostalCode: data.addressPostalCode }
-            : {}),
         })
         .returning({ id: businesses.id });
 
@@ -114,7 +90,7 @@ export async function createBusinessAction(
       await tx.insert(businessVatStatusHistory).values({
         businessId: row.id,
         entityType: data.entityType,
-        vatStatus: data.vatStatus,
+        vatStatus: derived.vatStatus,
         // Use a SQL CURRENT_DATE expression so the value is generated
         // server-side at COMMIT — keeps the snapshot consistent with
         // the business row's createdAt without smuggling client time.

@@ -344,20 +344,29 @@
     "shell": {
       "nav": {
         "dashboard": "דשבורד",
-        "businesses": "עסקים",
-        "clients": "לקוחות",
-        "transactions": "תנועות",
-        "ledger": "ספר חשבונות",
         "invoices": "חשבוניות",
-        "receipts": "קבלות",
+        "receipts": "קבלות והוצאות",
+        "transactions": "תנועות",
+        "clients": "לקוחות",
+        "tax": "מסים",
         "filings": "דיווחים",
         "audit": "תיק ביקורת",
+        "processorSync": "סולקים",
+        "bankImports": "ייבוא בנק",
+        "ledger": "ספר חשבונות",
         "settings": "הגדרות"
       },
       "user": {
         "signOut": "התנתקות",
         "settings": "הגדרות",
         "account": "החשבון שלי"
+      },
+      "businessSwitcher": {
+        "heading": "העסקים שלך",
+        "empty": "ללא עסק",
+        "emptyAria": "אין עסק עדיין",
+        "manage": "ניהול עסקים",
+        "kindEngaged": "ייצוג"
       }
     },
     "dashboard": {
@@ -368,6 +377,44 @@
         "title": "עוד אין נתונים",
         "desc": "הוסיפו חשבונית או תנועה ראשונה כדי לראות אומדנים.",
         "cta": "הוספת תנועה ראשונה"
+      },
+      "tiles": {
+        "vatDue": {
+          "label": "מע״מ צפוי לתקופה",
+          "daysLeft": "{days} ימים עד הגשה · עד {due}",
+          "daysOverdue": "באיחור של {days} ימים · היה צריך עד {due}"
+        },
+        "cashOnHand": {
+          "label": "מזומן זמין",
+          "accountCount": "פרוש על {count} חשבונות"
+        },
+        "overdueInvoices": {
+          "label": "חשבוניות פתוחות",
+          "hasOverdue": "לקוחות בפיגור",
+          "allClear": "אין חשבוניות פתוחות",
+          "cta": "בדיקה"
+        },
+        "uncategorisedReceipts": {
+          "label": "קבלות לסיווג",
+          "pending": "ממתינות לאישור",
+          "allCategorised": "כל הקבלות מסווגות",
+          "cta": "סיווג"
+        },
+        "makdamot": {
+          "label": "מקדמות מס",
+          "paid": "שולם",
+          "due": "לחיוב",
+          "installments": "{count} תשלומים",
+          "balanceOwed": "{amount} עוד לתשלום",
+          "upToDate": "עדכני",
+          "cta": "פתיחת מקדמות",
+          "notAvailable": "אין היסטוריית מקדמות",
+          "notAvailableHint": "ברגע שתתעדו תשלומי מקדמות, היתרה תופיע כאן."
+        },
+        "monthlyProfitTrend": {
+          "label": "מגמת רווח",
+          "window": "6 חודשים אחרונים"
+        }
       },
       "chart": {
         "eyebrow": "סקירה",
@@ -387,9 +434,9 @@
     },
     "onboarding": {
       "metaTitle": "קליטה · AccounTech",
-      "title": "ברוכים הבאים ל-AccounTech",
-      "subtitle": "כמה פרטים על העסק שלכם — נכין הכל לעוסק פטור / מורשה / ח.פ.",
-      "step1": "שפה",
+      "title": "ספרו לנו על העסק",
+      "subtitle": "ארבעה פרטים ואתם בפנים — אנחנו מגדירים מע״מ והנהלת חשבונות אוטומטית.",
+      "step1": "חשבון",
       "step2": "פרטי עסק",
       "step3": "סיום",
       "business": {
@@ -398,25 +445,14 @@
         "legalNamePh": "שם העסק הרשום",
         "vatId": "ע.מ. / ח.פ.",
         "vatIdPh": "9 ספרות",
-        "entityType": "סוג ישות",
+        "entityType": "סוג העסק",
         "entityType.patur": "עוסק פטור",
+        "entityType.paturHint": "ללא מע״מ · חד-צידי",
         "entityType.morshe": "עוסק מורשה",
+        "entityType.morsheHint": "מע״מ רגיל · חד-צידי",
         "entityType.hevra_baam": "חברה בע״מ",
-        "entityType.amuta": "עמותה",
-        "entityType.shutfut": "שותפות",
-        "vatStatus": "סטטוס מע״מ",
-        "vatStatus.liable": "חייב במע״מ",
-        "vatStatus.osek_patur": "עוסק פטור",
-        "vatStatus.osek_morshe": "עוסק מורשה",
-        "vatStatus.exporter": "יצואן",
-        "vatStatus.nonprofit": "מלכ״ר",
-        "bookkeeping": "שיטת הנהלת חשבונות",
-        "bookkeeping.single_entry": "חד-צידי",
-        "bookkeeping.double_entry": "כפול-צידי",
-        "address": "כתובת",
-        "addressStreet": "רחוב ומספר",
+        "entityType.hevra_baamHint": "ח.פ. · דו-צידי",
         "addressCity": "עיר",
-        "addressPostalCode": "מיקוד",
         "submit": "המשך",
         "errors.vatIdInvalid": "מספר עוסק לא תקין",
         "errors.required": "שדה חובה"

@@ -2,42 +2,58 @@
 
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import {
-  Activity,
-  ArrowUpRight,
-  PieChart,
-  Plus,
-  TrendingUp,
-} from "lucide-react";
+import { ArrowUpRight, Plus } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import KpiCard from "@/components/app/KpiCard";
 import RevenueEbitdaChart, {
   type RevenueEbitdaPoint,
 } from "@/components/app/charts/RevenueEbitdaChart";
-import type { DashboardKpis } from "@/lib/aggregations/dashboardData";
+import VatDueCard from "@/components/app/dashboard/VatDueCard";
+import CashOnHandCard from "@/components/app/dashboard/CashOnHandCard";
+import OverdueInvoicesCard from "@/components/app/dashboard/OverdueInvoicesCard";
+import UncategorisedReceiptsCard from "@/components/app/dashboard/UncategorisedReceiptsCard";
+import MakdamotCard from "@/components/app/dashboard/MakdamotCard";
+import MonthlyProfitTrendChart from "@/components/app/dashboard/MonthlyProfitTrendChart";
+import type { CashOnHand } from "@/lib/aggregations/cashOnHand";
+import type { OverdueInvoices } from "@/lib/aggregations/overdueInvoices";
+import type { UncategorisedReceipts } from "@/lib/aggregations/uncategorisedReceipts";
+import type { AdvanceTaxStatus } from "@/lib/aggregations/advanceTaxStatus";
+import type { MonthlyProfitTrend } from "@/lib/aggregations/monthlyProfitTrend";
 
-type Props = {
-  chartData: RevenueEbitdaPoint[];
-  kpis: DashboardKpis;
-  isEmpty: boolean;
+type VatDue = {
+  amountMajor: number;
+  daysUntilDue: number;
+  dueDateIso: string;
+  periodLabel: string;
 };
 
-function formatCurrencyShort(value: number): string {
-  // Compact ILS formatting for the KPI tiles. Uses Intl with sensible
-  // fallback when running outside the supported runtime.
-  try {
-    return new Intl.NumberFormat("en-IL", {
-      notation: "compact",
-      maximumFractionDigits: 1,
-    }).format(value);
-  } catch {
-    return value.toLocaleString();
-  }
-}
+type Props = {
+  /** 12-month revenue/profit series, for the secondary chart. */
+  chartData: RevenueEbitdaPoint[];
+  isEmpty: boolean;
+  locale: string;
+  /** Pre-translated short month names. */
+  monthLabels: string[];
+  vatDue: VatDue;
+  cashOnHand: CashOnHand;
+  overdueInvoices: OverdueInvoices;
+  uncategorisedReceipts: UncategorisedReceipts;
+  advanceTaxStatus: AdvanceTaxStatus;
+  profitTrend: MonthlyProfitTrend;
+};
 
-export default function DashboardView({ chartData, kpis, isEmpty }: Props) {
+export default function DashboardView({
+  chartData,
+  isEmpty,
+  locale,
+  monthLabels,
+  vatDue,
+  cashOnHand,
+  overdueInvoices,
+  uncategorisedReceipts,
+  advanceTaxStatus,
+  profitTrend,
+}: Props) {
   const t = useTranslations("app.dashboard");
-  const tChart = useTranslations("app.dashboard.chart");
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
@@ -48,35 +64,54 @@ export default function DashboardView({ chartData, kpis, isEmpty }: Props) {
         <p className="text-sm text-slate-400">{t("subtitle")}</p>
       </header>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <KpiCard
-          icon={TrendingUp}
-          label={tChart("kpiArr")}
-          value={`₪${formatCurrencyShort(kpis.arrEstimate)}`}
-          delta={tChart("kpiYoyDelta")}
-          subtle
+      {/* The 6 canonical CPA-relevant tiles. Layout: 1 / 2-3 / 4-5 stacked
+          on mobile, 2-up on sm, 3-up on lg. The profit-trend chart spans
+          the full row width via its own col-span hint. */}
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <VatDueCard
+          amountMajor={vatDue.amountMajor}
+          daysUntilDue={vatDue.daysUntilDue}
+          dueDateIso={vatDue.dueDateIso}
+          periodLabel={vatDue.periodLabel}
+          locale={locale}
         />
-        <KpiCard
-          icon={Activity}
-          label={tChart("kpiGm")}
-          value={`${kpis.grossMarginPct.toFixed(1)}%`}
-          subtle
+        <CashOnHandCard
+          totalMajor={cashOnHand.totalMajor}
+          accountCount={cashOnHand.accountCount}
+          locale={locale}
         />
-        <KpiCard
-          icon={PieChart}
-          label={tChart("kpiEbitda")}
-          value={`₪${formatCurrencyShort(kpis.ebitdaSum)}`}
-          subtle
+        <OverdueInvoicesCard
+          count={overdueInvoices.count}
+          totalMajor={overdueInvoices.totalMajor}
+          locale={locale}
         />
-        <KpiCard
-          icon={TrendingUp}
-          label={tChart("kpiYoy")}
-          value={`${kpis.yoyPct.toFixed(0)}%`}
-          delta={tChart("kpiYoyDelta")}
-          subtle
+        <UncategorisedReceiptsCard
+          count={uncategorisedReceipts.count}
+          totalMajor={uncategorisedReceipts.totalMajor}
+          locale={locale}
+        />
+        {advanceTaxStatus.available ? (
+          <MakdamotCard
+            available
+            dueMajor={advanceTaxStatus.dueMajor}
+            paidMajor={advanceTaxStatus.paidMajor}
+            balanceMajor={advanceTaxStatus.balanceMajor}
+            installmentCount={advanceTaxStatus.installmentCount}
+            locale={locale}
+          />
+        ) : (
+          <MakdamotCard available={false} locale={locale} />
+        )}
+        <MonthlyProfitTrendChart
+          data={profitTrend.rows}
+          monthLabels={monthLabels}
+          locale={locale}
         />
       </div>
 
+      {/* Secondary 12-month bar chart — kept as Product council § 3
+          recommended ("keep the revenue-vs-profit bar chart as a
+          secondary section, NOT the hero"). */}
       <RevenueEbitdaChart data={chartData} />
 
       {isEmpty && (

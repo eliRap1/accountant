@@ -10,6 +10,13 @@ import {
   getDashboardData,
   labelForMonthIdx,
 } from "@/lib/aggregations/dashboardData";
+import { getCashOnHand } from "@/lib/aggregations/cashOnHand";
+import { getOverdueInvoices } from "@/lib/aggregations/overdueInvoices";
+import { getUncategorisedReceipts } from "@/lib/aggregations/uncategorisedReceipts";
+import { getAdvanceTaxStatus } from "@/lib/aggregations/advanceTaxStatus";
+import { getMonthlyProfitTrend } from "@/lib/aggregations/monthlyProfitTrend";
+import { runFullTaxEngine } from "@/lib/tax/il/runEngineForUser";
+import { getCurrentVatWindow, daysBetween } from "@/lib/scheduler/businessQuotedRevenueWindow";
 import MorningBriefCardServer from "@/components/app/dashboard/MorningBriefCard.server";
 
 export async function generateMetadata({
@@ -43,7 +50,32 @@ export default async function DashboardPage({
     redirect(`/${locale}/onboarding` as Route);
   }
 
-  const data = await getDashboardData(user.appUserId);
+  // Run every tile aggregation in parallel so the page lands in a
+  // single round-trip worth of network time.
+  const now = new Date();
+  const [
+    data,
+    cashOnHand,
+    overdueInvoices,
+    uncategorisedReceipts,
+    advanceTaxStatus,
+    profitTrend,
+    estimate,
+  ] = await Promise.all([
+    getDashboardData(user.appUserId),
+    getCashOnHand(user.appUserId),
+    getOverdueInvoices(user.appUserId),
+    getUncategorisedReceipts(user.appUserId),
+    getAdvanceTaxStatus(user.appUserId),
+    getMonthlyProfitTrend(user.appUserId),
+    runFullTaxEngine(user.appUserId, { now }),
+  ]);
+
+  const vatWindow = getCurrentVatWindow(now);
+  const dueIso = vatWindow.dueDate.toISOString().slice(0, 10);
+  const daysUntilDue = daysBetween(now, vatWindow.dueDate);
+  const periodLabel = locale === "he-IL" ? vatWindow.labelHe : vatWindow.labelEn;
+  const vatPayableMajor = Number(estimate.vatPayableThisPeriodMinor) / 100;
 
   // Pre-translate the month labels on the server so the chart can
   // ship as a pure presentational component.
@@ -70,8 +102,20 @@ export default async function DashboardPage({
       <MorningBriefCardServer locale={locale} />
       <DashboardView
         chartData={chartData}
-        kpis={data.kpis}
         isEmpty={data.isEmpty}
+        locale={locale}
+        monthLabels={months}
+        vatDue={{
+          amountMajor: vatPayableMajor,
+          daysUntilDue,
+          dueDateIso: dueIso,
+          periodLabel,
+        }}
+        cashOnHand={cashOnHand}
+        overdueInvoices={overdueInvoices}
+        uncategorisedReceipts={uncategorisedReceipts}
+        advanceTaxStatus={advanceTaxStatus}
+        profitTrend={profitTrend}
       />
     </div>
   );

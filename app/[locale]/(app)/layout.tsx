@@ -8,6 +8,7 @@ import EstimatesDisclaimerBanner from "@/components/app/legal/EstimatesDisclaime
 import { routing } from "@/i18n/routing";
 import { currentUser } from "@/lib/auth/serverSession";
 import { withServiceRole } from "@/lib/db/withServiceRole";
+import { getUserBusinesses } from "@/lib/aggregations/userBusinesses";
 
 // Authenticated-only route group. The (auth) tree is reachable
 // anonymously; everything under (app) requires a Better Auth session.
@@ -41,12 +42,39 @@ export default async function AppLayout({
     redirect(`/${locale}/sign-in` as Route);
   }
 
+  // Q6 (Architecture v5 council answers): when a user has 0 owned AND
+  // 0 engaged businesses, redirect at layout level to /onboarding.
+  // The only writable state is the onboarding form itself. Allow the
+  // onboarding route itself so the user can submit; the dashboard
+  // page double-checks via getOnboardingState.
+  const ctx = await getUserBusinesses(user.appUserId);
+  const hasAnyBusiness = ctx.all.length > 0;
+
   // CPA-council § 8 "killer feature": show the audit-package sidebar
   // item only to (a) any business owner (so the moment they have
   // bookkeeping data, the export-for-inspector flow is one click
   // away) OR (b) any plan with `audit.package_builder = true` —
   // currently Business and Accountant per scripts/db-seed.ts.
   const auditEnabled = await resolveAuditEnabled(user.appUserId);
+
+  // Product council § 4: "Ledger" sidebar entry only renders when the
+  // user has an active business using double-entry bookkeeping. עצמאי
+  // single-entry users should never see Ledger.
+  const ledgerEnabled = ctx.all.some(
+    (b) => b.bookkeepingMethod === "double_entry",
+  );
+
+  // Active business: for v1 the first owned (or engaged) one. Multi-
+  // business switching arrives once we wire a cookie/session stamp.
+  const activeBusinessId = ctx.all[0]?.id ?? null;
+
+  // Pass a serialisable subset to the client switcher. The shell
+  // doesn't need bookkeeping_method / vat_status downstream.
+  const switcherBusinesses = ctx.all.map((b) => ({
+    id: b.id,
+    legalName: b.legalName,
+    kind: b.kind,
+  }));
 
   return (
     <AppShell
@@ -55,10 +83,21 @@ export default async function AppLayout({
         name: user.name,
       }}
       auditEnabled={auditEnabled}
+      ledgerEnabled={ledgerEnabled}
+      businesses={switcherBusinesses}
+      activeBusinessId={activeBusinessId}
     >
-      <div className="mx-auto mb-4 w-full max-w-7xl">
-        <EstimatesDisclaimerBanner />
-      </div>
+      {!hasAnyBusiness ? (
+        // The /onboarding pages serve their own chrome and don't expect
+        // the dashboard disclaimer banner. The (app)/onboarding route
+        // tree handles redirect-from-here when needed; we keep the
+        // empty container so nested layouts still render.
+        <div className="mx-auto mb-4 w-full max-w-7xl" />
+      ) : (
+        <div className="mx-auto mb-4 w-full max-w-7xl">
+          <EstimatesDisclaimerBanner />
+        </div>
+      )}
       {children}
     </AppShell>
   );

@@ -3,15 +3,18 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import {
+  Banknote,
+  Calculator,
   ChevronDown,
+  CreditCard,
   FileArchive,
   FileText,
+  Inbox,
   LayoutDashboard,
   LogOut,
   Menu,
   Receipt,
   Settings,
-  ShieldCheck,
   Users,
   UserCircle,
   Wallet,
@@ -19,19 +22,28 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import BusinessSwitcher, {
+  type SwitcherBusiness,
+} from "@/components/app/BusinessSwitcher";
 import LanguageSwitcher from "@/components/site/ui/LanguageSwitcher";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { signOut } from "@/lib/auth/client";
 
 // Authenticated app chrome. Hosts every (app) route — sidebar nav,
-// header (locale switcher + user menu), and a fluid main panel.
+// header (locale switcher + business switcher + user menu), and a
+// fluid main panel.
 //
 // RTL is handled with logical properties (`start-`/`end-`, `inset-`)
 // so the sidebar attaches to the start side regardless of locale.
 //
-// Email is passed in by the server layout (rather than fetched in the
-// client) so the avatar initials render synchronously on first paint
-// — keeps the sign-out menu from popping in late.
+// Sidebar order — final IA after Product council § 4:
+//   Dashboard / Invoices / Receipts / Transactions / Clients / Tax /
+//   Filings / Audit (entitlement) / Processor-sync / Bank-imports /
+//   Ledger (only when bookkeepingMethod=double_entry) / Settings.
+//
+// "Businesses" is NOT in the sidebar — it moved to the header
+// BusinessSwitcher. The /businesses route remains reachable from
+// inside the switcher's "Manage" link.
 
 type UserShell = {
   email: string;
@@ -40,13 +52,16 @@ type UserShell = {
 
 type NavKey =
   | "dashboard"
-  | "businesses"
-  | "clients"
-  | "transactions"
-  | "ledger"
   | "invoices"
   | "receipts"
+  | "transactions"
+  | "clients"
+  | "tax"
+  | "filings"
   | "audit"
+  | "processorSync"
+  | "bankImports"
+  | "ledger"
   | "settings";
 
 type NavItem = {
@@ -55,20 +70,30 @@ type NavItem = {
   icon: typeof LayoutDashboard;
 };
 
-const BASE_NAV_ITEMS: NavItem[] = [
+// Ordered list — the final sidebar reads these in array order with
+// some entries gated off by props (audit, ledger).
+const NAV_ITEMS: NavItem[] = [
   { key: "dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { key: "businesses", href: "/businesses", icon: ShieldCheck },
-  { key: "clients", href: "/clients", icon: Users },
-  { key: "transactions", href: "/transactions", icon: WalletCards },
-  { key: "ledger", href: "/ledger", icon: Wallet },
   { key: "invoices", href: "/invoices", icon: FileText },
   { key: "receipts", href: "/receipts", icon: Receipt },
+  { key: "transactions", href: "/transactions", icon: WalletCards },
+  { key: "clients", href: "/clients", icon: Users },
+  { key: "tax", href: "/tax", icon: Calculator },
+  { key: "filings", href: "/filings", icon: FileArchive },
+  { key: "processorSync", href: "/processor-sync", icon: CreditCard },
+  { key: "bankImports", href: "/bank-imports", icon: Banknote },
 ];
 
 const AUDIT_NAV_ITEM: NavItem = {
   key: "audit",
   href: "/audit",
-  icon: FileArchive,
+  icon: Inbox,
+};
+
+const LEDGER_NAV_ITEM: NavItem = {
+  key: "ledger",
+  href: "/ledger",
+  icon: Wallet,
 };
 
 const SETTINGS_NAV_ITEM: NavItem = {
@@ -90,10 +115,21 @@ function initialsFor(email: string, name: string | null): string {
 export default function AppShell({
   user,
   auditEnabled = false,
+  ledgerEnabled = false,
+  businesses,
+  activeBusinessId,
   children,
 }: {
   user: UserShell;
   auditEnabled?: boolean;
+  /** Show the "Ledger" sidebar entry. Server-side gated on the active
+   *  business using double-entry bookkeeping. Defaults false. */
+  ledgerEnabled?: boolean;
+  /** Businesses the user can see — drives the header BusinessSwitcher.
+   *  Empty array = layout-level redirect is in flight (council Q6). */
+  businesses: SwitcherBusiness[];
+  /** Currently selected business — for v1 just the first owned one. */
+  activeBusinessId?: string | null;
   children: React.ReactNode;
 }) {
   const t = useTranslations("app.shell");
@@ -102,13 +138,20 @@ export default function AppShell({
   const pathname = usePathname();
   const router = useRouter();
 
-  // Audit-Package Builder is gated on (a) plan_entitlements
-  // `audit.package_builder = true` (Business + Accountant tiers)
-  // OR (b) the user owns any business — see (app)/layout.tsx for
-  // the resolution. The nav item slips in just before Settings.
-  const navItems = auditEnabled
-    ? [...BASE_NAV_ITEMS, AUDIT_NAV_ITEM, SETTINGS_NAV_ITEM]
-    : [...BASE_NAV_ITEMS, SETTINGS_NAV_ITEM];
+  // Build final nav array. Order: base list → optional audit (before
+  // processor-sync) → ledger (after bank-imports if double-entry) →
+  // settings (always last).
+  const navItems: NavItem[] = [];
+  for (const item of NAV_ITEMS) {
+    if (item.key === "processorSync" && auditEnabled) {
+      navItems.push(AUDIT_NAV_ITEM);
+    }
+    navItems.push(item);
+  }
+  if (ledgerEnabled) {
+    navItems.push(LEDGER_NAV_ITEM);
+  }
+  navItems.push(SETTINGS_NAV_ITEM);
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -168,9 +211,13 @@ export default function AppShell({
             {mobileOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
 
-          <div className="flex flex-1" aria-hidden />
+          <div className="flex flex-1 items-center" aria-hidden />
 
           <div className="flex items-center gap-2">
+            <BusinessSwitcher
+              businesses={businesses}
+              activeBusinessId={activeBusinessId ?? null}
+            />
             <LanguageSwitcher compact />
 
             <div ref={userMenuRef} className="relative">
