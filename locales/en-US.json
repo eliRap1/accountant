@@ -1509,6 +1509,19 @@
         "title": "Interface language",
         "desc": "Change language from the switcher in the header."
       }
+    },
+    "stepUp": {
+      "title": "Step-up verification",
+      "subtitle": "Sensitive action ({op}) — confirm before proceeding",
+      "passwordLabel": "Password",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "close": "Close",
+      "errors": {
+        "wrongFactor": "Wrong password",
+        "unknown": "Unexpected error",
+        "network": "Network error"
+      }
     }
   },
   "email": {
