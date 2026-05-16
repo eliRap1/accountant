@@ -167,10 +167,15 @@ export async function sendEmail(
     };
   }
 
+  // When EMAIL_FROM_OVERRIDE is on (sandbox sender, pre-DKIM), the
+  // domain in the default reply-to (`support@<host>`) isn't verified —
+  // Resend rejects the whole send with "Invalid reply_to field". Drop
+  // reply-to entirely in that mode unless the caller overrode it.
+  const overrideActive = Boolean(env().EMAIL_FROM_OVERRIDE);
   const replyTo =
     input.replyTo === false
       ? undefined
-      : (input.replyTo ?? defaultReplyTo());
+      : (input.replyTo ?? (overrideActive ? undefined : defaultReplyTo()));
 
   try {
     const client = getClient(resendApiKey);
