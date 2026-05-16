@@ -207,7 +207,18 @@ export const auth = betterAuth({
     // above + boot via selfTest). In dev/test we conditionally include
     // so contributors without a Turnstile account can run the stack.
     ...(turnstileSecret
-      ? [captcha({ provider: "cloudflare-turnstile", secretKey: turnstileSecret })]
+      ? [
+          captcha({
+            provider: "cloudflare-turnstile",
+            secretKey: turnstileSecret,
+            // Only gate sign-up. The default list also covers
+            // `/sign-in/email` + `/request-password-reset`, but those
+            // forms don't render the widget yet — gating them returns a
+            // blanket 400 on every login attempt. Re-add once the
+            // widget lives on sign-in / forgot-password too.
+            endpoints: ["/sign-up/email"],
+          }),
+        ]
       : isProduction && !isNextBuildPhase
         ? (() => {
             throw new Error(
