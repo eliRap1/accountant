@@ -186,7 +186,7 @@ export default async function TaxMakdamotPage({
             <p className="mt-2 text-sm text-slate-400">{t("historyEmpty")}</p>
           ) : (
             <table className="mt-3 w-full text-sm">
-              <thead className="text-left text-xs uppercase tracking-wider text-slate-500">
+              <thead className="text-start text-xs uppercase tracking-wider text-slate-500">
                 <tr>
                   <th className="pb-2">{t("col.period")}</th>
                   <th className="pb-2">{t("col.amount")}</th>

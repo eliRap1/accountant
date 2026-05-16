@@ -383,7 +383,8 @@
         "bankImports": "ייבוא בנק",
         "ledger": "ספר חשבונות",
         "settings": "הגדרות",
-        "back": "חזרה"
+        "back": "חזרה",
+        "toggle": "תפריט"
       },
       "user": {
         "signOut": "התנתקות",

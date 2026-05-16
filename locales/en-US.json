@@ -383,7 +383,8 @@
         "bankImports": "Bank imports",
         "ledger": "Ledger",
         "settings": "Settings",
-        "back": "Back"
+        "back": "Back",
+        "toggle": "Toggle navigation"
       },
       "user": {
         "signOut": "Sign out",

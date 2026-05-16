@@ -219,7 +219,7 @@ export default function AiChatPanel({
 
         <div
           ref={scrollRef}
-          className="flex max-h-[60vh] min-h-[260px] flex-col gap-3 overflow-y-auto pr-1"
+          className="flex max-h-[60vh] min-h-[260px] flex-col gap-3 overflow-y-auto pe-1"
         >
           {messages.length === 0 ? (
             <EmptyGreeting greeting={t("greeting")} />

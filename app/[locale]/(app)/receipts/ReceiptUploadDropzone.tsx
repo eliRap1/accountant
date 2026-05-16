@@ -145,7 +145,7 @@ export default function ReceiptUploadDropzone({
             <button
               type="button"
               onClick={() => setFile(null)}
-              className="ml-3 inline-flex items-center justify-center rounded-lg border border-white/10 px-2 py-1 text-xs text-slate-300 hover:border-red-400/40 hover:text-red-200"
+              className="ms-3 inline-flex items-center justify-center rounded-lg border border-white/10 px-2 py-1 text-xs text-slate-300 hover:border-red-400/40 hover:text-red-200"
               aria-label={t("upload.clear")}
               disabled={busy}
             >

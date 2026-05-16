@@ -429,10 +429,28 @@ export async function buildFiling(
           )
           RETURNING id`,
     )) as unknown as Array<{ id: string }>;
-    return rows[0]!.id;
+    const newId = rows[0]!.id;
+
+    // PCN874 stamps every invoice in the period with
+    // `pcn874_exported_at`. Re-running the generator for the same period
+    // is idempotent — only invoices that haven't been stamped yet get
+    // touched (so amendments can detect "already reported" invoices).
+    if (input.kind === "pcn874") {
+      await tx.execute(
+        sql`UPDATE invoices
+              SET pcn874_exported_at = now()
+              WHERE business_id = ${input.businessId}::uuid
+                AND issue_date >= ${input.periodStart}::date
+                AND issue_date <= ${input.periodEnd}::date
+                AND cancelled_at IS NULL
+                AND pcn874_exported_at IS NULL`,
+      );
+    }
+    return newId;
   });
 
   revalidatePath("/filings");
+  revalidatePath("/invoices");
   return { ok: true, id };
 }
 

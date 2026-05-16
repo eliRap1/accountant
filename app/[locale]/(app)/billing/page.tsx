@@ -60,15 +60,33 @@ export default async function BillingPage({
            ORDER BY sort ASC`,
     )) as unknown as PlanRow[];
 
+    // Prefer the most recent live subscription; fall back to the
+    // newest of any status if none are live (so cancelled history
+    // still surfaces somewhere). Without the status filter a fresh
+    // `incomplete` upgrade attempt out-ranks the still-running
+    // `active` row and the user sees a misleading status.
     const subRows = (await tx.execute(
       sql`SELECT plan_id, status, provider, current_period_end, cancel_at_period_end
             FROM subscriptions
            WHERE user_id = ${user.appUserId}::uuid
+             AND status IN ('trialing','active','past_due')
            ORDER BY created_at DESC
            LIMIT 1`,
     )) as unknown as SubRow[];
 
-    return { plans: planRows, current: subRows[0] ?? null };
+    let chosen = subRows[0] ?? null;
+    if (!chosen) {
+      const fallbackRows = (await tx.execute(
+        sql`SELECT plan_id, status, provider, current_period_end, cancel_at_period_end
+              FROM subscriptions
+             WHERE user_id = ${user.appUserId}::uuid
+             ORDER BY created_at DESC
+             LIMIT 1`,
+      )) as unknown as SubRow[];
+      chosen = fallbackRows[0] ?? null;
+    }
+
+    return { plans: planRows, current: chosen };
   });
 
   const currentPlanId: PlanId =

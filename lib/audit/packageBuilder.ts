@@ -355,11 +355,11 @@ export async function buildAuditPackage(
   //         bytes that mean nothing without the DEK row.
   const pathname = `audit-packages/${businessId}/${packageId}.bin`;
   const uploadResult = await blobPut(pathname, wireCiphertext, {
-    access: "public", // We rely on URL unguessability + the DEK; the
-    // ciphertext is mathematically opaque even if the URL leaks.
-    // ("private" access requires a separate read-token round-trip
-    // that complicates the integration test path; the wire format
-    // is the actual security boundary, not the blob ACL.)
+    access: "private", // Defense in depth on top of the DEK: even if
+    // the wire-format is mathematically opaque, public access leaked
+    // the URL to anyone who could enumerate audit_packages.file_blob_url.
+    // Private access requires the SDK token round-trip; we already do
+    // that on every download path (`blobGet({access:"private"})`).
     addRandomSuffix: true,
     contentType: "application/octet-stream",
     allowOverwrite: false,
@@ -415,7 +415,7 @@ export async function decryptAuditPackage(
 
   try {
     // Fetch the ciphertext blob. `get` returns a stream we must buffer.
-    const fetched = await blobGet(input.fileBlobUrl, { access: "public" });
+    const fetched = await blobGet(input.fileBlobUrl, { access: "private" });
     if (!fetched || fetched.statusCode !== 200 || !fetched.stream) {
       throw new AuditPackageNotFoundError(input.packageId);
     }

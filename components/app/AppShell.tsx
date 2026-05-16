@@ -209,7 +209,7 @@ export default function AppShell({
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
             className="rounded-lg p-2 text-slate-300 transition-colors hover:bg-white/5 lg:hidden"
-            aria-label="Toggle navigation"
+            aria-label={t("nav.toggle")}
           >
             {mobileOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
