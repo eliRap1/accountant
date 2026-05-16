@@ -29,7 +29,13 @@ export default async function PostAuthPage() {
   if (!u) {
     redirect(`/${locale}/sign-in` as Route);
   }
-  // TODO(B): redirect to /onboarding if user has no business yet,
-  // otherwise to /dashboard. Until then, send to localised landing.
-  redirect(`/${locale}` as Route);
+  // Route by onboarding state: users without a business land on
+  // /onboarding (1-step entity-type picker, see lib/onboarding/defaults).
+  // Everyone else lands on /dashboard (6 CPA tiles).
+  const { getOnboardingState } = await import("@/lib/aggregations/onboardingState");
+  const state = await getOnboardingState(u.appUserId);
+  if (!state.hasBusiness) {
+    redirect(`/${locale}/onboarding` as Route);
+  }
+  redirect(`/${locale}/dashboard` as Route);
 }
