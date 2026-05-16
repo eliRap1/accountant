@@ -1400,7 +1400,8 @@
         "businessMissing": "Select a business",
         "readFile": "Could not read the file",
         "noRowsSelected": "Select at least one row to commit",
-        "alreadyCommitted": "Import already committed"
+        "alreadyCommitted": "Import already committed",
+        "parseFailed": "File could not be parsed — check the format matches the selected bank"
       }
     },
     "processorSync": {

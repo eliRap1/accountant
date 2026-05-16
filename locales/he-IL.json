@@ -1400,7 +1400,8 @@
         "businessMissing": "בחרו עסק",
         "readFile": "לא הצלחנו לקרוא את הקובץ",
         "noRowsSelected": "בחרו לפחות שורה אחת לאישור",
-        "alreadyCommitted": "הייבוא כבר אושר"
+        "alreadyCommitted": "הייבוא כבר אושר",
+        "parseFailed": "הקובץ לא נקרא — בדוק שהפורמט תואם לבנק שנבחר"
       }
     },
     "processorSync": {

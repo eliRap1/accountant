@@ -201,20 +201,33 @@ export async function runFullTaxEngine(
     let vatPayableThisPeriodMinor = vatCollectedMinor - vatPaidMinor;
     if (vatPayableThisPeriodMinor < 0n) vatPayableThisPeriodMinor = 0n;
 
-    // Income tax (annualised on YTD income, naïve but useful):
-    const taxableMinor =
+    // Income tax — annualise the YTD net so mid-year users don't see
+    // ~5/12 of the true bracketed bill. Take the larger of (days into
+    // year, 1) to avoid divide-by-zero on Jan-1.
+    const taxableYtdMinor =
       incomeMinor > expensesMinor ? incomeMinor - expensesMinor : 0n;
+    const yearStart = new Date(Date.UTC(now.getUTCFullYear(), 0, 1));
+    const daysIntoYear = Math.max(
+      1,
+      Math.floor((now.getTime() - yearStart.getTime()) / 86_400_000),
+    );
+    const annualisedTaxableMinor =
+      taxableYtdMinor > 0n
+        ? (taxableYtdMinor * 365n) / BigInt(daysIntoYear)
+        : 0n;
     const cpInputs = opts.creditPointInputs ?? minimalCreditPoints();
     const creditPoints = defaultCreditPoints(cpInputs).totalPoints;
     const incomeTax = computeIncomeTax({
-      grossAnnualMinor: taxableMinor,
+      grossAnnualMinor: annualisedTaxableMinor,
       creditPoints,
       rules,
     });
 
-    // Bituach Leumi: annualised income / 12 → monthly gross.
+    // Bituach Leumi monthly base — divide YTD by months elapsed (clamped
+    // ≥1) so users get a realistic monthly average rather than YTD/12.
+    const monthsElapsed = BigInt(Math.max(1, now.getUTCMonth() + 1));
     const monthlyGrossMinor =
-      taxableMinor > 0n ? taxableMinor / 12n : 0n;
+      taxableYtdMinor > 0n ? taxableYtdMinor / monthsElapsed : 0n;
     const bituachLeumi = computeBituachLeumi({
       monthlyGrossMinor,
       employmentClass: "self_employed",

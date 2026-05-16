@@ -14,7 +14,7 @@ const handleI18nRouting = createMiddleware(routing);
 // URL on /ru-RU/... means the user's locale choice still wins for the
 // chrome (LanguageSwitcher), but the page body renders English copy.
 const RU_REWRITE_PATTERN =
-  /^\/ru-RU\/(sign-in|sign-up|verify-email|forgot-password|reset-password|2fa|passkeys|recovery-codes|post-auth)(\/.*)?$/;
+  /^\/ru-RU\/(sign-in|sign-up|verify-email|forgot-password|reset-password|2fa|passkeys|recovery-codes|post-auth|dashboard|invoices|receipts|transactions|clients|tax|filings|audit|processor-sync|bank-imports|ledger|settings|businesses|billing|ai|onboarding)(\/.*)?$/;
 
 export default function proxy(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;

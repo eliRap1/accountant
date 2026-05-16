@@ -38,12 +38,14 @@ function parseFormData(formData: FormData): unknown {
   return obj;
 }
 
+// ISO 4217 minor-unit exponents for the currencies the form may emit.
+// Anything not in this map falls back to 2 — the most common case.
+const CURRENCY_EXPONENT: Record<string, number> = {
+  ILS: 2, USD: 2, EUR: 2, GBP: 2, JPY: 0, BHD: 3, KWD: 3,
+};
 function toMinor(major: number, currency: string): bigint {
-  // ILS, USD, EUR, GBP all use 2 decimal places. Future: switch on
-  // currency exponent (JPY = 0, BHD = 3, etc.). For now Phase B is
-  // ILS-first and the form only allows positive numbers.
-  void currency;
-  return BigInt(Math.round(major * 100));
+  const exp = CURRENCY_EXPONENT[currency.toUpperCase()] ?? 2;
+  return BigInt(Math.round(major * 10 ** exp));
 }
 
 function nullIfBlank(v: string | null | undefined): string | null {
@@ -101,7 +103,7 @@ export async function createTransaction(
             txn_date, source
           ) VALUES (
             ${input.businessId}::uuid,
-            ${input.financialAccountId}::uuid,
+            ${input.financialAccountId ? sql`${input.financialAccountId}::uuid` : sql`NULL`},
             ${input.direction}::transaction_direction,
             ${nullIfBlank(input.categoryCode ?? null)},
             ${toMinor(input.amountMajor, input.currency)}::bigint,

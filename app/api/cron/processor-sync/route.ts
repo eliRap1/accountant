@@ -44,7 +44,13 @@ export async function GET(request: Request): Promise<Response> {
     : "";
 
   if (cronSecret) {
-    if (provided !== cronSecret) {
+    // Constant-time compare — a `!==` leaks the first-differing byte
+    // index to a timing oracle. timingSafeEqual requires equal-length
+    // buffers, so length-prefix-guard first to avoid throwing.
+    const { timingSafeEqual } = await import("node:crypto");
+    const a = Buffer.from(provided);
+    const b = Buffer.from(cronSecret);
+    if (a.length !== b.length || !timingSafeEqual(a, b)) {
       return Response.json({ error: "unauthorized" }, { status: 401 });
     }
   } else if (process.env["NODE_ENV"] === "production") {

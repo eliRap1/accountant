@@ -118,7 +118,7 @@ export default async function TaxMakdamotPage({
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-5">
-      <EstimatesDisclaimerBanner />
+      {/* Disclaimer rendered once by `(app)/layout.tsx`. */}
 
       <header className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold tracking-tight text-slate-100 sm:text-3xl">

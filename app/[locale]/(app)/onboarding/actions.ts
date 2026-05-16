@@ -106,9 +106,14 @@ export async function createBusinessAction(
     revalidatePath("/dashboard");
     return { ok: true, businessId };
   } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : "unknown",
-    };
+    // Never leak raw PG/zod messages — they include paths, constraint
+    // names, and sometimes pasted user input. Log server-side, return
+    // an opaque translation key.
+    console.error("[onboarding] createBusinessAction failed", err);
+    const message = err instanceof Error ? err.message : "";
+    const code = message.includes("vat_id")
+      ? "app.errors.vatIdTaken"
+      : "app.errors.invalidInput";
+    return { ok: false, error: code };
   }
 }

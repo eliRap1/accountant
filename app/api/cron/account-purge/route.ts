@@ -60,7 +60,10 @@ export async function GET(request: Request): Promise<Response> {
     : "";
 
   if (cronSecret) {
-    if (provided !== cronSecret) {
+    const { timingSafeEqual } = await import("node:crypto");
+    const a = Buffer.from(provided);
+    const b = Buffer.from(cronSecret);
+    if (a.length !== b.length || !timingSafeEqual(a, b)) {
       return Response.json({ error: "unauthorized" }, { status: 401 });
     }
   } else {

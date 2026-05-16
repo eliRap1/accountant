@@ -122,7 +122,8 @@ export default async function TaxPage({
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-5">
-      <EstimatesDisclaimerBanner />
+      {/* Disclaimer banner is rendered once by `(app)/layout.tsx` — no
+          per-page banner here so users don't see two stacked banners. */}
 
       {!rulesReviewed ? (
         <aside

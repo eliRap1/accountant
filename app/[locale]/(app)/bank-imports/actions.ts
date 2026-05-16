@@ -93,9 +93,10 @@ export async function uploadAndParse(
       csvMapping,
     });
   } catch (err) {
-    return {
-      error: err instanceof Error ? err.message : "parse failed",
-    };
+    // Parser messages can include raw row text + bank-specific strings.
+    // Log the cause server-side, return a stable translation key.
+    console.error("[bank-imports] parse failed", err);
+    return { error: "app.bankImports.errors.parseFailed" };
   }
 
   // Convert bigints to strings before JSON serialisation; the JSONB
