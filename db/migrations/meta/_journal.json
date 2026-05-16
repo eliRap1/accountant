@@ -43,6 +43,13 @@
       "when": 1778889700000,
       "tag": "0005_rls_layer2",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1779465600000,
+      "tag": "0006_stripe_webhook_events",
+      "breakpoints": true
     }
   ]
 }

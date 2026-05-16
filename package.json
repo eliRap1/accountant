@@ -46,6 +46,7 @@
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "@sentry/nextjs": "^10.53.1",
+    "@stripe/stripe-js": "^9.5.0",
     "@vercel/blob": "^2.3.3",
     "ai": "^6.0.183",
     "better-auth": "^1.6.11",
@@ -67,6 +68,7 @@
     "react-dom": "19.2.4",
     "recharts": "^3.8.1",
     "resend": "^6.12.3",
+    "stripe": "^22.1.1",
     "tailwind-merge": "^3.6.0",
     "three": "^0.184.0",
     "zod": "^4.4.3"

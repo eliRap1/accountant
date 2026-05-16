@@ -47,6 +47,9 @@ importers:
       '@sentry/nextjs':
         specifier: ^10.53.1
         version: 10.53.1(@opentelemetry/core@2.7.1(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(webpack@5.106.2(esbuild@0.28.0)(postcss@8.5.14))
+      '@stripe/stripe-js':
+        specifier: ^9.5.0
+        version: 9.5.0
       '@vercel/blob':
         specifier: ^2.3.3
         version: 2.3.3
@@ -110,6 +113,9 @@ importers:
       resend:
         specifier: ^6.12.3
         version: 6.12.3
+      stripe:
+        specifier: ^22.1.1
+        version: 22.1.1(@types/node@20.19.41)
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.6.0
@@ -2974,6 +2980,10 @@ packages:
 
   '@standard-schema/utils@0.3.0':
     resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
+
+  '@stripe/stripe-js@9.5.0':
+    resolution: {integrity: sha512-dTQWkJRw5lhcQipPuw6qZRBK2zY5eWWZ1Srw9mSjhIXSLdsNYO3uaIV+YRMkI0/tB/D7yQdHYStrcZrbeHI5Jg==}
+    engines: {node: '>=12.16'}
 
   '@swc/core-darwin-arm64@1.15.33':
     resolution: {integrity: sha512-N+L0uXhuO7FIfzqwgxmzv0zIpV0qEp8wPX3QQs2p4atjMoywup2JTeDlXPw+z9pWJGCae3JjM+tZ6myclI+2gA==}
@@ -6750,6 +6760,15 @@ packages:
     resolution: {integrity: sha512-1tB5mhVo7U+ETBKNf92xT4hrQa3pm0MZ0PQvuDnWgAAGHDsfp4lPSpiS6psrSiet87wyGPh9ft6wmhOMQ0hDiw==}
     engines: {node: '>=14.16'}
 
+  stripe@22.1.1:
+    resolution: {integrity: sha512-cmodIYP27tBkJ8G7DuGgWw0PFuemlFZbuF3Wwr1TrjFjUa3T7NIgCe6TVwX8BO2ynu+xtTuDGfHafNDCPt9lXA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
   styled-jsx@5.1.6:
     resolution: {integrity: sha512-qSVyDTeMotdvQYoHWLNGwRFJHC+i+ZvdBRYosOFgC+Wg1vx4frN2/RG/NA7SYqqvKNLf39P2LSRA2pu6n0XYZA==}
     engines: {node: '>= 12.0.0'}
@@ -9870,6 +9889,8 @@ snapshots:
   '@standard-schema/spec@1.1.0': {}
 
   '@standard-schema/utils@0.3.0': {}
+
+  '@stripe/stripe-js@9.5.0': {}
 
   '@swc/core-darwin-arm64@1.15.33':
     optional: true
@@ -13878,6 +13899,10 @@ snapshots:
   strip-json-comments@3.1.1: {}
 
   strip-json-comments@5.0.3: {}
+
+  stripe@22.1.1(@types/node@20.19.41):
+    optionalDependencies:
+      '@types/node': 20.19.41
 
   styled-jsx@5.1.6(@babel/core@7.29.0)(react@19.2.4):
     dependencies:

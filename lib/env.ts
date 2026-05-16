@@ -47,6 +47,30 @@ const schema = z.object({
   SENTRY_AUTH_TOKEN: optionalNonEmpty,
   NEXT_PUBLIC_POSTHOG_KEY: optionalNonEmpty,
   NEXT_PUBLIC_POSTHOG_HOST: z.string().default("https://eu.i.posthog.com"),
+
+  // Vercel Cron shared secret. Cron handlers verify the
+  // `Authorization: Bearer ${CRON_SECRET}` header that Vercel
+  // auto-injects when the platform invokes a scheduled function.
+  // Optional in dev (handlers fall back to allowing unauthenticated
+  // local invocation), required in production.
+  CRON_SECRET: optionalNonEmpty,
+
+  // Stripe billing (Phase F.1). All optional so dev / staging can run
+  // without Stripe configured — the lib/billing layer throws a clear
+  // "Stripe not configured" error if a route hits it without keys.
+  // Secret + webhook secret are server-only; publishable is mirrored to
+  // NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY for the browser SDK.
+  // Per-plan price IDs come from STRIPE_PRICE_<PLAN_UPPER> envs (resolved
+  // dynamically in lib/billing/plans.ts so adding/removing tiers does
+  // not require an env schema change here).
+  STRIPE_SECRET_KEY: optionalNonEmpty,
+  STRIPE_PUBLISHABLE_KEY: optionalNonEmpty,
+  STRIPE_WEBHOOK_SECRET: optionalNonEmpty,
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: optionalNonEmpty,
+  STRIPE_PRICE_SOLO: optionalNonEmpty,
+  STRIPE_PRICE_PLUS: optionalNonEmpty,
+  STRIPE_PRICE_BUSINESS: optionalNonEmpty,
+  STRIPE_PRICE_ACCOUNTANT: optionalNonEmpty,
 });
 
 type Env = z.infer<typeof schema>;

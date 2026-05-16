@@ -32,5 +32,11 @@ export default function proxy(request: NextRequest): NextResponse {
 export const config = {
   // Match everything except API routes, Next internals, and static assets.
   // The dot-exclusion catches /favicon.ico, /robots.txt, /*.png, etc.
+  //
+  // CRITICAL: `api` MUST stay in the negative-lookahead so Stripe webhook
+  // deliveries at /api/billing/webhook reach the route handler with the
+  // raw request body untouched. next-intl's createMiddleware would
+  // otherwise rewrite the URL, corrupt the byte-stream Stripe signs
+  // against, and break signature verification.
   matcher: ["/((?!api|_next/static|_next/image|_vercel|.*\\..*).*)"],
 };

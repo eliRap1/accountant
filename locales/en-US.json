@@ -129,5 +129,362 @@
     "label": "English",
     "short": "EN",
     "flag": "🇺🇸"
+  },
+  "app": {
+    "shell": {
+      "nav": {
+        "dashboard": "Dashboard",
+        "businesses": "Businesses",
+        "clients": "Clients",
+        "transactions": "Transactions",
+        "ledger": "Ledger",
+        "invoices": "Invoices",
+        "receipts": "Receipts",
+        "settings": "Settings"
+      },
+      "user": {
+        "signOut": "Sign out",
+        "settings": "Settings",
+        "account": "Account"
+      }
+    },
+    "dashboard": {
+      "title": "Overview",
+      "subtitle": "Live snapshot of your business — estimates only.",
+      "empty": {
+        "title": "No data yet",
+        "desc": "Add your first transaction or invoice to see estimates here.",
+        "cta": "Add first transaction"
+      },
+      "chart": {
+        "eyebrow": "Overview",
+        "title": "Revenue vs profit",
+        "desc": "Last 12 months. Hover the bars for detail.",
+        "fy": "FY 2026",
+        "revenue": "Revenue",
+        "ebitda": "Profit",
+        "kpiArr": "Annualized revenue (est.)",
+        "kpiGm": "Net margin",
+        "kpiEbitda": "Total profit, 12mo",
+        "kpiYoy": "YoY growth",
+        "kpiYoyDelta": "estimate",
+        "barTitle": "Monthly revenue"
+      },
+      "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    },
+    "onboarding": {
+      "title": "Welcome to AccounTech",
+      "subtitle": "A few details about your business — we'll set things up for עוסק פטור / מורשה / ח.פ.",
+      "step1": "Language",
+      "step2": "Business profile",
+      "step3": "Done",
+      "business": {
+        "title": "Business details",
+        "legalName": "Legal name",
+        "legalNamePh": "Registered business name",
+        "vatId": "ע.מ. / ח.פ.",
+        "vatIdPh": "9 digits",
+        "entityType": "Entity type",
+        "entityType.patur": "Osek Patur (exempt dealer)",
+        "entityType.morshe": "Osek Morshe (licensed dealer)",
+        "entityType.hevra_baam": "Limited company (ח.פ.)",
+        "entityType.amuta": "Nonprofit (amuta)",
+        "entityType.shutfut": "Partnership",
+        "vatStatus": "VAT status",
+        "vatStatus.liable": "Liable for VAT",
+        "vatStatus.osek_patur": "Osek Patur",
+        "vatStatus.osek_morshe": "Osek Morshe",
+        "vatStatus.exporter": "Exporter",
+        "vatStatus.nonprofit": "Nonprofit",
+        "bookkeeping": "Bookkeeping method",
+        "bookkeeping.single_entry": "Single-entry",
+        "bookkeeping.double_entry": "Double-entry",
+        "address": "Address",
+        "addressStreet": "Street and number",
+        "addressCity": "City",
+        "addressPostalCode": "Postal code",
+        "submit": "Continue",
+        "errors.vatIdInvalid": "Invalid VAT/business ID",
+        "errors.required": "Required field"
+      },
+      "complete": {
+        "title": "All set",
+        "desc": "Your business is created. You can now record your first transaction or invoice.",
+        "cta": "Go to dashboard"
+      }
+    },
+    "legal": {
+      "disclaimer": {
+        "banner": "Estimates only · Not tax advice · Consult a licensed accountant",
+        "footer": "Estimates only · Not tax advice · Consult a licensed accountant",
+        "bannerSr": "The content of this screen is an estimate only and is not tax advice. Consult a licensed CPA before acting on it or submitting any filings.",
+        "footerSr": "Estimates only. This content is not tax advice. Consult a licensed CPA."
+      }
+    },
+    "common": {
+      "saving": "Saving...",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "view": "View",
+      "invalidInput": "Invalid input — check the fields and try again",
+      "unbalancedEntry": "Debit and credit totals do not balance"
+    },
+    "errors": {
+      "invalidInput": "Invalid input",
+      "unbalancedEntry": "Journal entry is unbalanced"
+    },
+    "businesses": {
+      "title": "Businesses",
+      "subtitle": "Manage the businesses you own",
+      "addCta": "Add business",
+      "newTitle": "Add a new business",
+      "editTitle": "Edit business",
+      "formIntro": "Business details are stored encrypted where required and drive VAT estimates and invoice numbering.",
+      "emptyState": "No businesses yet — add your first",
+      "legalName": "Legal name",
+      "vatId": "VAT ID / ח.פ.",
+      "vatIdHelp": "9 digits for an osek; 9 digits for a company",
+      "entityType": "Entity type",
+      "vatStatus": "VAT status",
+      "bookkeepingMethod": "Bookkeeping method",
+      "taxYearEndMonth": "Tax year end month",
+      "advanceTaxRatePct": "Advance tax rate (%)",
+      "advanceTaxRatePctHelp": "Rate set by the Israel Tax Authority",
+      "tikNikuyim": "Withholding file (תיק ניכויים)",
+      "tikNikuyimHelp": "Required for businesses with payroll",
+      "defaultCurrency": "Default currency",
+      "addressHeading": "Address",
+      "addressStreet": "Street",
+      "addressCity": "City",
+      "addressPostalCode": "Postal code",
+      "addressCountry": "Country (ISO)",
+      "ilMunicipalAuthority": "Municipal authority",
+      "submitCreate": "Create business",
+      "submitUpdate": "Save changes",
+      "col": {
+        "legalName": "Name",
+        "vatId": "VAT ID",
+        "entityType": "Type",
+        "vatStatus": "VAT",
+        "currency": "Currency",
+        "actions": "Actions",
+        "view": "View",
+        "edit": "Edit"
+      },
+      "entityOption": {
+        "patur": "Osek Patur",
+        "morshe": "Osek Morshe",
+        "hevra_baam": "Limited company",
+        "amuta": "Nonprofit",
+        "shutfut": "Partnership"
+      },
+      "vatStatusOption": {
+        "liable": "Liable for VAT",
+        "osek_patur": "Osek Patur",
+        "osek_morshe": "Osek Morshe",
+        "exporter": "Exporter",
+        "nonprofit": "Nonprofit"
+      },
+      "bookkeepingOption": {
+        "single_entry": "Single-entry",
+        "double_entry": "Double-entry"
+      },
+      "detail": {
+        "profile": "Business profile",
+        "address": "Address",
+        "vatHistory": "VAT status history",
+        "vatHistoryEmpty": "No status changes recorded",
+        "effectiveFrom": "Effective from",
+        "effectiveTo": "Effective to",
+        "reason": "Reason"
+      }
+    },
+    "clients": {
+      "title": "Clients",
+      "subtitle": "Per-business customer ledger. Encrypted fields marked.",
+      "addCta": "Add client",
+      "newTitle": "Add client",
+      "editTitle": "Edit client",
+      "formIntro": "Email, phone, and notes are stored encrypted. Existing values are not revealed on edit — a new value replaces the prior.",
+      "emptyState": "No clients yet — add your first",
+      "noBusinessYet": "Create a business before adding clients",
+      "missingBusiness": "Select a business before saving",
+      "business": "Business",
+      "legalName": "Client name",
+      "vatId": "VAT ID / ח.פ. (for invoices)",
+      "vatIdHelp": "Optional per client; mandatory on a tax invoice",
+      "email": "Email",
+      "phone": "Phone",
+      "encryptedHelp": "This field is stored encrypted",
+      "encryptedTooltip": "Encrypted — revealing requires step-up auth",
+      "notes": "Internal notes",
+      "addressHeading": "Address",
+      "addressStreet": "Street",
+      "addressCity": "City",
+      "addressPostalCode": "Postal code",
+      "addressCountry": "Country (ISO)",
+      "defaultPaymentTermsDays": "Payment terms (days)",
+      "defaultCurrency": "Currency",
+      "masked": "masked",
+      "submitCreate": "Create client",
+      "submitUpdate": "Save changes",
+      "col": {
+        "legalName": "Name",
+        "business": "Business",
+        "vatId": "VAT ID",
+        "email": "Email",
+        "phone": "Phone",
+        "actions": "Actions",
+        "view": "View",
+        "edit": "Edit"
+      },
+      "detail": {
+        "profile": "Client profile",
+        "address": "Address"
+      }
+    },
+    "transactions": {
+      "title": "Transactions",
+      "subtitle": "Income and expenses per business and account",
+      "addCta": "Add transaction",
+      "newTitle": "New transaction",
+      "editTitle": "Edit transaction",
+      "formIntro": "Amounts are entered in whole units (₪ not agorot) and stored in minor units internally.",
+      "emptyState": "No transactions in the selected range",
+      "noBusinessYet": "Create a business before recording transactions",
+      "missingBusiness": "Select a business before saving",
+      "business": "Business",
+      "financialAccount": "Financial account",
+      "accountUnallocated": "No account (inbox)",
+      "addAccountInline": "Add a new account",
+      "addAccountSubmit": "Add",
+      "newAccountName": "Account name",
+      "direction": "Direction",
+      "amount": "Amount",
+      "amountHelp": "Positive value only",
+      "currency": "Currency",
+      "category": "Category code",
+      "categoryPlaceholder": "0000",
+      "categoryHelp": "From the chart of accounts; type a code or name",
+      "description": "Description",
+      "txnDate": "Date",
+      "source": "Source",
+      "submitCreate": "Create transaction",
+      "submitUpdate": "Save changes",
+      "filterBusiness": "Business",
+      "filterAllBusinesses": "All businesses",
+      "filterFrom": "From",
+      "filterTo": "To",
+      "filterApply": "Filter",
+      "filterClear": "Clear",
+      "directionOption": {
+        "income": "Income",
+        "expense": "Expense",
+        "transfer": "Transfer"
+      },
+      "col": {
+        "date": "Date",
+        "direction": "Direction",
+        "amount": "Amount",
+        "business": "Business",
+        "account": "Account",
+        "category": "Category",
+        "description": "Description",
+        "actions": "Actions",
+        "view": "View",
+        "edit": "Edit"
+      }
+    },
+    "ledger": {
+      "title": "Ledger",
+      "subtitle": "Balanced double-entry journal entries",
+      "addCta": "New entry",
+      "newTitle": "New journal entry",
+      "newIntro": "Add at least two lines — total debit must equal total credit.",
+      "emptyState": "No entries for this business",
+      "placeholderDoubleEntryOnly": "The ledger is only available for businesses with double-entry bookkeeping. Single-entry businesses should use the Transactions screen.",
+      "manageBusinessesCta": "Manage businesses",
+      "filterBusiness": "Business",
+      "business": "Business",
+      "missingBusiness": "Select a business before saving",
+      "entryDate": "Entry date",
+      "description": "Description",
+      "linesHeading": "Entry lines",
+      "balancePreview": "Total debit / Total credit",
+      "balanced": "balanced",
+      "unbalanced": "unbalanced",
+      "submit": "Create entry",
+      "line": {
+        "accountCode": "Account",
+        "debit": "Debit",
+        "credit": "Credit",
+        "description": "Line description",
+        "add": "Add line",
+        "remove": "Remove line"
+      },
+      "col": {
+        "date": "Date",
+        "source": "Source",
+        "description": "Description",
+        "lines": "Lines",
+        "debit": "Debit",
+        "credit": "Credit",
+        "balance": "Balance"
+      }
+    },
+    "billing": {
+      "title": "Billing",
+      "subtitle": "Pick a plan, manage payment method, or cancel anytime.",
+      "current": {
+        "label": "Current plan",
+        "renewsOn": "Renews on {date}",
+        "endsOn": "Ends on {date}"
+      },
+      "status": {
+        "active": "Active",
+        "trialing": "Trial",
+        "past_due": "Payment overdue",
+        "cancelled": "Cancelled",
+        "expired": "Expired",
+        "none": "No subscription"
+      },
+      "interval": {
+        "month": "month",
+        "year": "year"
+      },
+      "badge": {
+        "current": "Your plan"
+      },
+      "plan": {
+        "upgrade": "Choose plan",
+        "freeContact": "Default starter plan."
+      },
+      "portal": {
+        "cta": "Manage subscription"
+      },
+      "vat": {
+        "note": "Prices include 18% Israeli VAT for B2C customers. Stripe Tax does not yet support Israel — VAT is applied via our קבלה generation; an invoice is issued for every charge."
+      },
+      "errors": {
+        "generic": "Something went wrong"
+      },
+      "success": {
+        "title": "You're all set",
+        "desc": "Your subscription is active. The receipt has been emailed to you.",
+        "backToBilling": "Back to billing",
+        "toDashboard": "Go to dashboard",
+        "pending": {
+          "title": "Finalising your subscription...",
+          "desc": "Stripe has confirmed the payment. We're waiting for the activation webhook — usually a couple of seconds."
+        }
+      },
+      "cancel": {
+        "title": "Checkout cancelled",
+        "desc": "No charge was made. You can pick a plan again whenever you're ready.",
+        "backToBilling": "Back to billing"
+      }
+    }
   }
 }

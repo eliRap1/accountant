@@ -129,5 +129,362 @@
     "label": "עברית",
     "short": "HE",
     "flag": "🇮🇱"
+  },
+  "app": {
+    "shell": {
+      "nav": {
+        "dashboard": "דשבורד",
+        "businesses": "עסקים",
+        "clients": "לקוחות",
+        "transactions": "תנועות",
+        "ledger": "ספר חשבונות",
+        "invoices": "חשבוניות",
+        "receipts": "קבלות",
+        "settings": "הגדרות"
+      },
+      "user": {
+        "signOut": "התנתקות",
+        "settings": "הגדרות",
+        "account": "החשבון שלי"
+      }
+    },
+    "dashboard": {
+      "title": "סקירה כללית",
+      "subtitle": "תמונת מצב חיה של העסק — אומדנים בלבד.",
+      "empty": {
+        "title": "עוד אין נתונים",
+        "desc": "הוסיפו חשבונית או תנועה ראשונה כדי לראות אומדנים.",
+        "cta": "הוספת תנועה ראשונה"
+      },
+      "chart": {
+        "eyebrow": "סקירה",
+        "title": "הכנסות מול רווח",
+        "desc": "12 חודשים אחרונים. עברו עם העכבר מעל העמודות לפירוט.",
+        "fy": "שנת 2026",
+        "revenue": "הכנסה",
+        "ebitda": "רווח",
+        "kpiArr": "הכנסה שנתית (אומדן)",
+        "kpiGm": "רווחיות נטו",
+        "kpiEbitda": "סך רווח 12ח׳",
+        "kpiYoy": "צמיחה שנתית",
+        "kpiYoyDelta": "אומדן",
+        "barTitle": "הכנסה חודשית"
+      },
+      "months": ["ינו׳", "פבר׳", "מרץ", "אפר׳", "מאי", "יוני", "יולי", "אוג׳", "ספט׳", "אוק׳", "נוב׳", "דצמ׳"]
+    },
+    "onboarding": {
+      "title": "ברוכים הבאים ל-AccounTech",
+      "subtitle": "כמה פרטים על העסק שלכם — נכין הכל לעוסק פטור / מורשה / ח.פ.",
+      "step1": "שפה",
+      "step2": "פרטי עסק",
+      "step3": "סיום",
+      "business": {
+        "title": "פרטי העסק",
+        "legalName": "שם העסק",
+        "legalNamePh": "שם העסק הרשום",
+        "vatId": "ע.מ. / ח.פ.",
+        "vatIdPh": "9 ספרות",
+        "entityType": "סוג ישות",
+        "entityType.patur": "עוסק פטור",
+        "entityType.morshe": "עוסק מורשה",
+        "entityType.hevra_baam": "חברה בע״מ",
+        "entityType.amuta": "עמותה",
+        "entityType.shutfut": "שותפות",
+        "vatStatus": "סטטוס מע״מ",
+        "vatStatus.liable": "חייב במע״מ",
+        "vatStatus.osek_patur": "עוסק פטור",
+        "vatStatus.osek_morshe": "עוסק מורשה",
+        "vatStatus.exporter": "יצואן",
+        "vatStatus.nonprofit": "מלכ״ר",
+        "bookkeeping": "שיטת הנהלת חשבונות",
+        "bookkeeping.single_entry": "חד-צידי",
+        "bookkeeping.double_entry": "כפול-צידי",
+        "address": "כתובת",
+        "addressStreet": "רחוב ומספר",
+        "addressCity": "עיר",
+        "addressPostalCode": "מיקוד",
+        "submit": "המשך",
+        "errors.vatIdInvalid": "מספר עוסק לא תקין",
+        "errors.required": "שדה חובה"
+      },
+      "complete": {
+        "title": "הכל מוכן",
+        "desc": "העסק נוצר. עכשיו אפשר לרשום תנועה או חשבונית ראשונה.",
+        "cta": "מעבר לדשבורד"
+      }
+    },
+    "legal": {
+      "disclaimer": {
+        "banner": "אומדנים בלבד · אינו ייעוץ מס · התייעצו עם רואה חשבון מורשה",
+        "footer": "אומדנים בלבד · אינו ייעוץ מס · התייעצו עם רואה חשבון מורשה",
+        "bannerSr": "תוכן המסך מהווה אומדן בלבד ואינו ייעוץ מס. יש להתייעץ עם רואה חשבון מורשה לפני קבלת החלטות או הגשת דיווחים.",
+        "footerSr": "אומדנים בלבד. תוכן המסך אינו מהווה ייעוץ מס. יש להתייעץ עם רואה חשבון מורשה."
+      }
+    },
+    "common": {
+      "saving": "שומר...",
+      "save": "שמירה",
+      "cancel": "ביטול",
+      "delete": "מחיקה",
+      "edit": "עריכה",
+      "view": "צפייה",
+      "invalidInput": "קלט לא תקין — בדקו את השדות ונסו שוב",
+      "unbalancedEntry": "החיוב והזיכוי אינם מאוזנים"
+    },
+    "errors": {
+      "invalidInput": "קלט לא תקין",
+      "unbalancedEntry": "פקודת היומן אינה מאוזנת"
+    },
+    "businesses": {
+      "title": "עסקים",
+      "subtitle": "ניהול עסקים שאתם הבעלים שלהם",
+      "addCta": "הוספת עסק",
+      "newTitle": "הוספת עסק חדש",
+      "editTitle": "עריכת עסק",
+      "formIntro": "פרטי העסק נשמרים מוצפנים בעת הצורך ומשמשים לחישוב אומדני מע״מ ולחשבוניות.",
+      "emptyState": "עדיין לא נוצרו עסקים — הוסיפו את הראשון",
+      "legalName": "שם משפטי",
+      "vatId": "מס׳ עוסק / ח.פ.",
+      "vatIdHelp": "9 ספרות לעוסק; 9 ספרות לחברה",
+      "entityType": "סוג עוסק",
+      "vatStatus": "סטטוס מע״מ",
+      "bookkeepingMethod": "שיטת רישום",
+      "taxYearEndMonth": "חודש סיום שנת מס",
+      "advanceTaxRatePct": "אחוז מקדמות",
+      "advanceTaxRatePctHelp": "אחוז שנקבע על ידי רשות המסים",
+      "tikNikuyim": "תיק ניכויים",
+      "tikNikuyimHelp": "נדרש לעסקים עם שכר",
+      "defaultCurrency": "מטבע ברירת מחדל",
+      "addressHeading": "כתובת",
+      "addressStreet": "רחוב",
+      "addressCity": "עיר",
+      "addressPostalCode": "מיקוד",
+      "addressCountry": "מדינה (ISO)",
+      "ilMunicipalAuthority": "רשות מקומית",
+      "submitCreate": "צרו עסק",
+      "submitUpdate": "שמרו שינויים",
+      "col": {
+        "legalName": "שם",
+        "vatId": "מס׳ עוסק",
+        "entityType": "סוג",
+        "vatStatus": "מע״מ",
+        "currency": "מטבע",
+        "actions": "פעולות",
+        "view": "צפייה",
+        "edit": "עריכה"
+      },
+      "entityOption": {
+        "patur": "עוסק פטור",
+        "morshe": "עוסק מורשה",
+        "hevra_baam": "חברה בע״מ",
+        "amuta": "עמותה",
+        "shutfut": "שותפות"
+      },
+      "vatStatusOption": {
+        "liable": "חייב במע״מ",
+        "osek_patur": "עוסק פטור",
+        "osek_morshe": "עוסק מורשה",
+        "exporter": "יצואן",
+        "nonprofit": "מלכ״ר"
+      },
+      "bookkeepingOption": {
+        "single_entry": "חד-צידי",
+        "double_entry": "דו-צידי"
+      },
+      "detail": {
+        "profile": "פרטי עסק",
+        "address": "כתובת",
+        "vatHistory": "היסטוריית סטטוס מע״מ",
+        "vatHistoryEmpty": "אין שינויי סטטוס מתועדים",
+        "effectiveFrom": "מתאריך",
+        "effectiveTo": "עד תאריך",
+        "reason": "סיבה"
+      }
+    },
+    "clients": {
+      "title": "לקוחות",
+      "subtitle": "פנקס לקוחות לכל עסק. שדות מוצפנים מסומנים",
+      "addCta": "הוספת לקוח",
+      "newTitle": "הוספת לקוח",
+      "editTitle": "עריכת לקוח",
+      "formIntro": "מייל, טלפון והערות נשמרים מוצפנים. הקיים לא נחשף בעריכה — מילוי חדש מחליף את הערך הקודם.",
+      "emptyState": "אין לקוחות עדיין — הוסיפו את הראשון",
+      "noBusinessYet": "צריך ליצור עסק לפני שמוסיפים לקוחות",
+      "missingBusiness": "בחרו עסק לפני שמירה",
+      "business": "עסק",
+      "legalName": "שם לקוח",
+      "vatId": "מס׳ עוסק / ח.פ. (לחשבונית)",
+      "vatIdHelp": "אופציונלי לכל לקוח, חובה לחשבונית מס",
+      "email": "כתובת אימייל",
+      "phone": "טלפון",
+      "encryptedHelp": "השדה הזה נשמר מוצפן",
+      "encryptedTooltip": "מוצפן — חשיפה תידרוש אימות נוסף",
+      "notes": "הערות פנימיות",
+      "addressHeading": "כתובת",
+      "addressStreet": "רחוב",
+      "addressCity": "עיר",
+      "addressPostalCode": "מיקוד",
+      "addressCountry": "מדינה (ISO)",
+      "defaultPaymentTermsDays": "תנאי תשלום (ימים)",
+      "defaultCurrency": "מטבע",
+      "masked": "מוסתר",
+      "submitCreate": "צרו לקוח",
+      "submitUpdate": "שמרו שינויים",
+      "col": {
+        "legalName": "שם",
+        "business": "עסק",
+        "vatId": "מס׳ עוסק",
+        "email": "אימייל",
+        "phone": "טלפון",
+        "actions": "פעולות",
+        "view": "צפייה",
+        "edit": "עריכה"
+      },
+      "detail": {
+        "profile": "פרטי לקוח",
+        "address": "כתובת"
+      }
+    },
+    "transactions": {
+      "title": "תנועות",
+      "subtitle": "הכנסות והוצאות לכל עסק וחשבון",
+      "addCta": "הוספת תנועה",
+      "newTitle": "תנועה חדשה",
+      "editTitle": "עריכת תנועה",
+      "formIntro": "סכומים נקלטים ביחידות שלמות (₪ ולא אגורות) ונשמרים ביחידות משנה.",
+      "emptyState": "אין תנועות בטווח שנבחר",
+      "noBusinessYet": "צריך ליצור עסק לפני רישום תנועות",
+      "missingBusiness": "בחרו עסק לפני שמירה",
+      "business": "עסק",
+      "financialAccount": "חשבון פיננסי",
+      "accountUnallocated": "ללא חשבון (אינבוקס)",
+      "addAccountInline": "הוספת חשבון חדש",
+      "addAccountSubmit": "הוסף",
+      "newAccountName": "שם חשבון",
+      "direction": "כיוון",
+      "amount": "סכום",
+      "amountHelp": "ערך חיובי בלבד",
+      "currency": "מטבע",
+      "category": "קוד תנועות",
+      "categoryPlaceholder": "0000",
+      "categoryHelp": "מתוך תרשים החשבונות; מקלידים קוד או שם",
+      "description": "תיאור",
+      "txnDate": "תאריך",
+      "source": "מקור",
+      "submitCreate": "צרו תנועה",
+      "submitUpdate": "שמרו שינויים",
+      "filterBusiness": "עסק",
+      "filterAllBusinesses": "כל העסקים",
+      "filterFrom": "מתאריך",
+      "filterTo": "עד תאריך",
+      "filterApply": "סינון",
+      "filterClear": "נקה",
+      "directionOption": {
+        "income": "הכנסה",
+        "expense": "הוצאה",
+        "transfer": "העברה"
+      },
+      "col": {
+        "date": "תאריך",
+        "direction": "כיוון",
+        "amount": "סכום",
+        "business": "עסק",
+        "account": "חשבון",
+        "category": "קטגוריה",
+        "description": "תיאור",
+        "actions": "פעולות",
+        "view": "צפייה",
+        "edit": "עריכה"
+      }
+    },
+    "ledger": {
+      "title": "ספר חשבונות",
+      "subtitle": "פקודות יומן מאוזנות בשיטת חד-תרי",
+      "addCta": "פקודה חדשה",
+      "newTitle": "פקודת יומן חדשה",
+      "newIntro": "הוסיפו לפחות שתי שורות — סכום החיוב חייב להיות שווה לסכום הזיכוי.",
+      "emptyState": "אין פקודות עבור העסק הזה",
+      "placeholderDoubleEntryOnly": "ספר החשבונות זמין רק לעסקים בשיטת רישום דו-צידית. עבור עסקים בשיטת חד-צידי השתמשו במסך התנועות.",
+      "manageBusinessesCta": "ניהול עסקים",
+      "filterBusiness": "עסק",
+      "business": "עסק",
+      "missingBusiness": "בחרו עסק לפני שמירה",
+      "entryDate": "תאריך פקודה",
+      "description": "תיאור",
+      "linesHeading": "שורות פקודה",
+      "balancePreview": "סך חיוב / סך זיכוי",
+      "balanced": "מאוזן",
+      "unbalanced": "לא מאוזן",
+      "submit": "צרו פקודה",
+      "line": {
+        "accountCode": "חשבון",
+        "debit": "חיוב",
+        "credit": "זיכוי",
+        "description": "תיאור שורה",
+        "add": "הוסף שורה",
+        "remove": "מחק שורה"
+      },
+      "col": {
+        "date": "תאריך",
+        "source": "מקור",
+        "description": "תיאור",
+        "lines": "שורות",
+        "debit": "חיוב",
+        "credit": "זיכוי",
+        "balance": "מאוזן"
+      }
+    },
+    "billing": {
+      "title": "חיוב ומנוי",
+      "subtitle": "בחר מסלול, עדכן אמצעי תשלום, או בטל בכל עת.",
+      "current": {
+        "label": "המסלול הנוכחי",
+        "renewsOn": "מתחדש ב-{date}",
+        "endsOn": "מסתיים ב-{date}"
+      },
+      "status": {
+        "active": "פעיל",
+        "trialing": "ניסיון",
+        "past_due": "תשלום באיחור",
+        "cancelled": "מבוטל",
+        "expired": "פג תוקף",
+        "none": "ללא מנוי"
+      },
+      "interval": {
+        "month": "חודש",
+        "year": "שנה"
+      },
+      "badge": {
+        "current": "המסלול שלך"
+      },
+      "plan": {
+        "upgrade": "בחר מסלול",
+        "freeContact": "המסלול הבסיסי."
+      },
+      "portal": {
+        "cta": "ניהול מנוי"
+      },
+      "vat": {
+        "note": "המחירים כוללים מע\"מ 18% ללקוחות פרטיים. Stripe Tax עדיין לא תומך בישראל — המע\"מ מחושב במערכת ומונפקת קבלה לכל חיוב."
+      },
+      "errors": {
+        "generic": "משהו השתבש"
+      },
+      "success": {
+        "title": "הכל מוכן",
+        "desc": "המנוי שלך פעיל. קבלה נשלחה לדוא\"ל שלך.",
+        "backToBilling": "חזרה לחיוב",
+        "toDashboard": "ללוח הבקרה",
+        "pending": {
+          "title": "מסיימים להפעיל את המנוי...",
+          "desc": "Stripe אישר את התשלום. ממתינים ל-webhook ההפעלה — בדרך כלל מספר שניות."
+        }
+      },
+      "cancel": {
+        "title": "התשלום בוטל",
+        "desc": "לא בוצע חיוב. אפשר לבחור מסלול שוב בכל רגע.",
+        "backToBilling": "חזרה לחיוב"
+      }
+    }
   }
 }

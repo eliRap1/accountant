@@ -1,0 +1,9 @@
+{
+  "year": 2026,
+  "country": "IL",
+  "version": "0.1.0-draft",
+  "humanReviewed": false,
+  "reviewer": null,
+  "reviewedOn": null,
+  "notes": "Initial scaffold from Phase D primary-source verification (2026-05-16). Every numeric in rules-2026.ts carries an inline source URL + fetch date comment. Income-tax brackets reflect Amendment 288 (widened 20% + 31% bands, retroactive 2026-01-01). VAT 18% confirmed against 2026 budget law (vatupdate.com Dec-2025). Bituach Leumi rates triangulated from BTL English page + Malam-Payroll January-2026 circular. Advance-tax (מקדמות) range still flagged <verify-this> for the upper bound — no single primary ITA table enumerates it. CPA sign-off (humanReviewed:true + reviewer + reviewedOn) required before Phase D UI ships; this file is the lint:rule-meta merge gate."
+}

@@ -13,6 +13,18 @@ import {
 } from "@/lib/email/lookupLocale";
 
 const turnstileSecret = env().TURNSTILE_SECRET_KEY;
+const isProduction = env().NODE_ENV === "production";
+
+// Council C-5: in production, Turnstile MUST be configured. selfTest.ts
+// already enforces this at boot, but if a future contributor wires a
+// route past instrumentation.ts (e.g. an Edge route) the captcha plugin
+// would silently disappear. Defense in depth: refuse to construct the
+// auth handler at module-load when prod env is missing the secret.
+if (isProduction && !turnstileSecret) {
+  throw new Error(
+    "Turnstile secret missing in production — refusing to construct Better Auth handler.",
+  );
+}
 
 // Map an emailOTP `type` to a template key. Better Auth's emailOTP plugin
 // reuses one send hook for sign-in / email-verification / forget-password /
@@ -163,10 +175,19 @@ export const auth = betterAuth({
     }),
     // Admin tooling for support flows. Reads gated by service role.
     admin(),
-    // Cloudflare Turnstile gate on sign-up + sensitive flows.
+    // Cloudflare Turnstile gate on sign-up + sensitive flows. In
+    // production the secret is mandatory (validated at module-load
+    // above + boot via selfTest). In dev/test we conditionally include
+    // so contributors without a Turnstile account can run the stack.
     ...(turnstileSecret
       ? [captcha({ provider: "cloudflare-turnstile", secretKey: turnstileSecret })]
-      : []),
+      : isProduction
+        ? (() => {
+            throw new Error(
+              "Turnstile secret missing in production — captcha plugin cannot be omitted.",
+            );
+          })()
+        : []),
     // MUST be last — wraps response cookies into the Next.js response
     // headers that route handlers + middleware return.
     nextCookies(),

@@ -40,3 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 handoff.md
+
+# stop-gap JSON-file caches for outbound third-party calls
+# (FX rates, ITA registry lookups). Phase F migrates these to Postgres.
+.cache/
