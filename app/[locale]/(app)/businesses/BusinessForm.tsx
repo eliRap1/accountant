@@ -10,6 +10,9 @@ import {
   SelectField,
   ErrorBanner,
 } from "@/components/app/ui/Field";
+import StepUpModal, {
+  type StepUpEnvelope,
+} from "@/components/app/StepUpModal";
 import { createBusiness, updateBusiness } from "./actions";
 
 export type BusinessFormValues = {
@@ -69,6 +72,8 @@ export default function BusinessForm({ mode, initial }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [stepUp, setStepUp] = useState<StepUpEnvelope | null>(null);
+  const [pendingFd, setPendingFd] = useState<FormData | null>(null);
 
   const [values, setValues] = useState<BusinessFormValues>({
     legalName: initial?.legalName ?? "",
@@ -115,11 +120,38 @@ export default function BusinessForm({ mode, initial }: Props) {
     fd.set("addressCountry", values.addressCountry);
     fd.set("ilMunicipalAuthority", values.ilMunicipalAuthority);
 
+    setPendingFd(fd);
     startTransition(async () => {
       const result =
         mode === "new"
           ? await createBusiness(fd)
           : await updateBusiness(fd);
+      if (result && "stepUpRequired" in result) {
+        setStepUp(result.stepUpRequired);
+        return;
+      }
+      if (result && "error" in result) {
+        setError(translateError(result.error, tCommon));
+        return;
+      }
+      if (result && "ok" in result) {
+        router.push(`/businesses/${result.id}`);
+        router.refresh();
+      }
+    });
+  }
+
+  function onStepUpGranted() {
+    setStepUp(null);
+    if (!pendingFd) return;
+    const fd = pendingFd;
+    startTransition(async () => {
+      const result =
+        mode === "new" ? await createBusiness(fd) : await updateBusiness(fd);
+      if (result && "stepUpRequired" in result) {
+        setError(translateError("app.errors.stepUpRequired", tCommon));
+        return;
+      }
       if (result && "error" in result) {
         setError(translateError(result.error, tCommon));
         return;
@@ -318,6 +350,11 @@ export default function BusinessForm({ mode, initial }: Props) {
               : t("submitUpdate")}
         </motion.button>
       </form>
+      <StepUpModal
+        envelope={stepUp}
+        onClose={() => setStepUp(null)}
+        onGranted={onStepUpGranted}
+      />
     </motion.section>
   );
 }

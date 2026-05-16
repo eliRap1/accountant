@@ -11,6 +11,9 @@ import FilingKindPicker, {
 } from "@/components/app/filings/FilingKindPicker";
 import FilingPeriodPicker from "@/components/app/filings/FilingPeriodPicker";
 import FilingPreviewCard from "@/components/app/filings/FilingPreviewCard";
+import StepUpModal, {
+  type StepUpEnvelope,
+} from "@/components/app/StepUpModal";
 import { buildFiling, previewPcn874 } from "../actions";
 
 export type BusinessOption = {
@@ -84,6 +87,8 @@ export default function FilingWizard({
   const [periodEnd, setPeriodEnd] = useState<string>(initial.end);
   const [acknowledge, setAcknowledge] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [stepUp, setStepUp] = useState<StepUpEnvelope | null>(null);
+  const [pendingFd, setPendingFd] = useState<FormData | null>(null);
   const [preview, setPreview] = useState<{
     invoiceCount: number;
     sumPreVatMinor: string;
@@ -184,19 +189,50 @@ export default function FilingWizard({
       fd.set("acknowledgeSpecUnverified", "true");
     }
     setBusy(true);
+    setPendingFd(fd);
     try {
       const result = await buildFiling(fd);
       if ("stepUpRequired" in result) {
-        // Caller must hand the user off to step-up + retry. For now,
-        // surface a translated error pointing at the auth step; a
-        // future improvement is a modal that POSTs to /api/auth/step-up.
-        setError(t("errors.stepUpRequired"));
+        // Open the modal — on grant we re-run buildFiling with the
+        // same FormData (binding fields unchanged, hash holds).
+        setStepUp(result.stepUpRequired);
         return;
       }
       if ("error" in result) {
         // Error keys are full dotted paths like "app.filings.errors.generic"
         // — strip the "app.filings." prefix to resolve through the current
         // namespace. Unknown keys fall back to the generic error.
+        const key = result.error.replace(/^app\.filings\./, "");
+        try {
+          setError(t(key as never));
+        } catch {
+          setError(t("errors.generic"));
+        }
+        return;
+      }
+      const id = result.id;
+      startTransition(() => {
+        router.push(`/filings/${id}`);
+      });
+      setStep("done");
+    } catch {
+      setError(t("wizard.unknownError"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onStepUpGranted() {
+    setStepUp(null);
+    if (!pendingFd) return;
+    setBusy(true);
+    try {
+      const result = await buildFiling(pendingFd);
+      if ("stepUpRequired" in result) {
+        setError(t("errors.stepUpRequired"));
+        return;
+      }
+      if ("error" in result) {
         const key = result.error.replace(/^app\.filings\./, "");
         try {
           setError(t(key as never));
@@ -381,6 +417,11 @@ export default function FilingWizard({
           </button>
         </div>
       ) : null}
+      <StepUpModal
+        envelope={stepUp}
+        onClose={() => setStepUp(null)}
+        onGranted={onStepUpGranted}
+      />
     </div>
   );
 }

@@ -11,7 +11,12 @@ import {
   TextareaField,
   ErrorBanner,
 } from "@/components/app/ui/Field";
+import StepUpModal, {
+  type StepUpEnvelope,
+} from "@/components/app/StepUpModal";
 import { createJournalEntry } from "../actions";
+
+type JournalArgs = Parameters<typeof createJournalEntry>[0];
 
 export type LedgerBusinessOption = {
   id: string;
@@ -67,6 +72,8 @@ export default function JournalEntryForm({ businesses, categories }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [stepUp, setStepUp] = useState<StepUpEnvelope | null>(null);
+  const [pendingArgs, setPendingArgs] = useState<JournalArgs | null>(null);
 
   const [businessId, setBusinessId] = useState<string>(
     businesses[0]?.id ?? "",
@@ -137,19 +144,43 @@ export default function JournalEntryForm({ businesses, categories }: Props) {
       return;
     }
 
+    const callArgs: JournalArgs = {
+      businessId,
+      entryDate,
+      description,
+      lines: cleanLines,
+    };
+    setPendingArgs(callArgs);
     startTransition(async () => {
-      const result = await createJournalEntry({
-        businessId,
-        entryDate,
-        description,
-        lines: cleanLines,
-      });
+      const result = await createJournalEntry(callArgs);
+      if ("stepUpRequired" in result) {
+        setStepUp(result.stepUpRequired);
+        return;
+      }
       if ("error" in result) {
         if (result.error === "app.errors.unbalancedEntry") {
           setError(tCommon("unbalancedEntry"));
         } else {
           setError(tCommon("invalidInput"));
         }
+        return;
+      }
+      router.push("/ledger");
+      router.refresh();
+    });
+  }
+
+  function onStepUpGranted() {
+    setStepUp(null);
+    if (!pendingArgs) return;
+    startTransition(async () => {
+      const result = await createJournalEntry(pendingArgs);
+      if ("stepUpRequired" in result) {
+        setError(tCommon("stepUpRequired"));
+        return;
+      }
+      if ("error" in result) {
+        setError(tCommon("invalidInput"));
         return;
       }
       router.push("/ledger");
@@ -393,6 +424,11 @@ export default function JournalEntryForm({ businesses, categories }: Props) {
           {pending ? tCommon("saving") : t("submit")}
         </motion.button>
       </form>
+      <StepUpModal
+        envelope={stepUp}
+        onClose={() => setStepUp(null)}
+        onGranted={onStepUpGranted}
+      />
     </motion.section>
   );
 }
