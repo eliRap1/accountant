@@ -33,17 +33,16 @@ type ConvRow = {
   created_at: string;
   last_message_at: string | null;
 };
-type ProbeRow = { exists_count: string };
-
 async function listConversations(userId: string): Promise<ConvRow[]> {
   try {
+    // Schema-existence probe via service-role; avoids the RLS path
+    // misreporting the table as missing (see lib/aggregations/advanceTaxStatus.ts).
+    const { dbService } = await import("@/db/client");
+    const meta = (await dbService.execute(
+      sql`SELECT to_regclass('public.ai_conversations') IS NOT NULL AS exists`,
+    )) as unknown as Array<{ exists: boolean }>;
+    if (!meta[0]?.exists) return [];
     return await withUser(userId, async (tx) => {
-      const probe = (await tx.execute(
-        sql`SELECT COUNT(*)::text AS exists_count
-            FROM information_schema.tables
-            WHERE table_name = 'ai_conversations'`,
-      )) as unknown as ProbeRow[];
-      if (Number(probe[0]?.exists_count ?? "0") === 0) return [];
       return (await tx.execute(
         sql`SELECT id::text, title, created_at::text, last_message_at::text
             FROM ai_conversations

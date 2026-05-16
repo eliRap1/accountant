@@ -29,7 +29,6 @@ import type { UIMessage } from "ai";
 // Disclaimer literal (matched by HE_DISCLAIMER in lint-legal-text.ts):
 // אומדנים בלבד · אינו ייעוץ מס
 
-type ProbeRow = { exists_count: string };
 type MsgRow = {
   id: string;
   role: string;
@@ -47,15 +46,12 @@ async function loadConversation(userId: string, conversationId: string): Promise
   rows: MsgRow[];
 }> {
   try {
+    const { dbService } = await import("@/db/client");
+    const meta = (await dbService.execute(
+      sql`SELECT to_regclass('public.ai_messages') IS NOT NULL AS exists`,
+    )) as unknown as Array<{ exists: boolean }>;
+    if (!meta[0]?.exists) return { found: false, rows: [] as MsgRow[] };
     return await withUser(userId, async (tx) => {
-      const probe = (await tx.execute(
-        sql`SELECT COUNT(*)::text AS exists_count
-            FROM information_schema.tables
-            WHERE table_name = 'ai_messages'`,
-      )) as unknown as ProbeRow[];
-      if (Number(probe[0]?.exists_count ?? "0") === 0) {
-        return { found: false, rows: [] as MsgRow[] };
-      }
       // RLS hides conversations owned by another user — if the SELECT
       // returns no row the page renders "thread not found", not the
       // chat panel (defence in depth on top of the policy itself).

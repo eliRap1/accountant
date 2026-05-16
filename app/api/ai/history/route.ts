@@ -50,21 +50,20 @@ type MsgRow = {
   created_at: string;
 };
 
-async function probeTables(userId: string): Promise<{
+async function probeTables(_userId: string): Promise<{
   conversations: boolean;
   messages: boolean;
 }> {
   try {
-    return await withUser(userId, async (tx) => {
-      const rows = (await tx.execute(
-        sql`SELECT table_name FROM information_schema.tables
-            WHERE table_name IN ('ai_conversations','ai_messages')`,
-      )) as unknown as Array<{ table_name: string }>;
-      return {
-        conversations: rows.some((r) => r.table_name === "ai_conversations"),
-        messages: rows.some((r) => r.table_name === "ai_messages"),
-      };
-    });
+    const { dbService } = await import("@/db/client");
+    const rows = (await dbService.execute(
+      sql`SELECT to_regclass('public.ai_conversations') IS NOT NULL AS conversations,
+                 to_regclass('public.ai_messages')      IS NOT NULL AS messages`,
+    )) as unknown as Array<{ conversations: boolean; messages: boolean }>;
+    return {
+      conversations: Boolean(rows[0]?.conversations),
+      messages: Boolean(rows[0]?.messages),
+    };
   } catch {
     return { conversations: false, messages: false };
   }

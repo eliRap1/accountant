@@ -76,7 +76,6 @@ type RequestBody = {
 };
 
 type EntitlementRow = { value_int: number | null };
-type ProbeRow = { exists_count: string };
 
 async function getMonthlyMessageQuota(userId: string): Promise<number | null> {
   // Read the user's active subscription plan + the AI messages cap. If
@@ -123,17 +122,12 @@ async function countMessagesThisMonth(userId: string): Promise<number> {
   monthStart.setUTCHours(0, 0, 0, 0);
   const iso = monthStart.toISOString().slice(0, 10);
   try {
+    const { dbService } = await import("@/db/client");
+    const meta = (await dbService.execute(
+      sql`SELECT to_regclass('public.ai_messages') IS NOT NULL AS exists`,
+    )) as unknown as Array<{ exists: boolean }>;
+    if (!meta[0]?.exists) return 0;
     const rows = await withUser(userId, async (tx) => {
-      // Probe first so missing tables don't surface as an opaque pg error.
-      // (Probe retained for resilience pre-0011 install; once migrations
-      // are applied this short-circuit is dead code but cheap.)
-      const probe = (await tx.execute(
-        sql`SELECT COUNT(*)::text AS exists_count
-            FROM information_schema.tables
-            WHERE table_name = 'ai_messages'`,
-      )) as unknown as ProbeRow[];
-      const exists = Number(probe[0]?.exists_count ?? "0") > 0;
-      if (!exists) return [{ count: "0" }];
       // RLS scopes the conversation join to the calling user, so this
       // counts ONLY this user's messages without a redundant user_id
       // predicate on the rows themselves.
