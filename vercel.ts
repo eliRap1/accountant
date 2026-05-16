@@ -34,15 +34,15 @@ export const config: VercelConfig = {
     // The brief is deterministic (NO AI calls); cost is dominated by
     // Resend transactional sends.
     { path: "/api/cron/morning-brief", schedule: "0 6 * * *" },
-    // Processor-sync hourly sweep (Plan v4 Phase F.4). Pulls receipts
+    // Processor-sync daily sweep (Plan v4 Phase F.4). Pulls receipts
     // from every active processor_sync_credentials row, pairs them
     // with existing internal invoices, and surfaces orphans on the
-    // /processor-sync page. Scheduled at :17 past every hour so we
-    // never collide with the daily morning-brief (06:00) or the
-    // nightly account-purge (03:00). The :17 offset also reduces
-    // thundering-herd risk on the processor APIs at the top of each
-    // hour — most other tenants run their crons at :00.
-    { path: "/api/cron/processor-sync", schedule: "17 * * * *" },
+    // /processor-sync page. Scheduled at 04:17 UTC = 07:17
+    // Asia/Jerusalem — after account-purge (03:00) finishes and
+    // before the morning-brief (06:00) compiles the daily snapshot.
+    // Vercel Hobby tier caps crons at daily granularity; upgrade to
+    // Pro to restore hourly cadence for live processor APIs.
+    { path: "/api/cron/processor-sync", schedule: "17 4 * * *" },
   ],
 
   headers: [
