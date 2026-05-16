@@ -38,5 +38,10 @@ export const config = {
   // raw request body untouched. next-intl's createMiddleware would
   // otherwise rewrite the URL, corrupt the byte-stream Stripe signs
   // against, and break signature verification.
-  matcher: ["/((?!api|_next/static|_next/image|_vercel|.*\\..*).*)"],
+  // `post-auth` excluded: the file at `app/post-auth/page.tsx` is
+  // intentionally locale-neutral (it reads the NEXT_LOCALE cookie and
+  // dispatches). next-intl's prefix-rewriter would otherwise turn
+  // `/post-auth` into `/he-IL/post-auth`, which has no matching file
+  // and 404s every verification-email click.
+  matcher: ["/((?!api|_next/static|_next/image|_vercel|post-auth|.*\\..*).*)"],
 };
