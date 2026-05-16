@@ -16,6 +16,7 @@ import { getUncategorisedReceipts } from "@/lib/aggregations/uncategorisedReceip
 import { getAdvanceTaxStatus } from "@/lib/aggregations/advanceTaxStatus";
 import { getMonthlyProfitTrend } from "@/lib/aggregations/monthlyProfitTrend";
 import { runFullTaxEngine } from "@/lib/tax/il/runEngineForUser";
+import { getSpendingByCategory } from "@/lib/aggregations/spendingByCategory";
 import { getCurrentVatWindow, daysBetween } from "@/lib/scheduler/businessQuotedRevenueWindow";
 import MorningBriefCardServer from "@/components/app/dashboard/MorningBriefCard.server";
 import ReadinessBanner from "@/components/app/dashboard/ReadinessBanner";
@@ -62,6 +63,7 @@ export default async function DashboardPage({
     advanceTaxStatus,
     profitTrend,
     estimate,
+    spendingByCategory,
   ] = await Promise.all([
     getDashboardData(user.appUserId),
     getCashOnHand(user.appUserId),
@@ -70,6 +72,7 @@ export default async function DashboardPage({
     getAdvanceTaxStatus(user.appUserId),
     getMonthlyProfitTrend(user.appUserId),
     runFullTaxEngine(user.appUserId, { now }),
+    getSpendingByCategory(user.appUserId, { now }),
   ]);
 
   const vatWindow = getCurrentVatWindow(now);
@@ -120,6 +123,7 @@ export default async function DashboardPage({
         uncategorisedReceipts={uncategorisedReceipts}
         advanceTaxStatus={advanceTaxStatus}
         profitTrend={profitTrend}
+        spendingByCategory={spendingByCategory}
       />
     </div>
   );

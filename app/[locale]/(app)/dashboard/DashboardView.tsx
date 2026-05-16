@@ -13,11 +13,13 @@ import OverdueInvoicesCard from "@/components/app/dashboard/OverdueInvoicesCard"
 import UncategorisedReceiptsCard from "@/components/app/dashboard/UncategorisedReceiptsCard";
 import MakdamotCard from "@/components/app/dashboard/MakdamotCard";
 import MonthlyProfitTrendChart from "@/components/app/dashboard/MonthlyProfitTrendChart";
+import SpendingByCategoryCard from "@/components/app/dashboard/SpendingByCategoryCard";
 import type { CashOnHand } from "@/lib/aggregations/cashOnHand";
 import type { OverdueInvoices } from "@/lib/aggregations/overdueInvoices";
 import type { UncategorisedReceipts } from "@/lib/aggregations/uncategorisedReceipts";
 import type { AdvanceTaxStatus } from "@/lib/aggregations/advanceTaxStatus";
 import type { MonthlyProfitTrend } from "@/lib/aggregations/monthlyProfitTrend";
+import type { SpendingByCategory } from "@/lib/aggregations/spendingByCategory";
 
 type VatDue = {
   amountMajor: number;
@@ -39,6 +41,7 @@ type Props = {
   uncategorisedReceipts: UncategorisedReceipts;
   advanceTaxStatus: AdvanceTaxStatus;
   profitTrend: MonthlyProfitTrend;
+  spendingByCategory: SpendingByCategory;
 };
 
 export default function DashboardView({
@@ -52,6 +55,7 @@ export default function DashboardView({
   uncategorisedReceipts,
   advanceTaxStatus,
   profitTrend,
+  spendingByCategory,
 }: Props) {
   const t = useTranslations("app.dashboard");
 
@@ -102,6 +106,7 @@ export default function DashboardView({
         ) : (
           <MakdamotCard available={false} locale={locale} />
         )}
+        <SpendingByCategoryCard data={spendingByCategory} locale={locale} />
         <MonthlyProfitTrendChart
           data={profitTrend.rows}
           monthLabels={monthLabels}

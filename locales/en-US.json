@@ -446,6 +446,14 @@
           "window": "Last 6 months"
         }
       },
+      "spendingByCategory": {
+        "title": "Spending by category",
+        "subtitle": "Last 30 days",
+        "total": "Total",
+        "empty": "No expenses in this window.",
+        "viewAll": "All expenses",
+        "uncategorised": "Uncategorised"
+      },
       "chart": {
         "eyebrow": "Overview",
         "title": "Revenue vs profit",
