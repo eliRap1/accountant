@@ -455,7 +455,6 @@
       "recurringSubs": {
         "title": "מנויים קבועים",
         "subtitle": "180 הימים האחרונים",
-        "monthlyTotal": "סך חודשי",
         "occurrences": "{count} חיובים",
         "empty": "לא זוהו מנויים חוזרים."
       },

@@ -455,7 +455,6 @@
       "recurringSubs": {
         "title": "Recurring subscriptions",
         "subtitle": "Last 180 days",
-        "monthlyTotal": "Monthly total",
         "occurrences": "{count} charges",
         "empty": "No recurring charges detected."
       },
