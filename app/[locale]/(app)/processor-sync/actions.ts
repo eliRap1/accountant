@@ -64,7 +64,8 @@ const connectSchema = z.object({
 
 export type ConnectResult =
   | { ok: true; credentialId: string }
-  | { error: string; connectionMessage?: string };
+  | { error: string; connectionMessage?: string }
+  | { stepUpRequired: { op: string; payloadHash: string } };
 
 export async function connectProcessor(
   formData: FormData,
@@ -166,7 +167,11 @@ const revealSchema = z.object({
 // scoped to `processor.view_credentials` + the credential id.
 export async function revealCredential(
   formData: FormData,
-): Promise<{ ok: true; apiKey: string } | { error: string }> {
+): Promise<
+  | { ok: true; apiKey: string }
+  | { error: string }
+  | { stepUpRequired: { op: string; payloadHash: string } }
+> {
   const me = await requireCurrentUser();
   const parsed = revealSchema.safeParse(parseFormData(formData));
   if (!parsed.success) return { error: "app.errors.invalidInput" };
@@ -179,7 +184,9 @@ export async function revealCredential(
     });
   } catch (err) {
     if (err instanceof StepUpRequired) {
-      return { error: "app.errors.stepUpRequired" };
+      return {
+        stepUpRequired: { op: err.op, payloadHash: err.payloadHash },
+      };
     }
     throw err;
   }

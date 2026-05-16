@@ -491,7 +491,9 @@ export async function markSubmitted(
     });
   } catch (err) {
     if (err instanceof StepUpRequired) {
-      return { error: "app.filings.errors.stepUpRequired" };
+      return {
+        stepUpRequired: { op: err.op, payloadHash: err.payloadHash },
+      };
     }
     throw err;
   }

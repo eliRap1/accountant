@@ -186,6 +186,13 @@ export default function FilingWizard({
     setBusy(true);
     try {
       const result = await buildFiling(fd);
+      if ("stepUpRequired" in result) {
+        // Caller must hand the user off to step-up + retry. For now,
+        // surface a translated error pointing at the auth step; a
+        // future improvement is a modal that POSTs to /api/auth/step-up.
+        setError(t("errors.stepUpRequired"));
+        return;
+      }
       if ("error" in result) {
         // Error keys are full dotted paths like "app.filings.errors.generic"
         // — strip the "app.filings." prefix to resolve through the current

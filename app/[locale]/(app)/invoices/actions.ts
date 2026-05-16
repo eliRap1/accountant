@@ -106,7 +106,8 @@ const baseInvoiceSchema = z.object({
 
 export type InvoiceActionResult =
   | { ok: true; id: string }
-  | { error: string };
+  | { error: string }
+  | { stepUpRequired: { op: string; payloadHash: string } };
 
 function parseFormData(formData: FormData): unknown {
   const obj: Record<string, unknown> = {};
@@ -278,7 +279,9 @@ export async function createInvoice(
       });
     } catch (err) {
       if (err instanceof StepUpRequired) {
-        return { error: "app.errors.stepUpRequired" };
+        return {
+          stepUpRequired: { op: err.op, payloadHash: err.payloadHash },
+        };
       }
       throw err;
     }

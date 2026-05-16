@@ -33,7 +33,8 @@ const entrySchema = z.object({
 
 export type JournalEntryActionResult =
   | { ok: true; id: string }
-  | { error: string };
+  | { error: string }
+  | { stepUpRequired: { op: string; payloadHash: string } };
 
 function nullIfBlank(v: string | null | undefined): string | null {
   if (v === undefined || v === null) return null;
@@ -94,7 +95,9 @@ export async function createJournalEntry(payload: {
       });
     } catch (err) {
       if (err instanceof StepUpRequired) {
-        return { error: "app.errors.periodClosedStepUpRequired" };
+        return {
+          stepUpRequired: { op: err.op, payloadHash: err.payloadHash },
+        };
       }
       throw err;
     }

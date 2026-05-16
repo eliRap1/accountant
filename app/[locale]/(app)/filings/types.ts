@@ -15,7 +15,8 @@ export type FilingKind =
 
 export type FilingActionResult =
   | { ok: true; id: string }
-  | { error: string };
+  | { error: string }
+  | { stepUpRequired: { op: string; payloadHash: string } };
 
 /** Map a filing kind to a step-up op symbol from `STEP_UP_OPS`. */
 export function mapStepUpOpForKind(kind: FilingKind): StepUpOp {
