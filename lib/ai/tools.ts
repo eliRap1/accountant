@@ -12,6 +12,7 @@
 import { tool } from "ai";
 import { z } from "zod";
 import { sql } from "drizzle-orm";
+import { getSpendingByCategory } from "@/lib/aggregations/spendingByCategory";
 import { withUser } from "@/lib/db/withUser";
 import { runFullTaxEngine } from "@/lib/tax/il/runEngineForUser";
 
@@ -183,9 +184,6 @@ export function buildGetSpendingByCategory(ctx: ToolContext) {
       windowDays: z.number().int().min(7).max(365).default(30),
     }),
     execute: async ({ windowDays }) => {
-      const { getSpendingByCategory } = await import(
-        "@/lib/aggregations/spendingByCategory"
-      );
       const result = await getSpendingByCategory(ctx.userId, {
         windowDays,
         ...(ctx.now ? { now: ctx.now } : {}),
