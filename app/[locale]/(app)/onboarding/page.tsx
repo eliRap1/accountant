@@ -1,15 +1,21 @@
 import { redirect } from "next/navigation";
 import type { Route } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import { hasLocale } from "next-intl";
 import OnboardingWizard from "./OnboardingWizard";
 import { routing } from "@/i18n/routing";
 import { requireCurrentUser } from "@/lib/auth/serverSession";
 import { getOnboardingState } from "@/lib/aggregations/onboardingState";
 
-export const metadata = {
-  title: "Onboarding · AccounTech",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "app.onboarding" });
+  return { title: t("metaTitle") };
+}
 
 export default async function OnboardingPage({
   params,

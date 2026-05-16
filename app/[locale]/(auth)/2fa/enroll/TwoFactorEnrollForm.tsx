@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Loader2, ShieldCheck, Copy, Check } from "lucide-react";
+import QRCode from "qrcode";
 import { useRouter } from "@/i18n/navigation";
 import { twoFactor } from "@/lib/auth/client";
 
@@ -25,6 +26,34 @@ export default function TwoFactorEnrollForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<"secret" | "codes" | null>(null);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+
+  // Render the otpauth URI to a data-URL QR code as soon as the
+  // password gate clears. `qrcode.toDataURL` is async — we cache it in
+  // local state so the `<img>` can render synchronously on rerenders.
+  useEffect(() => {
+    if (state.kind !== "scan") {
+      setQrDataUrl(null);
+      return;
+    }
+    let cancelled = false;
+    QRCode.toDataURL(state.totpURI, {
+      errorCorrectionLevel: "M",
+      margin: 1,
+      width: 220,
+      color: { dark: "#0f172a", light: "#ffffff" },
+    })
+      .then((url) => {
+        if (!cancelled) setQrDataUrl(url);
+      })
+      .catch(() => {
+        // QR render failed — leave the manual-entry fallback visible.
+        if (!cancelled) setQrDataUrl(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [state]);
 
   async function onEnable(e: FormEvent) {
     e.preventDefault();
@@ -164,6 +193,18 @@ export default function TwoFactorEnrollForm() {
       <p className="mt-3 text-sm text-slate-400">{t("subtitleScan")}</p>
 
       <div className="mt-6 space-y-4">
+        {qrDataUrl && (
+          <div className="flex flex-col items-center gap-2">
+            <img
+              src={qrDataUrl}
+              alt={t("qrCaption")}
+              width={220}
+              height={220}
+              className="rounded-lg border border-white/10 bg-white p-2 shadow-[0_10px_40px_-15px_rgba(16,185,129,0.45)]"
+            />
+            <p className="text-xs text-slate-400">{t("qrCaption")}</p>
+          </div>
+        )}
         <div>
           <p className="text-xs uppercase tracking-wider text-slate-500">
             {t("manualSecretLabel")}

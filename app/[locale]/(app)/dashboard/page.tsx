@@ -10,10 +10,17 @@ import {
   getDashboardData,
   labelForMonthIdx,
 } from "@/lib/aggregations/dashboardData";
+import MorningBriefCardServer from "@/components/app/dashboard/MorningBriefCard.server";
 
-export const metadata = {
-  title: "Dashboard · AccounTech",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "app.dashboard" });
+  return { title: t("metaTitle") };
+}
 
 export default async function DashboardPage({
   params,
@@ -56,10 +63,16 @@ export default async function DashboardPage({
   }));
 
   return (
-    <DashboardView
-      chartData={chartData}
-      kpis={data.kpis}
-      isEmpty={data.isEmpty}
-    />
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+      {/* Morning Tax Brief — Product council pick (docs/council/
+          2026-05-16-product-review.md §7). Renders above the KPI grid so
+          the user sees "what to do today" before "how am I doing overall". */}
+      <MorningBriefCardServer locale={locale} />
+      <DashboardView
+        chartData={chartData}
+        kpis={data.kpis}
+        isEmpty={data.isEmpty}
+      />
+    </div>
   );
 }

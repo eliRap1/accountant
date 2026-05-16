@@ -50,6 +50,34 @@
       "when": 1779465600000,
       "tag": "0006_stripe_webhook_events",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1778938693233,
+      "tag": "0007_modern_karma",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1778938700000,
+      "tag": "0008_rls_layer3",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1779710400000,
+      "tag": "0009_coa_errata",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1779710401000,
+      "tag": "0010_coa_errata_notices",
+      "breakpoints": true
     }
   ]
 }

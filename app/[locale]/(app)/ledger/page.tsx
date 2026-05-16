@@ -10,6 +10,16 @@ import LedgerView, {
 
 type SearchParams = Promise<{ businessId?: string }>;
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "app.ledger" });
+  return { title: t("metaTitle") };
+}
+
 export default async function LedgerPage({
   searchParams,
 }: {

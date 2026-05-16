@@ -134,6 +134,25 @@ const PLANS: PlanSeed[] = [
 // Form 6111 line numbers reference the ITA's standard mapping schedule.
 // Lines we don't yet have a confirmed mapping for are left as null; Phase D
 // fills them in based on the rules-2026 source-of-truth review.
+//
+// Errata applied 2026-05-16 per docs/council/2026-05-16-cpa-review.md § 4:
+//   - 1030 reclassified asset → liability ("Credit cards payable").
+//   - 2150 removed (was duplicative of 2100 + 1400 netting). If a DB
+//     somewhere already has journal_lines referencing 2150, the migration
+//     deactivates the row instead of dropping; either way it is gone here.
+//   - 7400 kept as parent + 7401-7405 added (gas, maintenance, vehicle
+//     insurance, leasing, vehicle depreciation).
+//   - 8100 → 8110 (Interest & finance) and 8500 → 8510 (FX differences):
+//     renumbered to free 8100 / 8500 for the new semantics (donations §46
+//     and e-commerce fees). The migration handles existing journal_lines.
+//   - Added: 1305 (supplier advances), 2070 (accrued payroll), 2080
+//     (severance accrual), 8100 (donations), 8200 (depreciation expense),
+//     8300 (professional indemnity), 8400 (rent operational), 8500
+//     (e-commerce fees).
+//
+// form_6111_line values tagged `<verify-this>` need a live ITA-doc check
+// before Phase D ships filings UI. See docs/council/2026-05-16-cpa-review.md
+// § 6 for the source-of-truth mapping table (still <verify-this-with-CPA>).
 type ChartCodeSeed = {
   code: string;
   nameHe: string;
@@ -147,11 +166,14 @@ const CHART_OF_ACCOUNTS: ChartCodeSeed[] = [
   { code: "1000", nameHe: "מזומנים בקופה", nameEn: "Cash on hand", type: "asset", form6111Line: "1010" },
   { code: "1010", nameHe: "חשבון בנק - שוטף", nameEn: "Bank account - current", type: "asset", form6111Line: "1011" },
   { code: "1020", nameHe: "חשבון בנק - חיסכון", nameEn: "Bank account - savings", type: "asset", form6111Line: "1011" },
-  { code: "1030", nameHe: "כרטיסי אשראי לחיוב", nameEn: "Credit card receivable", type: "asset", form6111Line: "1011" },
+  // 1030 reclassified by 2026-05-16 errata: asset → liability.
+  { code: "1030", nameHe: "כרטיסי אשראי", nameEn: "Credit cards payable", type: "liability", form6111Line: "2050" /* <verify-this> */ },
   { code: "1100", nameHe: "לקוחות - חייבים", nameEn: "Accounts receivable", type: "asset", form6111Line: "1020" },
   { code: "1150", nameHe: "המחאות לגבייה", nameEn: "Checks for collection", type: "asset", form6111Line: "1020" },
   { code: "1200", nameHe: "מלאי", nameEn: "Inventory", type: "asset", form6111Line: "1040" },
   { code: "1300", nameHe: "הוצאות נדחות / מקדמות לספקים", nameEn: "Prepaid expenses / supplier advances", type: "asset", form6111Line: "1050" },
+  // 1305 added by 2026-05-16 errata.
+  { code: "1305", nameHe: "מקדמות לספקים", nameEn: "Supplier advances", type: "asset", form6111Line: "1050" /* <verify-this> */ },
   { code: "1400", nameHe: "מע\"מ תשומות", nameEn: "VAT inputs (recoverable)", type: "asset", form6111Line: "1060" },
   { code: "1450", nameHe: "ניכוי מס במקור - לזכותנו", nameEn: "Withholding tax credit (clients withheld)", type: "asset", form6111Line: null },
   { code: "1500", nameHe: "רכוש קבוע - ציוד", nameEn: "Fixed assets - equipment", type: "asset", form6111Line: "1070" },
@@ -159,8 +181,11 @@ const CHART_OF_ACCOUNTS: ChartCodeSeed[] = [
   { code: "1590", nameHe: "פחת נצבר", nameEn: "Accumulated depreciation", type: "asset", form6111Line: "1075" },
   // 2xxx — Liabilities
   { code: "2000", nameHe: "ספקים - זכאים", nameEn: "Accounts payable", type: "liability", form6111Line: "2010" },
+  // 2070, 2080 added by 2026-05-16 errata.
+  { code: "2070", nameHe: "הוצאות לשלם - עובדים", nameEn: "Accrued payroll", type: "liability", form6111Line: "2070" /* <verify-this> */ },
+  { code: "2080", nameHe: "פיצויי פיטורין", nameEn: "Severance accrual", type: "liability", form6111Line: "2070" /* <verify-this> */ },
   { code: "2100", nameHe: "מע\"מ עסקאות", nameEn: "VAT outputs (payable)", type: "liability", form6111Line: "2020" },
-  { code: "2150", nameHe: "מע\"מ לתשלום", nameEn: "VAT net payable", type: "liability", form6111Line: "2020" },
+  // 2150 removed by 2026-05-16 errata (duplicative of 2100 + 1400 netting).
   { code: "2200", nameHe: "מקדמות מס הכנסה", nameEn: "Income tax advances payable", type: "liability", form6111Line: "2030" },
   { code: "2250", nameHe: "ניכוי מס במקור - מספקים", nameEn: "Withholding tax payable (we withheld)", type: "liability", form6111Line: "2031" },
   { code: "2300", nameHe: "ביטוח לאומי", nameEn: "Bituach Leumi payable", type: "liability", form6111Line: "2040" },
@@ -190,15 +215,28 @@ const CHART_OF_ACCOUNTS: ChartCodeSeed[] = [
   { code: "7200", nameHe: "ביטוחים", nameEn: "Insurance", type: "expense", form6111Line: "7030" },
   { code: "7300", nameHe: "משכורות", nameEn: "Wages & salaries", type: "expense", form6111Line: "7040" },
   { code: "7310", nameHe: "תשלומים סוציאליים", nameEn: "Social benefits (employer share)", type: "expense", form6111Line: "7041" },
-  { code: "7400", nameHe: "הוצאות רכב", nameEn: "Vehicle expenses", type: "expense", form6111Line: "7050" },
+  // 7400 renamed to parent + 7401-7405 added by 2026-05-16 errata.
+  { code: "7400", nameHe: "הוצאות רכב (אב)", nameEn: "Vehicle expenses (parent)", type: "expense", form6111Line: "350" /* <verify-this> */ },
+  { code: "7401", nameHe: "דלק", nameEn: "Gas", type: "expense", form6111Line: "350" /* <verify-this> */ },
+  { code: "7402", nameHe: "תחזוקה", nameEn: "Maintenance", type: "expense", form6111Line: "350" /* <verify-this> */ },
+  { code: "7403", nameHe: "ביטוח רכב", nameEn: "Vehicle insurance", type: "expense", form6111Line: "350" /* <verify-this> */ },
+  { code: "7404", nameHe: "ליסינג", nameEn: "Leasing", type: "expense", form6111Line: "350" /* <verify-this> */ },
+  { code: "7405", nameHe: "פחת רכב", nameEn: "Vehicle depreciation", type: "expense", form6111Line: "500" /* <verify-this> */ },
   { code: "7500", nameHe: "שירותים מקצועיים", nameEn: "Professional services", type: "expense", form6111Line: "7060" },
   { code: "7600", nameHe: "מחשוב ותוכנה", nameEn: "Computing & software", type: "expense", form6111Line: "7070" },
   { code: "7700", nameHe: "ציוד משרדי", nameEn: "Office supplies", type: "expense", form6111Line: "7080" },
   { code: "7800", nameHe: "פחת", nameEn: "Depreciation", type: "expense", form6111Line: "7090" },
-  // 8xxx — Financial expenses / income
+  // 8xxx — Financial expenses / income + 2026-05-16 errata new semantics.
   { code: "8000", nameHe: "עמלות בנק", nameEn: "Bank fees", type: "expense", form6111Line: "8010" },
-  { code: "8100", nameHe: "ריבית והוצאות מימון", nameEn: "Interest & finance charges", type: "expense", form6111Line: "8020" },
-  { code: "8500", nameHe: "הפרשי שער", nameEn: "FX differences", type: "expense", form6111Line: "8030" },
+  // 8100 is now Donations (§46); the prior Interest row was renumbered to 8110.
+  { code: "8100", nameHe: "תרומות", nameEn: "Donations (§46 eligible)", type: "expense", form6111Line: "890" /* <verify-this> */ },
+  { code: "8110", nameHe: "ריבית והוצאות מימון", nameEn: "Interest & finance charges", type: "expense", form6111Line: "540" /* <verify-this> */ },
+  { code: "8200", nameHe: "פחת", nameEn: "Depreciation expense", type: "expense", form6111Line: "500" /* <verify-this> */ },
+  { code: "8300", nameHe: "ביטוח אחריות מקצועית", nameEn: "Professional indemnity insurance", type: "expense", form6111Line: "380" /* <verify-this> */ },
+  { code: "8400", nameHe: "השכרה", nameEn: "Rent (operational)", type: "expense", form6111Line: "290" /* <verify-this> */ },
+  // 8500 is now E-commerce fees; the prior FX row was renumbered to 8510.
+  { code: "8500", nameHe: "מסחר אלקטרוני - עמלות", nameEn: "E-commerce fees", type: "expense", form6111Line: "380" /* <verify-this> */ },
+  { code: "8510", nameHe: "הפרשי שער", nameEn: "FX differences", type: "expense", form6111Line: "580" /* <verify-this> */ },
 ];
 
 async function main() {

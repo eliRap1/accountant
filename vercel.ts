@@ -9,6 +9,14 @@ export const config: VercelConfig = {
   installCommand: "pnpm install --frozen-lockfile",
   outputDirectory: ".next",
 
+  // Frankfurt — same continent as our Neon `eu-central-1` cluster, and
+  // ~150 ms closer to Israeli users than the default `iad1` (Washington
+  // DC). Cross-Atlantic round-trips on every server-side DB query used
+  // to dominate p95; pinning Serverless Functions to the DB region
+  // collapses that path. `regions` is the canonical field on
+  // `VercelConfig` (`@vercel/config/v1`).
+  regions: ["fra1"],
+
   crons: [
     // Nightly account-purge sweep — destroys DEKs for users past their
     // 30-day post-soft-delete grace window (Plan v4 Risk #7, IL Privacy
@@ -18,6 +26,14 @@ export const config: VercelConfig = {
     // backup runs (the backup-daily cron at 03:17 UTC remains the
     // upstream archival step before any retention sweep).
     { path: "/api/cron/account-purge", schedule: "0 3 * * *" },
+    // Morning Tax Brief — the product's killer feature (Product council
+    // pick, docs/council/2026-05-16-product-review.md §7). Daily 06:00
+    // UTC = 08:00 Asia/Jerusalem in winter / 09:00 in summer. The 1-hour
+    // DST drift is an accepted MVP trade-off; running two cron entries
+    // is more operational complexity than the daily habit goal needs.
+    // The brief is deterministic (NO AI calls); cost is dominated by
+    // Resend transactional sends.
+    { path: "/api/cron/morning-brief", schedule: "0 6 * * *" },
   ],
 
   headers: [

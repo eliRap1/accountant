@@ -13,6 +13,16 @@ type SearchParams = Promise<{
 
 type BusinessOption = { id: string; legalName: string };
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "app.transactions" });
+  return { title: t("metaTitle") };
+}
+
 export default async function TransactionsPage({
   searchParams,
 }: {

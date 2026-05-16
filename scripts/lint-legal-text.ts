@@ -1,12 +1,12 @@
 // Legal-text linter (Plan v4 §Verification Plan #4).
 //
-// Tax surfaces must render the estimates disclaimer either via the
+// Tax + AI surfaces must render the estimates disclaimer either via the
 // <EstimatesDisclaimer> component or as a literal string. The literal
 // fallback exists for emails / PDF exports where the React component is
 // not available.
 //
-// Phase A.7 reality: `app/[locale]/(app)/tax/` does not exist yet.
-// Phase D entry: tax routes land → linter scans them.
+// Phase A.7 reality: `app/[locale]/(app)/tax/` did not exist yet.
+// Phase D entry: tax + AI advisor routes land → linter scans them.
 //
 // Run: `pnpm lint:legal-text`
 
@@ -53,18 +53,22 @@ function fileSatisfiesDisclaimer(file: string): boolean {
 function main(): number {
   // Targets:
   //   1. Tax app routes per locale: app/[locale]/(app)/tax/**
-  //   2. Shared legal components: components/app/legal/**
+  //   2. AI advisor app routes per locale: app/[locale]/(app)/ai/**
+  //   3. Shared legal components: components/app/legal/**
   const targets: string[] = [];
 
   const taxRoot = path.join(repoRoot, "app", "[locale]", "(app)", "tax");
+  const aiRoot = path.join(repoRoot, "app", "[locale]", "(app)", "ai");
   const legalRoot = path.join(repoRoot, "components", "app", "legal");
 
-  for (const dir of [taxRoot, legalRoot]) {
+  for (const dir of [taxRoot, aiRoot, legalRoot]) {
     if (!fs.existsSync(dir)) continue;
     for (const file of walk(dir)) {
       // Only scan page/layout/component entry points. Helper files are
       // assumed not to render disclaimer-bearing surfaces directly.
-      if (/(page|layout|template)\.(t|j)sx?$/.test(file) || /components\/app\/legal/.test(file)) {
+      // Use a path-separator-agnostic regex (Windows uses backslashes).
+      const isLegalComponent = /[\\/]components[\\/]app[\\/]legal[\\/]/.test(file);
+      if (/(page|layout|template)\.(t|j)sx?$/.test(file) || isLegalComponent) {
         targets.push(file);
       }
     }

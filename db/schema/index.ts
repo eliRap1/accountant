@@ -11,3 +11,12 @@ export * from "./clients";
 export * from "./ledger";
 export * from "./invoicing";
 export * from "./money-flows";
+// Layer 3
+export * from "./tax-filings";
+export * from "./payroll";
+export * from "./compliance";
+// Errata / governance
+export * from "./coa-errata";
+// NOTE: db/schema/scheduled.ts deliberately not re-exported here —
+// it only re-exports from invoicing.ts (Layer 2) for documentary cohesion;
+// including it would produce duplicate exports.

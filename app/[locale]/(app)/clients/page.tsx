@@ -5,6 +5,16 @@ import { requireCurrentUser } from "@/lib/auth/serverSession";
 import { withUser } from "@/lib/db/withUser";
 import ClientList, { type ClientRow } from "./ClientList";
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "app.clients" });
+  return { title: t("metaTitle") };
+}
+
 export default async function ClientsPage() {
   const me = await requireCurrentUser();
   const t = await getTranslations("app.clients");

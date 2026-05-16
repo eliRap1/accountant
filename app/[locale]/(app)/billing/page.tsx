@@ -1,6 +1,6 @@
 import type { Route } from "next";
 import { redirect } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import { hasLocale } from "next-intl";
 import { sql } from "drizzle-orm";
 import BillingView from "./BillingView";
@@ -9,9 +9,15 @@ import { requireCurrentUser } from "@/lib/auth/serverSession";
 import { withServiceRole } from "@/lib/db/withServiceRole";
 import { PLAN_IDS, type PlanId } from "@/lib/billing/plans";
 
-export const metadata = {
-  title: "Billing · AccounTech",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "app.billing" });
+  return { title: t("metaTitle") };
+}
 
 type PlanRow = {
   id: string;
