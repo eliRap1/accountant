@@ -58,6 +58,20 @@ export async function GET(request: Request): Promise<Response> {
   }
 
   const credentials: CredentialRow[] = await withServiceRole(async (tx) => {
+    // Auto-reset stale failure counters every 24h so a credential
+    // that hit the failure ceiling during a transient outage can
+    // recover without manual intervention. Without this the row was
+    // excluded forever — `runSync.ts` only ever resets
+    // `consecutive_failures` from inside the cron path that we just
+    // excluded the row from. Catch-22.
+    await tx.execute(
+      sql`UPDATE processor_sync_credentials
+            SET consecutive_failures = 0
+          WHERE active = true
+            AND consecutive_failures >= ${MAX_CONSECUTIVE_FAILURES}
+            AND (last_synced_at IS NULL OR last_synced_at < now() - interval '24 hours')`,
+    );
+
     return (await tx.execute(
       sql`SELECT id::text AS id,
                  business_id::text AS "businessId",

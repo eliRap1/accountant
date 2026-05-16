@@ -99,6 +99,18 @@ export async function uploadAndParse(
     return { error: "app.bankImports.errors.parseFailed" };
   }
 
+  // Stubbed parsers (Leumi PDF, Mizrahi XLSX, …) return zero rows and
+  // a "stubbed" warning string instead of throwing. Without this guard
+  // we silently INSERT a row_count=0 import + the operator believes
+  // their statement uploaded successfully.
+  if (
+    parsedResult.rows.length === 0 &&
+    parsedResult.warnings?.some((w) => /stub/i.test(w))
+  ) {
+    console.warn("[bank-imports] parser stubbed for", input.bank, input.sourceFormat);
+    return { error: "app.bankImports.errors.parserNotImplemented" };
+  }
+
   // Convert bigints to strings before JSON serialisation; the JSONB
   // column doesn't preserve bigint precision otherwise.
   const serialisedRows = parsedResult.rows.map((r) => ({

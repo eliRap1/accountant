@@ -1409,7 +1409,8 @@
         "readFile": "Could not read the file",
         "noRowsSelected": "Select at least one row to commit",
         "alreadyCommitted": "Import already committed",
-        "parseFailed": "File could not be parsed — check the format matches the selected bank"
+        "parseFailed": "File could not be parsed — check the format matches the selected bank",
+        "parserNotImplemented": "Parser for this bank+format combination is not implemented yet — try CSV until full support ships"
       }
     },
     "processorSync": {
