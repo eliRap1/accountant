@@ -2,12 +2,14 @@
 
 import { useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Loader2, KeyRound } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { resetPassword } from "@/lib/auth/client";
 
 export default function ResetPasswordForm() {
+  const t = useTranslations("auth.resetPassword");
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams?.get("token") ?? "";
@@ -22,15 +24,15 @@ export default function ResetPasswordForm() {
     setError(null);
 
     if (!token) {
-      setError("הקישור לא תקף — חסר token");
+      setError(t("errors.missingToken"));
       return;
     }
     if (password !== confirm) {
-      setError("הסיסמאות אינן תואמות");
+      setError(t("errors.mismatch"));
       return;
     }
     if (password.length < 12) {
-      setError("סיסמה חייבת לכלול לפחות 12 תווים");
+      setError(t("errors.passwordTooShortClient"));
       return;
     }
 
@@ -38,12 +40,12 @@ export default function ResetPasswordForm() {
     try {
       const result = await resetPassword({ newPassword: password, token });
       if (result.error) {
-        setError(messageFor(result.error.code, result.error.message));
+        setError(t(messageKeyFor(result.error.code)));
         return;
       }
       router.push({ pathname: "/sign-in", query: { reset: "ok" } });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
+      setError(err instanceof Error ? err.message : t("errors.unexpected"));
     } finally {
       setSubmitting(false);
     }
@@ -61,16 +63,14 @@ export default function ResetPasswordForm() {
           <KeyRound size={18} />
         </div>
         <h1 className="text-2xl font-semibold tracking-tight text-slate-100">
-          סיסמה חדשה
+          {t("title")}
         </h1>
       </div>
-      <p className="mt-3 text-sm text-slate-400">
-        בחרו סיסמה חדשה (לפחות 12 תווים).
-      </p>
+      <p className="mt-3 text-sm text-slate-400">{t("subtitle")}</p>
 
       <form onSubmit={onSubmit} className="mt-8 space-y-5" noValidate>
         <label className="block">
-          <span className="block text-sm text-slate-300">סיסמה חדשה</span>
+          <span className="block text-sm text-slate-300">{t("passwordLabel")}</span>
           <input
             type="password"
             name="password"
@@ -84,7 +84,9 @@ export default function ResetPasswordForm() {
           />
         </label>
         <label className="block">
-          <span className="block text-sm text-slate-300">אימות סיסמה</span>
+          <span className="block text-sm text-slate-300">
+            {t("passwordConfirmLabel")}
+          </span>
           <input
             type="password"
             name="confirm"
@@ -120,7 +122,7 @@ export default function ResetPasswordForm() {
           className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-medium tracking-tight text-slate-950 shadow-[0_10px_40px_-10px_rgba(16,185,129,0.7)] transition-colors hover:bg-emerald-400 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {submitting && <Loader2 size={16} className="animate-spin" />}
-          {submitting ? "שומר..." : "עדכן סיסמה"}
+          {submitting ? t("submitting") : t("submit")}
         </motion.button>
       </form>
 
@@ -129,23 +131,26 @@ export default function ResetPasswordForm() {
           href="/sign-in"
           className="text-emerald-300 hover:text-emerald-200 transition-colors"
         >
-          חזרה לכניסה
+          {t("backToSignIn")}
         </Link>
       </p>
     </motion.section>
   );
 }
 
-function messageFor(code: string | undefined, fallback: string | undefined): string {
+// Map Better Auth error codes to translation keys (relative to the
+// `auth.resetPassword` namespace).
+function messageKeyFor(code: string | undefined): string {
   switch (code) {
     case "INVALID_TOKEN":
+      return "errors.invalidToken";
     case "TOKEN_EXPIRED":
-      return "הקישור לאיפוס פג תוקף — בקשו קישור חדש";
+      return "errors.tokenExpired";
     case "PASSWORD_TOO_SHORT":
-      return "הסיסמה קצרה מדי (מינימום 12 תווים)";
+      return "errors.passwordTooShort";
     case "PASSWORD_TOO_LONG":
-      return "הסיסמה ארוכה מדי (מקסימום 128 תווים)";
+      return "errors.passwordTooLong";
     default:
-      return fallback ?? "שגיאה באיפוס סיסמה";
+      return "errors.generic";
   }
 }

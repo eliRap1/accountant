@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Loader2, KeyRound, Plus, Trash2, Check } from "lucide-react";
 import { passkey } from "@/lib/auth/client";
@@ -13,6 +14,8 @@ type Passkey = {
 };
 
 export default function PasskeysManager() {
+  const t = useTranslations("auth.passkeys");
+  const locale = useLocale();
   const [list, setList] = useState<Passkey[] | null>(null);
   const [adding, setAdding] = useState(false);
   const [newName, setNewName] = useState("");
@@ -25,17 +28,18 @@ export default function PasskeysManager() {
     try {
       const result = await passkey.listUserPasskeys();
       if (result.error) {
-        setError(result.error.message ?? "שגיאה בטעינת מפתחות");
+        setError(result.error.message ?? t("errors.loadFailed"));
         return;
       }
       setList((result.data ?? []) as Passkey[]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
+      setError(err instanceof Error ? err.message : t("errors.unexpected"));
     }
   }
 
   useEffect(() => {
     refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function onAdd(e: FormEvent) {
@@ -49,33 +53,33 @@ export default function PasskeysManager() {
         trimmedName ? { name: trimmedName } : {},
       );
       if (result?.error) {
-        setError(result.error.message ?? "רישום נכשל");
+        setError(result.error.message ?? t("errors.addFailed"));
         return;
       }
-      setSuccess("המפתח נרשם");
+      setSuccess(t("added"));
       setNewName("");
       setAdding(false);
       await refresh();
       window.setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
+      setError(err instanceof Error ? err.message : t("errors.unexpected"));
     } finally {
       setSubmitting(false);
     }
   }
 
   async function onDelete(id: string) {
-    if (!confirm("למחוק את המפתח? לא ניתן לבטל.")) return;
+    if (!confirm(t("confirmDelete"))) return;
     setError(null);
     try {
       const result = await passkey.deletePasskey({ id });
       if (result?.error) {
-        setError(result.error.message ?? "מחיקה נכשלה");
+        setError(result.error.message ?? t("errors.deleteFailed"));
         return;
       }
       await refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
+      setError(err instanceof Error ? err.message : t("errors.unexpected"));
     }
   }
 
@@ -92,11 +96,9 @@ export default function PasskeysManager() {
         </div>
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-100">
-            מפתחות גישה
+            {t("title")}
           </h1>
-          <p className="mt-1 text-sm text-slate-400">
-            כניסה עם Face ID / Touch ID / Windows Hello — בלי סיסמה.
-          </p>
+          <p className="mt-1 text-sm text-slate-400">{t("subtitle")}</p>
         </div>
       </div>
 
@@ -126,7 +128,7 @@ export default function PasskeysManager() {
         )}
         {list?.length === 0 && (
           <p className="rounded-lg border border-dashed border-white/10 px-4 py-6 text-center text-sm text-slate-500">
-            אין עדיין מפתחות גישה. הוסיפו אחד למטה.
+            {t("emptyState")}
           </p>
         )}
         {list?.map((pk) => (
@@ -136,18 +138,18 @@ export default function PasskeysManager() {
           >
             <div>
               <p className="text-sm text-slate-100">
-                {pk.name || "מפתח ללא שם"}
+                {pk.name || t("unnamed")}
               </p>
               <p className="mt-0.5 text-xs text-slate-500">
-                {formatDeviceType(pk.deviceType)}
-                {pk.createdAt && ` · נוסף ${formatDate(pk.createdAt)}`}
+                {formatDeviceType(pk.deviceType, t)}
+                {pk.createdAt && ` · ${t("addedOn")} ${formatDate(pk.createdAt, locale)}`}
               </p>
             </div>
             <button
               type="button"
               onClick={() => onDelete(pk.id)}
               className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-500/10 hover:text-red-300"
-              aria-label="מחיקה"
+              aria-label={t("deleteAria")}
             >
               <Trash2 size={16} />
             </button>
@@ -158,13 +160,12 @@ export default function PasskeysManager() {
       {adding ? (
         <form onSubmit={onAdd} className="mt-6 space-y-4">
           <label className="block">
-            <span className="block text-sm text-slate-300">
-              שם למפתח (למשל: "iPhone של אלי")
-            </span>
+            <span className="block text-sm text-slate-300">{t("nameLabel")}</span>
             <input
               type="text"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
+              placeholder={t("namePlaceholder")}
               autoFocus
               disabled={submitting}
               className="mt-2 block w-full rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2.5 text-sm text-slate-100 outline-none transition-colors focus:border-emerald-400/60 focus:ring-2 focus:ring-emerald-500/30 disabled:opacity-60"
@@ -184,7 +185,7 @@ export default function PasskeysManager() {
               className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-medium tracking-tight text-slate-950 shadow-[0_10px_40px_-10px_rgba(16,185,129,0.7)] transition-colors hover:bg-emerald-400 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {submitting && <Loader2 size={16} className="animate-spin" />}
-              {submitting ? "ממתין למכשיר..." : "המשך"}
+              {submitting ? t("addSubmitting") : t("addSubmit")}
             </motion.button>
             <button
               type="button"
@@ -195,7 +196,7 @@ export default function PasskeysManager() {
               disabled={submitting}
               className="rounded-xl border border-white/10 px-4 py-3 text-sm text-slate-300 transition-colors hover:bg-white/5 disabled:opacity-60"
             >
-              ביטול
+              {t("cancel")}
             </button>
           </div>
         </form>
@@ -206,28 +207,31 @@ export default function PasskeysManager() {
           className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-400/40 bg-emerald-500/5 px-5 py-3 text-sm font-medium tracking-tight text-emerald-200 transition-colors hover:bg-emerald-500/10"
         >
           <Plus size={16} />
-          הוספת מפתח גישה
+          {t("addPasskey")}
         </button>
       )}
     </motion.section>
   );
 }
 
-function formatDeviceType(t: string | null | undefined): string {
-  switch (t) {
+function formatDeviceType(
+  type: string | null | undefined,
+  t: (key: string) => string,
+): string {
+  switch (type) {
     case "singleDevice":
-      return "מכשיר יחיד";
+      return t("deviceSingle");
     case "multiDevice":
-      return "מסונכרן בענן (Apple / Google / Microsoft)";
+      return t("deviceMulti");
     default:
-      return t ?? "מפתח חומרה";
+      return type ?? t("deviceUnknown");
   }
 }
 
-function formatDate(d: string | Date): string {
+function formatDate(d: string | Date, locale: string): string {
   const date = typeof d === "string" ? new Date(d) : d;
   if (Number.isNaN(date.getTime())) return "";
-  return new Intl.DateTimeFormat("he-IL", {
+  return new Intl.DateTimeFormat(locale, {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",

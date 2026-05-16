@@ -130,6 +130,206 @@
     "short": "HE",
     "flag": "🇮🇱"
   },
+  "auth": {
+    "logoTagline": "דיוק ושקיפות",
+    "signIn": {
+      "title": "ברוכים השבים",
+      "subtitle": "הזינו את פרטי החשבון שלכם להמשך",
+      "emailLabel": "כתובת אימייל",
+      "passwordLabel": "סיסמה",
+      "forgotPassword": "שכחת סיסמה?",
+      "submit": "התחבר",
+      "submitting": "מתחבר...",
+      "noAccount": "אין לכם חשבון?",
+      "createOne": "צור חשבון",
+      "errors": {
+        "invalidCredentials": "אימייל או סיסמה שגויים",
+        "emailNotVerified": "האימייל לא אומת — בדקו את תיבת הדואר שלכם",
+        "userBanned": "החשבון הזה הושעה",
+        "tooManyAttempts": "יותר מדי ניסיונות — נסו שוב בעוד מספר דקות",
+        "unexpected": "שגיאה לא צפויה",
+        "generic": "שגיאה בהתחברות"
+      }
+    },
+    "signUp": {
+      "title": "פתיחת חשבון",
+      "subtitle": "רישום לחשבון AccounTech לעצמאים ובעלי עסקים בישראל",
+      "nameLabel": "שם מלא",
+      "emailLabel": "כתובת אימייל",
+      "passwordLabel": "סיסמה (מינימום 12 תווים)",
+      "passwordHint": "סיסמה חייבת לכלול לפחות 12 תווים",
+      "passwordConfirmLabel": "אימות סיסמה",
+      "acceptTerms": "אני מאשר/ת את",
+      "acceptTermsLink": "תנאי השימוש",
+      "acceptPrivacy": "ואת",
+      "acceptPrivacyLink": "מדיניות הפרטיות",
+      "captchaRequired": "יש להשלים את אימות ה-CAPTCHA",
+      "submit": "צור חשבון",
+      "submitting": "יוצר חשבון...",
+      "haveAccount": "כבר יש לכם חשבון?",
+      "signIn": "התחברו",
+      "errors": {
+        "passwordMismatch": "הסיסמאות אינן תואמות",
+        "passwordTooShortClient": "סיסמה חייבת לכלול לפחות 12 תווים",
+        "termsRequired": "יש לאשר את תנאי השימוש ומדיניות הפרטיות",
+        "userAlreadyExists": "כתובת האימייל הזו כבר רשומה — נסו להתחבר",
+        "passwordTooShort": "הסיסמה קצרה מדי (מינימום 12 תווים)",
+        "passwordTooLong": "הסיסמה ארוכה מדי (מקסימום 128 תווים)",
+        "invalidEmail": "כתובת אימייל לא חוקית",
+        "captchaFailed": "אימות CAPTCHA נכשל — נסו שוב",
+        "tooManyAttempts": "יותר מדי ניסיונות — נסו שוב בעוד מספר דקות",
+        "unexpected": "שגיאה לא צפויה",
+        "generic": "שגיאה ביצירת חשבון"
+      }
+    },
+    "verifyEmail": {
+      "title": "בדקו את האימייל שלכם",
+      "subtitle": "שלחנו קישור אימות לכתובת",
+      "subtitleSuffix": ". לחצו עליו כדי להמשיך.",
+      "resend": "שליחה חוזרת של הקישור",
+      "resending": "שולח...",
+      "resent": "נשלח! בדקו את התיבה",
+      "checkSpam": "לא קיבלתם? בדקו תיקיית ספאם, או",
+      "backToSignIn": "התחברו עם חשבון קיים",
+      "errors": {
+        "missingEmail": "חסרה כתובת אימייל לשליחה חוזרת",
+        "resendFailed": "שליחה חוזרת נכשלה",
+        "unexpected": "שגיאה לא צפויה"
+      }
+    },
+    "forgotPassword": {
+      "title": "איפוס סיסמה",
+      "subtitle": "הזינו את כתובת האימייל ונשלח לכם קישור לאיפוס סיסמה.",
+      "emailLabel": "כתובת אימייל",
+      "submit": "שליחת קישור איפוס",
+      "submitting": "שולח...",
+      "successTitle": "בדקו את האימייל שלכם",
+      "successDesc": "אם הכתובת רשומה אצלנו, שלחנו אליה קישור לאיפוס סיסמה. תוקף הקישור — שעה אחת.",
+      "backToSignIn": "חזרה לכניסה",
+      "remembered": "נזכרתם בסיסמה?",
+      "errors": {
+        "sendFailed": "שגיאה בשליחת קישור איפוס",
+        "unexpected": "שגיאה לא צפויה"
+      }
+    },
+    "resetPassword": {
+      "title": "סיסמה חדשה",
+      "subtitle": "בחרו סיסמה חדשה (לפחות 12 תווים).",
+      "passwordLabel": "סיסמה חדשה",
+      "passwordConfirmLabel": "אימות סיסמה",
+      "submit": "עדכן סיסמה",
+      "submitting": "שומר...",
+      "backToSignIn": "חזרה לכניסה",
+      "errors": {
+        "missingToken": "הקישור לא תקף — חסר token",
+        "mismatch": "הסיסמאות אינן תואמות",
+        "passwordTooShortClient": "סיסמה חייבת לכלול לפחות 12 תווים",
+        "invalidToken": "הקישור לאיפוס פג תוקף — בקשו קישור חדש",
+        "tokenExpired": "הקישור לאיפוס פג תוקף — בקשו קישור חדש",
+        "passwordTooShort": "הסיסמה קצרה מדי (מינימום 12 תווים)",
+        "passwordTooLong": "הסיסמה ארוכה מדי (מקסימום 128 תווים)",
+        "unexpected": "שגיאה לא צפויה",
+        "generic": "שגיאה באיפוס סיסמה"
+      }
+    },
+    "twoFactor": {
+      "enroll": {
+        "titlePasswordGate": "הפעלת אימות דו-שלבי",
+        "subtitlePasswordGate": "הזינו את הסיסמה הנוכחית כדי לאשר את הפעלת ה-2FA.",
+        "passwordLabel": "סיסמה נוכחית",
+        "continueSubmit": "המשך",
+        "continueSubmitting": "מאמת...",
+        "titleScan": "סריקה ואימות",
+        "subtitleScan": "הוסיפו את החשבון לאפליקציית מאמת (Google Authenticator, Authy, 1Password).",
+        "manualSecretLabel": "קוד סודי (להזנה ידנית)",
+        "copySecret": "העתקה",
+        "copied": "הועתק",
+        "uriLabel": "או פתיחה ישירה",
+        "backupCodesTitle": "קודי שחזור — שמרו במקום בטוח",
+        "backupCodesSub": "כל קוד חד-פעמי. שמשו רק במקרה שאיבדתם גישה למאמת.",
+        "copyAllCodes": "העתקת כל הקודים",
+        "codeLabel": "הזינו את הקוד מהמאמת לאישור",
+        "verifySubmit": "אימות והפעלה",
+        "verifySubmitting": "מאמת...",
+        "skipForNow": "דילוג להמשך",
+        "errors": {
+          "missingUri": "חסר URI לאימות — נסו שוב",
+          "invalidPassword": "סיסמה שגויה",
+          "invalidCode": "קוד שגוי — בדקו את אפליקציית המאמת",
+          "twoFactorNotEnabled": "אימות דו-שלבי לא מאופשר עדיין",
+          "tooManyAttempts": "יותר מדי ניסיונות — נסו שוב בעוד מספר דקות",
+          "unexpected": "שגיאה לא צפויה",
+          "generic": "שגיאה באימות דו-שלבי"
+        }
+      },
+      "verify": {
+        "title": "אימות דו-שלבי",
+        "subtitleTotp": "הזינו את הקוד מאפליקציית המאמת שלכם.",
+        "subtitleBackup": "הזינו אחד מקודי השחזור (8 ספרות).",
+        "codeLabelTotp": "קוד 6 ספרות",
+        "codeLabelBackup": "קוד שחזור",
+        "trustDevice": "סמכו על המכשיר הזה ל-30 ימים",
+        "submit": "אמת והמשך",
+        "submitting": "מאמת...",
+        "switchToBackup": "שימוש בקוד שחזור במקום",
+        "switchToTotp": "חזרה לאפליקציית המאמת",
+        "signInOther": "התחברות עם חשבון אחר",
+        "errors": {
+          "invalidCode": "קוד שגוי",
+          "invalidBackupCode": "קוד שחזור שגוי או שכבר נוצל",
+          "tooManyAttempts": "יותר מדי ניסיונות — נסו שוב בעוד מספר דקות",
+          "invalidTwoFactorCookie": "התחברו מחדש לפני אימות 2FA",
+          "unexpected": "שגיאה לא צפויה",
+          "generic": "שגיאה באימות"
+        }
+      }
+    },
+    "passkeys": {
+      "title": "מפתחות גישה",
+      "subtitle": "כניסה עם Face ID / Touch ID / Windows Hello — בלי סיסמה.",
+      "emptyState": "אין עדיין מפתחות גישה. הוסיפו אחד למטה.",
+      "addPasskey": "הוספת מפתח גישה",
+      "namePlaceholder": "iPhone של אלי",
+      "nameLabel": "שם למפתח (למשל: \"iPhone של אלי\")",
+      "confirmDelete": "למחוק את המפתח? לא ניתן לבטל.",
+      "cancel": "ביטול",
+      "addSubmit": "המשך",
+      "addSubmitting": "ממתין למכשיר...",
+      "added": "המפתח נרשם",
+      "deviceSingle": "מכשיר יחיד",
+      "deviceMulti": "מסונכרן בענן (Apple / Google / Microsoft)",
+      "deviceUnknown": "מפתח חומרה",
+      "addedOn": "נוסף",
+      "deleteAria": "מחיקה",
+      "unnamed": "מפתח ללא שם",
+      "errors": {
+        "loadFailed": "שגיאה בטעינת מפתחות",
+        "addFailed": "רישום נכשל",
+        "deleteFailed": "מחיקה נכשלה",
+        "unexpected": "שגיאה לא צפויה"
+      }
+    },
+    "recoveryCodes": {
+      "titlePostEnroll": "קודי שחזור",
+      "titleRegenerate": "קודי שחזור",
+      "subtitlePostEnroll": "הקודים הבאים מאפשרים גישה אם תאבדו את אפליקציית המאמת. כל קוד חד-פעמי.",
+      "subtitleRegenerate": "הקודים הישנים יבוטלו לאחר היצירה — שמרו את הקודים החדשים.",
+      "passwordLabel": "סיסמה נוכחית",
+      "generateSubmit": "יצירת קודים חדשים",
+      "generateSubmitting": "יוצר...",
+      "copyAll": "העתקת כל הקודים",
+      "copied": "הועתק",
+      "doneCta": "סיימתי לשמור — המשך",
+      "warningTitle": "קודי שחזור — שמרו במקום בטוח",
+      "warningDesc": "כל קוד חד-פעמי. שמשו רק במקרה שאיבדתם גישה למאמת.",
+      "errors": {
+        "invalidPassword": "סיסמה שגויה",
+        "twoFactorNotEnabled": "אימות דו-שלבי לא מאופשר עדיין",
+        "unexpected": "שגיאה לא צפויה",
+        "generic": "שגיאה ביצירת קודים"
+      }
+    }
+  },
   "app": {
     "shell": {
       "nav": {

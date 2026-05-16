@@ -1,19 +1,22 @@
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 
 // Auth route group — sign-in, sign-up, verify-email, etc. The wrapper
 // no longer hard-codes Hebrew chrome: the parent `[locale]/layout.tsx`
 // already sets `<html lang dir>` based on the URL segment, so this
-// component just provides the glass-strong card scaffolding.
+// component just provides the glass-strong card scaffolding and pulls
+// its lone tagline from the translation catalogue.
 //
 // Russian is rewritten to en-US by `proxy.ts` (Plan v4 Risk #24 — no
 // CPA-reviewed Russian disclaimer surface yet), so when a user is on
 // /ru-RU/sign-in they see the URL stay on /ru-RU but the body renders
 // the English layout below.
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const t = await getTranslations("auth");
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center px-4 py-12 overflow-hidden">
       <div className="absolute inset-0 bg-grid opacity-50 pointer-events-none" />
@@ -49,7 +52,7 @@ export default function AuthLayout({
             Accoun<span className="text-emerald-400">Tech</span>
           </span>
           <span className="mt-1 block text-[10px] uppercase tracking-[0.18em] text-slate-500">
-            דיוק ושקיפות
+            {t("logoTagline")}
           </span>
         </div>
       </Link>

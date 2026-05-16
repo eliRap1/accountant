@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Loader2, Check, KeyRound } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { requestPasswordReset } from "@/lib/auth/client";
 
 export default function ForgotPasswordForm() {
+  const t = useTranslations("auth.forgotPassword");
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   // We always show the same success view whether the email exists or not —
@@ -24,12 +26,12 @@ export default function ForgotPasswordForm() {
         redirectTo: "/reset-password",
       });
       if (result.error && result.error.code !== "USER_NOT_FOUND") {
-        setError(result.error.message ?? "שגיאה בשליחת קישור איפוס");
+        setError(result.error.message ?? t("errors.sendFailed"));
         return;
       }
       setSent(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
+      setError(err instanceof Error ? err.message : t("errors.unexpected"));
     } finally {
       setSubmitting(false);
     }
@@ -47,16 +49,14 @@ export default function ForgotPasswordForm() {
           <Check size={24} />
         </div>
         <h1 className="mt-6 text-2xl font-semibold tracking-tight text-slate-100">
-          בדקו את האימייל שלכם
+          {t("successTitle")}
         </h1>
-        <p className="mt-3 text-sm text-slate-400">
-          אם הכתובת רשומה אצלנו, שלחנו אליה קישור לאיפוס סיסמה. תוקף הקישור — שעה אחת.
-        </p>
+        <p className="mt-3 text-sm text-slate-400">{t("successDesc")}</p>
         <Link
           href="/sign-in"
           className="mt-8 inline-block text-sm text-emerald-300 hover:text-emerald-200"
         >
-          חזרה לכניסה
+          {t("backToSignIn")}
         </Link>
       </motion.section>
     );
@@ -75,17 +75,15 @@ export default function ForgotPasswordForm() {
         </div>
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-100">
-            איפוס סיסמה
+            {t("title")}
           </h1>
         </div>
       </div>
-      <p className="mt-3 text-sm text-slate-400">
-        הזינו את כתובת האימייל ונשלח לכם קישור לאיפוס סיסמה.
-      </p>
+      <p className="mt-3 text-sm text-slate-400">{t("subtitle")}</p>
 
       <form onSubmit={onSubmit} className="mt-8 space-y-5" noValidate>
         <label className="block">
-          <span className="block text-sm text-slate-300">כתובת אימייל</span>
+          <span className="block text-sm text-slate-300">{t("emailLabel")}</span>
           <input
             type="email"
             name="email"
@@ -121,17 +119,17 @@ export default function ForgotPasswordForm() {
           className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-medium tracking-tight text-slate-950 shadow-[0_10px_40px_-10px_rgba(16,185,129,0.7)] transition-colors hover:bg-emerald-400 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {submitting && <Loader2 size={16} className="animate-spin" />}
-          {submitting ? "שולח..." : "שליחת קישור איפוס"}
+          {submitting ? t("submitting") : t("submit")}
         </motion.button>
       </form>
 
       <p className="mt-6 text-center text-sm text-slate-400">
-        נזכרתם בסיסמה?{" "}
+        {t("remembered")}{" "}
         <Link
           href="/sign-in"
           className="text-emerald-300 hover:text-emerald-200 transition-colors"
         >
-          חזרה לכניסה
+          {t("backToSignIn")}
         </Link>
       </p>
     </motion.section>

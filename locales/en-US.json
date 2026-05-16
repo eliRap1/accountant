@@ -130,6 +130,206 @@
     "short": "EN",
     "flag": "🇺🇸"
   },
+  "auth": {
+    "logoTagline": "Precision & Transparency",
+    "signIn": {
+      "title": "Welcome back",
+      "subtitle": "Enter your account details to continue",
+      "emailLabel": "Email address",
+      "passwordLabel": "Password",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "createOne": "Create one",
+      "errors": {
+        "invalidCredentials": "Wrong email or password",
+        "emailNotVerified": "Email not verified — check your inbox",
+        "userBanned": "This account has been suspended",
+        "tooManyAttempts": "Too many attempts — try again in a few minutes",
+        "unexpected": "Unexpected error",
+        "generic": "Sign-in failed"
+      }
+    },
+    "signUp": {
+      "title": "Create an account",
+      "subtitle": "Sign up for AccounTech — built for Israeli self-employed and business owners.",
+      "nameLabel": "Full name",
+      "emailLabel": "Email address",
+      "passwordLabel": "Password (minimum 12 characters)",
+      "passwordHint": "Password must be at least 12 characters",
+      "passwordConfirmLabel": "Confirm password",
+      "acceptTerms": "I agree to the",
+      "acceptTermsLink": "Terms of Service",
+      "acceptPrivacy": "and the",
+      "acceptPrivacyLink": "Privacy Policy",
+      "captchaRequired": "Please complete the CAPTCHA",
+      "submit": "Create account",
+      "submitting": "Creating account...",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "errors": {
+        "passwordMismatch": "Passwords do not match",
+        "passwordTooShortClient": "Password must be at least 12 characters",
+        "termsRequired": "You must accept the Terms of Service and Privacy Policy",
+        "userAlreadyExists": "This email is already registered — try signing in",
+        "passwordTooShort": "Password is too short (minimum 12 characters)",
+        "passwordTooLong": "Password is too long (maximum 128 characters)",
+        "invalidEmail": "Invalid email address",
+        "captchaFailed": "CAPTCHA verification failed — please try again",
+        "tooManyAttempts": "Too many attempts — try again in a few minutes",
+        "unexpected": "Unexpected error",
+        "generic": "Sign-up failed"
+      }
+    },
+    "verifyEmail": {
+      "title": "Check your email",
+      "subtitle": "We sent a verification link to",
+      "subtitleSuffix": ". Click it to continue.",
+      "resend": "Resend the link",
+      "resending": "Sending...",
+      "resent": "Sent! Check your inbox",
+      "checkSpam": "Didn't get it? Check your spam folder, or",
+      "backToSignIn": "sign in with an existing account",
+      "errors": {
+        "missingEmail": "Missing email address for resend",
+        "resendFailed": "Resend failed",
+        "unexpected": "Unexpected error"
+      }
+    },
+    "forgotPassword": {
+      "title": "Reset password",
+      "subtitle": "Enter your email address and we'll send you a password reset link.",
+      "emailLabel": "Email address",
+      "submit": "Send reset link",
+      "submitting": "Sending...",
+      "successTitle": "Check your email",
+      "successDesc": "If that address is registered with us, we've sent a password reset link. The link expires in one hour.",
+      "backToSignIn": "Back to sign in",
+      "remembered": "Remembered your password?",
+      "errors": {
+        "sendFailed": "Could not send reset link",
+        "unexpected": "Unexpected error"
+      }
+    },
+    "resetPassword": {
+      "title": "New password",
+      "subtitle": "Choose a new password (at least 12 characters).",
+      "passwordLabel": "New password",
+      "passwordConfirmLabel": "Confirm password",
+      "submit": "Update password",
+      "submitting": "Saving...",
+      "backToSignIn": "Back to sign in",
+      "errors": {
+        "missingToken": "Invalid link — token is missing",
+        "mismatch": "Passwords do not match",
+        "passwordTooShortClient": "Password must be at least 12 characters",
+        "invalidToken": "This reset link has expired — request a new one",
+        "tokenExpired": "This reset link has expired — request a new one",
+        "passwordTooShort": "Password is too short (minimum 12 characters)",
+        "passwordTooLong": "Password is too long (maximum 128 characters)",
+        "unexpected": "Unexpected error",
+        "generic": "Password reset failed"
+      }
+    },
+    "twoFactor": {
+      "enroll": {
+        "titlePasswordGate": "Enable two-factor authentication",
+        "subtitlePasswordGate": "Enter your current password to confirm 2FA setup.",
+        "passwordLabel": "Current password",
+        "continueSubmit": "Continue",
+        "continueSubmitting": "Verifying...",
+        "titleScan": "Scan and verify",
+        "subtitleScan": "Add the account to an authenticator app (Google Authenticator, Authy, 1Password).",
+        "manualSecretLabel": "Secret key (for manual entry)",
+        "copySecret": "Copy",
+        "copied": "Copied",
+        "uriLabel": "Or open directly",
+        "backupCodesTitle": "Backup codes — store them somewhere safe",
+        "backupCodesSub": "Each code is single-use. Use only if you lose access to your authenticator.",
+        "copyAllCodes": "Copy all codes",
+        "codeLabel": "Enter the code from your authenticator to confirm",
+        "verifySubmit": "Verify and enable",
+        "verifySubmitting": "Verifying...",
+        "skipForNow": "Skip for now",
+        "errors": {
+          "missingUri": "Verification URI missing — please try again",
+          "invalidPassword": "Wrong password",
+          "invalidCode": "Wrong code — check your authenticator app",
+          "twoFactorNotEnabled": "Two-factor authentication is not enabled yet",
+          "tooManyAttempts": "Too many attempts — try again in a few minutes",
+          "unexpected": "Unexpected error",
+          "generic": "Two-factor authentication failed"
+        }
+      },
+      "verify": {
+        "title": "Two-factor authentication",
+        "subtitleTotp": "Enter the code from your authenticator app.",
+        "subtitleBackup": "Enter one of your backup codes (8 digits).",
+        "codeLabelTotp": "6-digit code",
+        "codeLabelBackup": "Backup code",
+        "trustDevice": "Trust this device for 30 days",
+        "submit": "Verify and continue",
+        "submitting": "Verifying...",
+        "switchToBackup": "Use a backup code instead",
+        "switchToTotp": "Back to authenticator app",
+        "signInOther": "Sign in with a different account",
+        "errors": {
+          "invalidCode": "Wrong code",
+          "invalidBackupCode": "Backup code is wrong or already used",
+          "tooManyAttempts": "Too many attempts — try again in a few minutes",
+          "invalidTwoFactorCookie": "Please sign in again before completing 2FA",
+          "unexpected": "Unexpected error",
+          "generic": "Verification failed"
+        }
+      }
+    },
+    "passkeys": {
+      "title": "Passkeys",
+      "subtitle": "Sign in with Face ID / Touch ID / Windows Hello — no password.",
+      "emptyState": "No passkeys yet. Add one below.",
+      "addPasskey": "Add a passkey",
+      "namePlaceholder": "Eli's iPhone",
+      "nameLabel": "Passkey name (e.g. \"Eli's iPhone\")",
+      "confirmDelete": "Delete this passkey? This cannot be undone.",
+      "cancel": "Cancel",
+      "addSubmit": "Continue",
+      "addSubmitting": "Waiting for device...",
+      "added": "Passkey registered",
+      "deviceSingle": "Single device",
+      "deviceMulti": "Synced via cloud (Apple / Google / Microsoft)",
+      "deviceUnknown": "Hardware key",
+      "addedOn": "added",
+      "deleteAria": "Delete",
+      "unnamed": "Unnamed passkey",
+      "errors": {
+        "loadFailed": "Could not load passkeys",
+        "addFailed": "Registration failed",
+        "deleteFailed": "Delete failed",
+        "unexpected": "Unexpected error"
+      }
+    },
+    "recoveryCodes": {
+      "titlePostEnroll": "Backup codes",
+      "titleRegenerate": "Backup codes",
+      "subtitlePostEnroll": "These codes let you sign in if you lose access to your authenticator. Each code is single-use.",
+      "subtitleRegenerate": "Generating new codes invalidates the old ones — save the new codes immediately.",
+      "passwordLabel": "Current password",
+      "generateSubmit": "Generate new codes",
+      "generateSubmitting": "Generating...",
+      "copyAll": "Copy all codes",
+      "copied": "Copied",
+      "doneCta": "I saved them — continue",
+      "warningTitle": "Backup codes — store them somewhere safe",
+      "warningDesc": "Each code is single-use. Use only if you lose access to your authenticator.",
+      "errors": {
+        "invalidPassword": "Wrong password",
+        "twoFactorNotEnabled": "Two-factor authentication is not enabled yet",
+        "unexpected": "Unexpected error",
+        "generic": "Could not generate codes"
+      }
+    }
+  },
   "app": {
     "shell": {
       "nav": {

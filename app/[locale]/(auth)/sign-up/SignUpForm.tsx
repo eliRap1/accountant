@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -33,6 +34,8 @@ const TURNSTILE_SCRIPT =
 type Props = { turnstileSiteKey: string };
 
 export default function SignUpForm({ turnstileSiteKey }: Props) {
+  const t = useTranslations("auth.signUp");
+  const locale = useLocale();
   const router = useRouter();
   const turnstileRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
@@ -49,6 +52,7 @@ export default function SignUpForm({ turnstileSiteKey }: Props) {
 
   useEffect(() => {
     if (!turnstileSiteKey || typeof window === "undefined") return;
+    const turnstileLang = locale.split("-")[0] ?? "en";
 
     function renderWidget() {
       if (!window.turnstile || !turnstileRef.current || widgetIdRef.current)
@@ -59,7 +63,7 @@ export default function SignUpForm({ turnstileSiteKey }: Props) {
         "expired-callback": () => setCaptchaToken(null),
         "error-callback": () => setCaptchaToken(null),
         theme: "dark",
-        language: "he",
+        language: turnstileLang,
       });
     }
 
@@ -80,26 +84,26 @@ export default function SignUpForm({ turnstileSiteKey }: Props) {
         widgetIdRef.current = null;
       }
     };
-  }, [turnstileSiteKey]);
+  }, [turnstileSiteKey, locale]);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
 
     if (password !== passwordConfirm) {
-      setError("הסיסמאות אינן תואמות");
+      setError(t("errors.passwordMismatch"));
       return;
     }
     if (password.length < 12) {
-      setError("סיסמה חייבת לכלול לפחות 12 תווים");
+      setError(t("errors.passwordTooShortClient"));
       return;
     }
     if (!acceptedTerms) {
-      setError("יש לאשר את תנאי השימוש ומדיניות הפרטיות");
+      setError(t("errors.termsRequired"));
       return;
     }
     if (turnstileSiteKey && !captchaToken) {
-      setError("יש להשלים את אימות ה-CAPTCHA");
+      setError(t("captchaRequired"));
       return;
     }
 
@@ -114,7 +118,7 @@ export default function SignUpForm({ turnstileSiteKey }: Props) {
           : {}),
       });
       if (result.error) {
-        setError(messageFor(result.error.code, result.error.message));
+        setError(t(messageKeyFor(result.error.code)));
         if (widgetIdRef.current && window.turnstile) {
           window.turnstile.reset(widgetIdRef.current);
           setCaptchaToken(null);
@@ -128,7 +132,7 @@ export default function SignUpForm({ turnstileSiteKey }: Props) {
         query: { email: email.trim() },
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
+      setError(err instanceof Error ? err.message : t("errors.unexpected"));
     } finally {
       setSubmitting(false);
     }
@@ -142,15 +146,13 @@ export default function SignUpForm({ turnstileSiteKey }: Props) {
       className="glass-strong rounded-2xl p-8 shadow-[0_30px_80px_-30px_rgba(16,185,129,0.35)]"
     >
       <h1 className="text-2xl font-semibold tracking-tight text-slate-100">
-        פתיחת חשבון
+        {t("title")}
       </h1>
-      <p className="mt-2 text-sm text-slate-400">
-        רישום לחשבון AccounTech לעצמאים ובעלי עסקים בישראל
-      </p>
+      <p className="mt-2 text-sm text-slate-400">{t("subtitle")}</p>
 
       <form onSubmit={onSubmit} className="mt-8 space-y-5" noValidate>
         <Field
-          label="שם מלא"
+          label={t("nameLabel")}
           name="name"
           type="text"
           autoComplete="name"
@@ -160,7 +162,7 @@ export default function SignUpForm({ turnstileSiteKey }: Props) {
           disabled={submitting}
         />
         <Field
-          label="כתובת אימייל"
+          label={t("emailLabel")}
           name="email"
           type="email"
           autoComplete="email"
@@ -171,7 +173,7 @@ export default function SignUpForm({ turnstileSiteKey }: Props) {
           disabled={submitting}
         />
         <Field
-          label="סיסמה (מינימום 12 תווים)"
+          label={t("passwordLabel")}
           name="password"
           type="password"
           autoComplete="new-password"
@@ -182,7 +184,7 @@ export default function SignUpForm({ turnstileSiteKey }: Props) {
           disabled={submitting}
         />
         <Field
-          label="אימות סיסמה"
+          label={t("passwordConfirmLabel")}
           name="password_confirm"
           type="password"
           autoComplete="new-password"
@@ -203,19 +205,19 @@ export default function SignUpForm({ turnstileSiteKey }: Props) {
             className="mt-0.5 h-4 w-4 rounded border-white/20 bg-slate-950/60 text-emerald-500 focus:ring-emerald-500/40"
           />
           <span>
-            אני מאשר/ת את{" "}
+            {t("acceptTerms")}{" "}
             <Link
               href="/terms"
               className="text-emerald-300 hover:text-emerald-200"
             >
-              תנאי השימוש
+              {t("acceptTermsLink")}
             </Link>{" "}
-            ואת{" "}
+            {t("acceptPrivacy")}{" "}
             <Link
               href="/privacy"
               className="text-emerald-300 hover:text-emerald-200"
             >
-              מדיניות הפרטיות
+              {t("acceptPrivacyLink")}
             </Link>
           </span>
         </label>
@@ -246,17 +248,17 @@ export default function SignUpForm({ turnstileSiteKey }: Props) {
           className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-medium tracking-tight text-slate-950 shadow-[0_10px_40px_-10px_rgba(16,185,129,0.7)] transition-colors hover:bg-emerald-400 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {submitting && <Loader2 size={16} className="animate-spin" />}
-          {submitting ? "יוצר חשבון..." : "צור חשבון"}
+          {submitting ? t("submitting") : t("submit")}
         </motion.button>
       </form>
 
       <p className="mt-6 text-center text-sm text-slate-400">
-        כבר יש לכם חשבון?{" "}
+        {t("haveAccount")}{" "}
         <Link
           href="/sign-in"
           className="text-emerald-300 hover:text-emerald-200 transition-colors"
         >
-          התחברו
+          {t("signIn")}
         </Link>
       </p>
     </motion.section>
@@ -292,22 +294,25 @@ function Field(props: {
   );
 }
 
-function messageFor(code: string | undefined, fallback: string | undefined): string {
+// Map Better Auth error codes to translation keys (relative to the
+// `auth.signUp` namespace). `t(key)` is invoked at render time so the
+// active locale is picked up.
+function messageKeyFor(code: string | undefined): string {
   switch (code) {
     case "USER_ALREADY_EXISTS":
-      return "כתובת האימייל הזו כבר רשומה — נסו להתחבר";
+      return "errors.userAlreadyExists";
     case "PASSWORD_TOO_SHORT":
-      return "הסיסמה קצרה מדי (מינימום 12 תווים)";
+      return "errors.passwordTooShort";
     case "PASSWORD_TOO_LONG":
-      return "הסיסמה ארוכה מדי (מקסימום 128 תווים)";
+      return "errors.passwordTooLong";
     case "INVALID_EMAIL":
-      return "כתובת אימייל לא חוקית";
+      return "errors.invalidEmail";
     case "CAPTCHA_FAILED":
     case "INVALID_CAPTCHA_TOKEN":
-      return "אימות CAPTCHA נכשל — נסו שוב";
+      return "errors.captchaFailed";
     case "TOO_MANY_ATTEMPTS":
-      return "יותר מדי ניסיונות — נסו שוב בעוד מספר דקות";
+      return "errors.tooManyAttempts";
     default:
-      return fallback ?? "שגיאה ביצירת חשבון";
+      return "errors.generic";
   }
 }

@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -11,6 +12,7 @@ import { twoFactor } from "@/lib/auth/client";
 // session is held in a pending state until the TOTP (or backup-code)
 // challenge passes.
 export default function TwoFactorVerifyForm() {
+  const t = useTranslations("auth.twoFactor.verify");
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams?.get("redirect") ?? "/post-auth";
@@ -31,7 +33,7 @@ export default function TwoFactorVerifyForm() {
           ? await twoFactor.verifyTotp({ code: code.trim(), trustDevice })
           : await twoFactor.verifyBackupCode({ code: code.trim() });
       if (result.error) {
-        setError(messageFor(result.error.code, result.error.message));
+        setError(t(messageKeyFor(result.error.code)));
         return;
       }
       if (redirectTo.startsWith("/post-auth")) {
@@ -41,7 +43,7 @@ export default function TwoFactorVerifyForm() {
         router.refresh();
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
+      setError(err instanceof Error ? err.message : t("errors.unexpected"));
     } finally {
       setSubmitting(false);
     }
@@ -59,19 +61,17 @@ export default function TwoFactorVerifyForm() {
           <ShieldCheck size={18} />
         </div>
         <h1 className="text-2xl font-semibold tracking-tight text-slate-100">
-          אימות דו-שלבי
+          {t("title")}
         </h1>
       </div>
       <p className="mt-3 text-sm text-slate-400">
-        {mode === "totp"
-          ? "הזינו את הקוד מאפליקציית המאמת שלכם."
-          : "הזינו אחד מקודי השחזור (8 ספרות)."}
+        {mode === "totp" ? t("subtitleTotp") : t("subtitleBackup")}
       </p>
 
       <form onSubmit={onSubmit} className="mt-8 space-y-5" noValidate>
         <label className="block">
           <span className="block text-sm text-slate-300">
-            {mode === "totp" ? "קוד 6 ספרות" : "קוד שחזור"}
+            {mode === "totp" ? t("codeLabelTotp") : t("codeLabelBackup")}
           </span>
           <input
             type="text"
@@ -103,7 +103,7 @@ export default function TwoFactorVerifyForm() {
               disabled={submitting}
               className="mt-0.5 h-4 w-4 rounded border-white/20 bg-slate-950/60 text-emerald-500 focus:ring-emerald-500/40"
             />
-            <span>סמכו על המכשיר הזה ל-30 ימים</span>
+            <span>{t("trustDevice")}</span>
           </label>
         )}
 
@@ -129,7 +129,7 @@ export default function TwoFactorVerifyForm() {
           className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-medium tracking-tight text-slate-950 shadow-[0_10px_40px_-10px_rgba(16,185,129,0.7)] transition-colors hover:bg-emerald-400 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {submitting && <Loader2 size={16} className="animate-spin" />}
-          {submitting ? "מאמת..." : "אמת והמשך"}
+          {submitting ? t("submitting") : t("submit")}
         </motion.button>
       </form>
 
@@ -143,32 +143,32 @@ export default function TwoFactorVerifyForm() {
           }}
           className="text-emerald-300 hover:text-emerald-200 transition-colors"
         >
-          {mode === "totp"
-            ? "שימוש בקוד שחזור במקום"
-            : "חזרה לאפליקציית המאמת"}
+          {mode === "totp" ? t("switchToBackup") : t("switchToTotp")}
         </button>
         <Link
           href="/sign-in"
           className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
         >
-          התחברות עם חשבון אחר
+          {t("signInOther")}
         </Link>
       </div>
     </motion.section>
   );
 }
 
-function messageFor(code: string | undefined, fallback: string | undefined): string {
+// Map Better Auth error codes to translation keys (relative to the
+// `auth.twoFactor.verify` namespace).
+function messageKeyFor(code: string | undefined): string {
   switch (code) {
     case "INVALID_CODE":
-      return "קוד שגוי";
+      return "errors.invalidCode";
     case "INVALID_BACKUP_CODE":
-      return "קוד שחזור שגוי או שכבר נוצל";
+      return "errors.invalidBackupCode";
     case "TOO_MANY_ATTEMPTS_REQUEST_NEW_CODE":
-      return "יותר מדי ניסיונות — נסו שוב בעוד מספר דקות";
+      return "errors.tooManyAttempts";
     case "INVALID_TWO_FACTOR_COOKIE":
-      return "התחברו מחדש לפני אימות 2FA";
+      return "errors.invalidTwoFactorCookie";
     default:
-      return fallback ?? "שגיאה באימות";
+      return "errors.generic";
   }
 }

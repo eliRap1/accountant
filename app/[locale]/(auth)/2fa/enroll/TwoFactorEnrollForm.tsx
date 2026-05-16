@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Loader2, ShieldCheck, Copy, Check } from "lucide-react";
-import { Link, useRouter } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { twoFactor } from "@/lib/auth/client";
 
 type EnrollState =
@@ -15,6 +16,7 @@ type EnrollState =
     };
 
 export default function TwoFactorEnrollForm() {
+  const t = useTranslations("auth.twoFactor.enroll");
   const router = useRouter();
 
   const [state, setState] = useState<EnrollState>({ kind: "password" });
@@ -34,12 +36,12 @@ export default function TwoFactorEnrollForm() {
         issuer: "AccounTech",
       });
       if (result.error) {
-        setError(messageFor(result.error.code, result.error.message));
+        setError(t(messageKeyFor(result.error.code)));
         return;
       }
       const data = result.data;
       if (!data?.totpURI) {
-        setError("חסר URI לאימות — נסו שוב");
+        setError(t("errors.missingUri"));
         return;
       }
       setState({
@@ -48,7 +50,7 @@ export default function TwoFactorEnrollForm() {
         backupCodes: data.backupCodes ?? [],
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
+      setError(err instanceof Error ? err.message : t("errors.unexpected"));
     } finally {
       setSubmitting(false);
     }
@@ -61,7 +63,7 @@ export default function TwoFactorEnrollForm() {
     try {
       const result = await twoFactor.verifyTotp({ code: code.trim() });
       if (result.error) {
-        setError(messageFor(result.error.code, result.error.message));
+        setError(t(messageKeyFor(result.error.code)));
         return;
       }
       router.push({
@@ -69,7 +71,7 @@ export default function TwoFactorEnrollForm() {
         query: { source: "enroll" },
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
+      setError(err instanceof Error ? err.message : t("errors.unexpected"));
     } finally {
       setSubmitting(false);
     }
@@ -95,16 +97,14 @@ export default function TwoFactorEnrollForm() {
             <ShieldCheck size={18} />
           </div>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-100">
-            הפעלת אימות דו-שלבי
+            {t("titlePasswordGate")}
           </h1>
         </div>
-        <p className="mt-3 text-sm text-slate-400">
-          הזינו את הסיסמה הנוכחית כדי לאשר את הפעלת ה-2FA.
-        </p>
+        <p className="mt-3 text-sm text-slate-400">{t("subtitlePasswordGate")}</p>
 
         <form onSubmit={onEnable} className="mt-8 space-y-5" noValidate>
           <label className="block">
-            <span className="block text-sm text-slate-300">סיסמה נוכחית</span>
+            <span className="block text-sm text-slate-300">{t("passwordLabel")}</span>
             <input
               type="password"
               name="password"
@@ -140,7 +140,7 @@ export default function TwoFactorEnrollForm() {
             className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-medium tracking-tight text-slate-950 shadow-[0_10px_40px_-10px_rgba(16,185,129,0.7)] transition-colors hover:bg-emerald-400 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {submitting && <Loader2 size={16} className="animate-spin" />}
-            {submitting ? "מאמת..." : "המשך"}
+            {submitting ? t("continueSubmitting") : t("continueSubmit")}
           </motion.button>
         </form>
       </motion.section>
@@ -159,16 +159,14 @@ export default function TwoFactorEnrollForm() {
       className="glass-strong rounded-2xl p-8 shadow-[0_30px_80px_-30px_rgba(16,185,129,0.35)]"
     >
       <h1 className="text-2xl font-semibold tracking-tight text-slate-100">
-        סריקה ואימות
+        {t("titleScan")}
       </h1>
-      <p className="mt-3 text-sm text-slate-400">
-        הוסיפו את החשבון לאפליקציית מאמת (Google Authenticator, Authy, 1Password).
-      </p>
+      <p className="mt-3 text-sm text-slate-400">{t("subtitleScan")}</p>
 
       <div className="mt-6 space-y-4">
         <div>
           <p className="text-xs uppercase tracking-wider text-slate-500">
-            קוד סודי (להזנה ידנית)
+            {t("manualSecretLabel")}
           </p>
           <div className="mt-2 flex items-center gap-2">
             <code
@@ -181,7 +179,7 @@ export default function TwoFactorEnrollForm() {
               type="button"
               onClick={() => copy(totpSecret, "secret")}
               className="rounded-lg border border-white/10 bg-slate-950/60 p-2.5 text-slate-300 transition-colors hover:bg-slate-900"
-              aria-label="העתקה"
+              aria-label={t("copySecret")}
             >
               {copied === "secret" ? <Check size={16} /> : <Copy size={16} />}
             </button>
@@ -190,7 +188,7 @@ export default function TwoFactorEnrollForm() {
 
         <div>
           <p className="text-xs uppercase tracking-wider text-slate-500">
-            או פתיחה ישירה
+            {t("uriLabel")}
           </p>
           <a
             href={state.totpURI}
@@ -204,11 +202,9 @@ export default function TwoFactorEnrollForm() {
         {state.backupCodes.length > 0 && (
           <div className="rounded-lg border border-amber-400/40 bg-amber-500/5 p-4">
             <p className="text-sm font-medium text-amber-200">
-              קודי שחזור — שמרו במקום בטוח
+              {t("backupCodesTitle")}
             </p>
-            <p className="mt-1 text-xs text-amber-200/80">
-              כל קוד חד-פעמי. שמשו רק במקרה שאיבדתם גישה למאמת.
-            </p>
+            <p className="mt-1 text-xs text-amber-200/80">{t("backupCodesSub")}</p>
             <div className="mt-3 grid grid-cols-2 gap-1.5 font-mono text-xs text-amber-100" dir="ltr">
               {state.backupCodes.map((c) => (
                 <span key={c} className="rounded bg-amber-500/10 px-2 py-1">
@@ -222,7 +218,7 @@ export default function TwoFactorEnrollForm() {
               className="mt-3 inline-flex items-center gap-1.5 text-xs text-amber-300 hover:text-amber-200"
             >
               {copied === "codes" ? <Check size={14} /> : <Copy size={14} />}
-              {copied === "codes" ? "הועתק" : "העתקת כל הקודים"}
+              {copied === "codes" ? t("copied") : t("copyAllCodes")}
             </button>
           </div>
         )}
@@ -230,9 +226,7 @@ export default function TwoFactorEnrollForm() {
 
       <form onSubmit={onVerify} className="mt-8 space-y-5" noValidate>
         <label className="block">
-          <span className="block text-sm text-slate-300">
-            הזינו את הקוד מהמאמת לאישור
-          </span>
+          <span className="block text-sm text-slate-300">{t("codeLabel")}</span>
           <input
             type="text"
             inputMode="numeric"
@@ -270,7 +264,7 @@ export default function TwoFactorEnrollForm() {
           className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-medium tracking-tight text-slate-950 shadow-[0_10px_40px_-10px_rgba(16,185,129,0.7)] transition-colors hover:bg-emerald-400 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {submitting && <Loader2 size={16} className="animate-spin" />}
-          {submitting ? "מאמת..." : "אימות והפעלה"}
+          {submitting ? t("verifySubmitting") : t("verifySubmit")}
         </motion.button>
       </form>
 
@@ -279,7 +273,7 @@ export default function TwoFactorEnrollForm() {
           href="/post-auth"
           className="text-slate-500 hover:text-slate-300 transition-colors"
         >
-          דילוג להמשך
+          {t("skipForNow")}
         </a>
       </p>
     </motion.section>
@@ -295,18 +289,20 @@ function extractSecret(uri: string): string {
   }
 }
 
-function messageFor(code: string | undefined, fallback: string | undefined): string {
+// Map Better Auth error codes to translation keys (relative to the
+// `auth.twoFactor.enroll` namespace).
+function messageKeyFor(code: string | undefined): string {
   switch (code) {
     case "INVALID_PASSWORD":
     case "INVALID_EMAIL_OR_PASSWORD":
-      return "סיסמה שגויה";
+      return "errors.invalidPassword";
     case "INVALID_CODE":
-      return "קוד שגוי — בדקו את אפליקציית המאמת";
+      return "errors.invalidCode";
     case "TWO_FACTOR_NOT_ENABLED":
-      return "אימות דו-שלבי לא מאופשר עדיין";
+      return "errors.twoFactorNotEnabled";
     case "TOO_MANY_ATTEMPTS_REQUEST_NEW_CODE":
-      return "יותר מדי ניסיונות — נסו שוב בעוד מספר דקות";
+      return "errors.tooManyAttempts";
     default:
-      return fallback ?? "שגיאה באימות דו-שלבי";
+      return "errors.generic";
   }
 }

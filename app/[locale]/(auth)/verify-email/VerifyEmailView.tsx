@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Mail, Loader2, Check } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { sendVerificationEmail } from "@/lib/auth/client";
 
 export default function VerifyEmailView() {
+  const t = useTranslations("auth.verifyEmail");
   const searchParams = useSearchParams();
   const email = searchParams?.get("email") ?? "";
 
@@ -17,7 +19,7 @@ export default function VerifyEmailView() {
 
   async function onResend() {
     if (!email) {
-      setError("חסרה כתובת אימייל לשליחה חוזרת");
+      setError(t("errors.missingEmail"));
       return;
     }
     setResending(true);
@@ -28,13 +30,13 @@ export default function VerifyEmailView() {
         callbackURL: "/post-auth",
       });
       if (result.error) {
-        setError(result.error.message ?? "שליחה חוזרת נכשלה");
+        setError(result.error.message ?? t("errors.resendFailed"));
         return;
       }
       setResent(true);
       window.setTimeout(() => setResent(false), 5000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
+      setError(err instanceof Error ? err.message : t("errors.unexpected"));
     } finally {
       setResending(false);
     }
@@ -51,10 +53,10 @@ export default function VerifyEmailView() {
         <Mail size={24} />
       </div>
       <h1 className="mt-6 text-2xl font-semibold tracking-tight text-slate-100">
-        בדקו את האימייל שלכם
+        {t("title")}
       </h1>
       <p className="mt-3 text-sm text-slate-400">
-        שלחנו קישור אימות לכתובת
+        {t("subtitle")}
         {email && (
           <>
             {" "}
@@ -63,7 +65,7 @@ export default function VerifyEmailView() {
             </span>
           </>
         )}
-        . לחצו עליו כדי להמשיך.
+        {t("subtitleSuffix")}
       </p>
 
       <div className="mt-8 space-y-3">
@@ -82,11 +84,7 @@ export default function VerifyEmailView() {
         >
           {resending && <Loader2 size={16} className="animate-spin" />}
           {resent && <Check size={16} />}
-          {resending
-            ? "שולח..."
-            : resent
-              ? "נשלח! בדקו את התיבה"
-              : "שליחה חוזרת של הקישור"}
+          {resending ? t("resending") : resent ? t("resent") : t("resend")}
         </motion.button>
 
         {error && (
@@ -100,12 +98,12 @@ export default function VerifyEmailView() {
       </div>
 
       <div className="mt-8 border-t border-white/10 pt-6 text-xs text-slate-500">
-        לא קיבלתם? בדקו תיקיית ספאם, או{" "}
+        {t("checkSpam")}{" "}
         <Link
           href="/sign-in"
           className="text-emerald-300 hover:text-emerald-200"
         >
-          התחברו עם חשבון קיים
+          {t("backToSignIn")}
         </Link>
       </div>
     </motion.section>

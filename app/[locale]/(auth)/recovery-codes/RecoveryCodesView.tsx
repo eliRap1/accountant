@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Loader2, ShieldAlert, Copy, Check } from "lucide-react";
 import { twoFactor } from "@/lib/auth/client";
@@ -13,6 +14,7 @@ import { twoFactor } from "@/lib/auth/client";
 //                     this page can regenerate.
 //   default         — manual regenerate flow gated by current password.
 export default function RecoveryCodesView() {
+  const t = useTranslations("auth.recoveryCodes");
   const searchParams = useSearchParams();
   const isPostEnroll = searchParams?.get("source") === "enroll";
 
@@ -29,13 +31,13 @@ export default function RecoveryCodesView() {
     try {
       const result = await twoFactor.generateBackupCodes({ password });
       if (result.error) {
-        setError(messageFor(result.error.code, result.error.message));
+        setError(t(messageKeyFor(result.error.code)));
         return;
       }
       setCodes(result.data?.backupCodes ?? []);
       setPassword("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "שגיאה לא צפויה");
+      setError(err instanceof Error ? err.message : t("errors.unexpected"));
     } finally {
       setSubmitting(false);
     }
@@ -61,13 +63,11 @@ export default function RecoveryCodesView() {
           <ShieldAlert size={18} />
         </div>
         <h1 className="text-2xl font-semibold tracking-tight text-slate-100">
-          קודי שחזור
+          {isPostEnroll ? t("titlePostEnroll") : t("titleRegenerate")}
         </h1>
       </div>
       <p className="mt-3 text-sm text-slate-400">
-        {isPostEnroll
-          ? "הקודים הבאים מאפשרים גישה אם תאבדו את אפליקציית המאמת. כל קוד חד-פעמי."
-          : "הקודים הישנים יבוטלו לאחר היצירה — שמרו את הקודים החדשים."}
+        {isPostEnroll ? t("subtitlePostEnroll") : t("subtitleRegenerate")}
       </p>
 
       {codes ? (
@@ -87,20 +87,20 @@ export default function RecoveryCodesView() {
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-400/40 bg-emerald-500/5 px-5 py-3 text-sm font-medium tracking-tight text-emerald-200 transition-colors hover:bg-emerald-500/10"
             >
               {copied ? <Check size={16} /> : <Copy size={16} />}
-              {copied ? "הועתק" : "העתקת כל הקודים"}
+              {copied ? t("copied") : t("copyAll")}
             </button>
             <a
               href="/post-auth"
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-medium tracking-tight text-slate-950 shadow-[0_10px_40px_-10px_rgba(16,185,129,0.7)] transition-colors hover:bg-emerald-400"
             >
-              סיימתי לשמור — המשך
+              {t("doneCta")}
             </a>
           </div>
         </>
       ) : (
         <form onSubmit={onGenerate} className="mt-8 space-y-5" noValidate>
           <label className="block">
-            <span className="block text-sm text-slate-300">סיסמה נוכחית</span>
+            <span className="block text-sm text-slate-300">{t("passwordLabel")}</span>
             <input
               type="password"
               autoComplete="current-password"
@@ -135,7 +135,7 @@ export default function RecoveryCodesView() {
             className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-medium tracking-tight text-slate-950 shadow-[0_10px_40px_-10px_rgba(16,185,129,0.7)] transition-colors hover:bg-emerald-400 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {submitting && <Loader2 size={16} className="animate-spin" />}
-            {submitting ? "יוצר..." : "יצירת קודים חדשים"}
+            {submitting ? t("generateSubmitting") : t("generateSubmit")}
           </motion.button>
         </form>
       )}
@@ -143,14 +143,16 @@ export default function RecoveryCodesView() {
   );
 }
 
-function messageFor(code: string | undefined, fallback: string | undefined): string {
+// Map Better Auth error codes to translation keys (relative to the
+// `auth.recoveryCodes` namespace).
+function messageKeyFor(code: string | undefined): string {
   switch (code) {
     case "INVALID_PASSWORD":
     case "INVALID_EMAIL_OR_PASSWORD":
-      return "סיסמה שגויה";
+      return "errors.invalidPassword";
     case "TWO_FACTOR_NOT_ENABLED":
-      return "אימות דו-שלבי לא מאופשר עדיין";
+      return "errors.twoFactorNotEnabled";
     default:
-      return fallback ?? "שגיאה ביצירת קודים";
+      return "errors.generic";
   }
 }
