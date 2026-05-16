@@ -7,7 +7,12 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   typedRoutes: true,
-  serverExternalPackages: ["pino", "pino-pretty"],
+  // react-dom must be external so the lazy
+  // `import("react-dom/server.node")` in lib/email/client.ts resolves at
+  // runtime — Turbopack otherwise treats it as a stale tree-shake and
+  // omits it from the lambda bundle, producing `Cannot find package
+  // 'react-dom'` on the first verification-email send.
+  serverExternalPackages: ["pino", "pino-pretty", "react-dom"],
 };
 
 // Wrap with next-intl first (it injects the request-config alias) and
