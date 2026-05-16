@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { withUser } from "@/lib/db/withUser";
+import { dbService } from "@/db/client";
 
 // מקדמות paid vs due — Product council § 3 tile #5. Layer 3 schema
 // dependency: `tax_advances` table. We fail-soft when the table isn't
@@ -21,7 +22,6 @@ export type AdvanceTaxStatus =
       installmentCount: number;
     };
 
-type ProbeRow = { exists_count: string };
 type SumRow = {
   total_due_minor: string;
   total_paid_minor: string;
@@ -32,16 +32,15 @@ export async function getAdvanceTaxStatus(
   userId: string,
 ): Promise<AdvanceTaxStatus> {
   try {
+    // Probe outside the per-user transaction. `to_regclass` returns
+    // NULL when the table is missing — fast metadata-only check, no
+    // RLS path, no `app.current_user_id` requirement.
+    const probeRows = (await dbService.execute(
+      sql`SELECT to_regclass('public.tax_advances') IS NOT NULL AS exists`,
+    )) as unknown as Array<{ exists: boolean }>;
+    if (!probeRows[0]?.exists) return { available: false };
+
     return await withUser(userId, async (tx) => {
-      const probe = (await tx.execute(
-        sql`SELECT COUNT(*)::text AS exists_count
-            FROM information_schema.tables
-            WHERE table_name = 'tax_advances'`,
-      )) as unknown as ProbeRow[];
-
-      const exists = Number(probe[0]?.exists_count ?? "0") > 0;
-      if (!exists) return { available: false } as AdvanceTaxStatus;
-
       const rows = (await tx.execute(
         sql`SELECT COALESCE(SUM(amount_due_minor),0)::text  AS total_due_minor,
                    COALESCE(SUM(paid_amount_minor),0)::text AS total_paid_minor,

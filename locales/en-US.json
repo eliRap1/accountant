@@ -382,7 +382,8 @@
         "processorSync": "Processor sync",
         "bankImports": "Bank imports",
         "ledger": "Ledger",
-        "settings": "Settings"
+        "settings": "Settings",
+        "back": "Back"
       },
       "user": {
         "signOut": "Sign out",
@@ -1473,6 +1474,12 @@
       "subjectReceipts": "Morning brief · {count} receipts to categorise",
       "subjectClear": "Morning brief · all clear",
       "ctaLabel": "Open dashboard"
+    }
+  },
+  "shell": {
+    "nav": {
+      "back": "Back",
+      "dashboard": "Dashboard"
     }
   }
 }

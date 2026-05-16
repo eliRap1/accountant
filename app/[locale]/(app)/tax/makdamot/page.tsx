@@ -7,6 +7,7 @@ import EstimatesDisclaimerBanner from "@/components/app/legal/EstimatesDisclaime
 import { routing } from "@/i18n/routing";
 import { requireCurrentUser } from "@/lib/auth/serverSession";
 import { withUser } from "@/lib/db/withUser";
+import { dbService } from "@/db/client";
 import { runFullTaxEngine } from "@/lib/tax/il/runEngineForUser";
 import { projectAnnualAdvanceTax } from "@/lib/tax/il/advanceTax";
 
@@ -27,7 +28,6 @@ import { projectAnnualAdvanceTax } from "@/lib/tax/il/advanceTax";
 // Disclaimer literal (matched by HE_DISCLAIMER in lint-legal-text.ts):
 // אומדנים בלבד · אינו ייעוץ מס
 
-type ProbeRow = { exists_count: string };
 type AdvanceRow = {
   id: string;
   period_start: string;
@@ -41,35 +41,27 @@ async function probeTaxAdvancesTable(userId: string): Promise<{
   exists: boolean;
   rows: AdvanceRow[];
 }> {
-  // Two-step probe: (1) check that the table is registered in the
-  // catalogue, (2) read rows. Wrapped in try/catch so a missing table
-  // returns `exists: false` instead of bubbling up.
   try {
-    const out = await withUser(userId, async (tx) => {
-      const probe = (await tx.execute(
-        sql`SELECT COUNT(*)::text AS exists_count
-            FROM information_schema.tables
-            WHERE table_name = 'tax_advances'`,
-      )) as unknown as ProbeRow[];
+    // Metadata-only existence check via the service-role connection.
+    // `to_regclass` returns NULL when the table is absent — no
+    // information_schema scan, no `app.current_user_id` requirement.
+    const meta = (await dbService.execute(
+      sql`SELECT to_regclass('public.tax_advances') IS NOT NULL AS exists`,
+    )) as unknown as Array<{ exists: boolean }>;
+    if (!meta[0]?.exists) return { exists: false, rows: [] };
 
-      const exists = Number(probe[0]?.exists_count ?? "0") > 0;
-      if (!exists) return { exists: false, rows: [] as AdvanceRow[] };
-
-      const rows = (await tx.execute(
+    const rows = await withUser(userId, async (tx) => {
+      return (await tx.execute(
         sql`SELECT id::text, period_start::text, period_end::text,
                    amount_due_minor::text, paid_at::text, status::text
             FROM tax_advances
             ORDER BY period_start DESC
             LIMIT 24`,
       )) as unknown as AdvanceRow[];
-
-      return { exists: true, rows };
     });
-    return out;
+
+    return { exists: true, rows };
   } catch {
-    // Either the table really doesn't exist OR the user has no RLS
-    // policy for it yet. Treat both as "schema gap" so the UI stays
-    // safe even mid-migration.
     return { exists: false, rows: [] };
   }
 }

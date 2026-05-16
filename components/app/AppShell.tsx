@@ -3,12 +3,15 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import {
+  ArrowLeft,
+  ArrowRight,
   Banknote,
   Calculator,
   ChevronDown,
   CreditCard,
   FileArchive,
   FileText,
+  Home,
   Inbox,
   LayoutDashboard,
   LogOut,
@@ -210,6 +213,29 @@ export default function AppShell({
           >
             {mobileOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
+
+          {/* Back + Dashboard quick-nav. Hidden on the dashboard itself. */}
+          {!pathname.endsWith("/dashboard") ? (
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => router.back()}
+                className="rounded-lg p-2 text-slate-300 transition-colors hover:bg-white/5"
+                aria-label={t("nav.back")}
+                title={t("nav.back")}
+              >
+                {locale === "he-IL" ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
+              </button>
+              <Link
+                href="/dashboard"
+                className="hidden items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs text-slate-300 transition-colors hover:bg-white/5 sm:inline-flex"
+                title={t("nav.dashboard")}
+              >
+                <Home size={14} className="text-emerald-300" />
+                {t("nav.dashboard")}
+              </Link>
+            </div>
+          ) : null}
 
           <div className="flex flex-1 items-center" aria-hidden />
 

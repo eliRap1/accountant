@@ -382,7 +382,8 @@
         "processorSync": "סולקים",
         "bankImports": "ייבוא בנק",
         "ledger": "ספר חשבונות",
-        "settings": "הגדרות"
+        "settings": "הגדרות",
+        "back": "חזרה"
       },
       "user": {
         "signOut": "התנתקות",
@@ -1473,6 +1474,12 @@
       "subjectReceipts": "סיכום בוקר · {count} קבלות לקיטלוג",
       "subjectClear": "סיכום בוקר · הכל מסודר",
       "ctaLabel": "פתח את הדשבורד"
+    }
+  },
+  "shell": {
+    "nav": {
+      "back": "חזרה",
+      "dashboard": "דשבורד"
     }
   }
 }
