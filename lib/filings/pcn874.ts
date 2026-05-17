@@ -51,6 +51,7 @@ import { sql } from "drizzle-orm";
 import { withUser } from "@/lib/db/withUser";
 import { businesses, type vatStatusEnum } from "@/db/schema/businesses";
 import { invoices, invoiceLineItems } from "@/db/schema/invoicing";
+import { clients } from "@/db/schema/clients";
 import { padLeft, padRight, truncate, assertExactWidth, formatDateYYYYMMDD } from "./fixedWidth";
 import { encodeWindows1255, isRepresentableInWindows1255 } from "./windows1255";
 
@@ -393,21 +394,26 @@ export async function generatePcn874(args: GeneratePcn874Args): Promise<Buffer> 
     const periodStartIso = args.periodStart.toISOString().slice(0, 10);
     const periodEndIso = args.periodEnd.toISOString().slice(0, 10);
 
-    // Pull invoice rows for the period. Order by (invoice_type,
-    // sequential_number) so the gap-detection logic below operates on
-    // a contiguous-by-type stream.
+    // Pull invoice rows for the period, LEFT JOIN clients to include
+    // the counterparty's vat_id for B2B invoices. ITA requires the
+    // ע.מ./ח.פ. on B-records for B2B invoices above the allocation
+    // threshold. B2C invoices (client_id IS NULL) emit '000000000'.
+    // Order by (invoice_type, sequential_number) so the gap-detection
+    // logic below operates on a contiguous-by-type stream.
     const invoiceRows = await tx
       .select({
         id: invoices.id,
         sequentialNumber: invoices.sequentialNumber,
         invoiceType: invoices.invoiceType,
         clientId: invoices.clientId,
+        clientVatId: clients.vatId,
         issueDate: invoices.issueDate,
         cancelledAt: invoices.cancelledAt,
         subtotalMinor: invoices.subtotalMinor,
         vatMinor: invoices.vatMinor,
       })
       .from(invoices)
+      .leftJoin(clients, eq(invoices.clientId, clients.id))
       .where(
         and(
           eq(invoices.businessId, args.businessId),
@@ -420,12 +426,6 @@ export async function generatePcn874(args: GeneratePcn874Args): Promise<Buffer> 
         ),
       )
       .orderBy(asc(invoices.invoiceType), asc(invoices.sequentialNumber));
-
-    // Look up per-row client vat_id via raw SQL to avoid joining clients
-    // (which has encrypted columns and a non-trivial join — keep it as
-    // a follow-up lookup so this generator can run with minimal RLS
-    // surface). For now, NULL out the client_vat_id; Phase D will
-    // enrich. <verify-this> — submission may require client IDs.
 
     // Group by invoice_type so the gap detector runs per series.
     const byType = new Map<string, typeof invoiceRows>();
@@ -460,7 +460,10 @@ export async function generatePcn874(args: GeneratePcn874Args): Promise<Buffer> 
         return {
           invoiceNumber: r.sequentialNumber,
           invoiceDate: new Date(`${r.issueDate}T00:00:00Z`),
-          clientVatId: null, // <verify-this> enrich via clients table once needed
+          // clientVatId comes from the LEFT JOIN on clients.vat_id.
+          // B2C invoices (client_id IS NULL) produce null here, which
+          // buildDetail encodes as '000000000' per ITA spec.
+          clientVatId: r.clientVatId ?? null,
           indicator: indicatorFor(r.invoiceType, vatStatus),
           preVatAmountMinor: signedSubtotal,
           vatAmountMinor: vat,

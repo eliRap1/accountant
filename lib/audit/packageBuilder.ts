@@ -23,8 +23,10 @@
 //     packages cannot be retired without nuking sibling packages.
 //   * Manifest carries row-level provenance keyed by {kind, id} pairs
 //     (NEVER raw UUIDs without a kind discriminator) — Plan v4 audit
-//     reconstruction rule. SHA-256 of the plaintext ZIP is recorded
-//     in the manifest so an inspector can verify integrity offline.
+//     reconstruction rule. SHA-256 of the plaintext ZIP is stored in
+//     audit_packages.sha256_hex (DB column), NOT in the manifest, to
+//     avoid a self-referential two-pass build that would record the
+//     hash of a preliminary ZIP rather than the final one.
 //
 // Public surface:
 //   - buildAuditPackage({...}) — entry point used by app/api/audit/build
@@ -200,9 +202,15 @@ export type AuditPackageManifest = {
   ownerCompensationIds: string[];
   bankReconciliationIds: string[];
   riskFlagIds: string[];
-  // SHA-256 of the plaintext ZIP bytes (before encryption). An inspector
-  // can recompute this against the decrypted ZIP to confirm integrity.
-  sha256OfPlaintextZip: string;
+  // NOTE: the SHA-256 of the plaintext ZIP is stored in the
+  // audit_packages.sha256_hex DB column, NOT inside this manifest.
+  // Embedding it here would require a two-pass ZIP build where the first
+  // pass produces a preliminary archive to hash, then the manifest is
+  // rewritten with the hash, and a second archive is generated — the
+  // recorded hash would match the preliminary bytes, not the final ones.
+  // The DB-side column avoids the circular dependency entirely: the ZIP
+  // is built once, hashed, and the hash is written alongside the row.
+  // Inspectors verify: sha256(decryptedZip) === audit_packages.sha256_hex
   meta: {
     schemaVersion: 1;
     cpaCouncilDecision: "2026-05-16-architecture-v5 § Q3";
@@ -225,6 +233,8 @@ export type BuildAuditPackageResult = {
   manifest: AuditPackageManifest;
   encryptedBlobUrl: string;
   fileKeyId: string;
+  /** SHA-256 hex of the plaintext ZIP bytes. Persisted in audit_packages.sha256_hex. */
+  sha256Hex: string;
 };
 
 /**
@@ -279,7 +289,18 @@ export async function buildAuditPackage(
     periodEnd,
   });
 
-  // ---- 3. Build the ZIP buffer.
+  // ---- 3. Build the ZIP buffer (single pass).
+  //
+  // The manifest does NOT contain the ZIP's own SHA-256. Embedding it
+  // would require a two-pass build: (a) produce a preliminary ZIP with an
+  // empty/placeholder SHA in the manifest, (b) hash it, (c) rewrite the
+  // manifest with the real hash, (d) produce the final ZIP. The problem:
+  // the recorded hash matches the *preliminary* bytes, not the final ZIP
+  // (whose manifest body changed in step c). An inspector recomputing the
+  // hash against the downloaded archive would always see a mismatch.
+  // Instead: build the ZIP once, hash the result, store the hash in the
+  // audit_packages.sha256_hex DB column. Verification: sha256(decryptedZip)
+  // === audit_packages.sha256_hex.
   const manifest: AuditPackageManifest = {
     packageId,
     businessId,
@@ -297,7 +318,6 @@ export async function buildAuditPackage(
     ownerCompensationIds: collected.ownerCompensationIds,
     bankReconciliationIds: collected.bankReconciliationIds,
     riskFlagIds: collected.riskFlagIds,
-    sha256OfPlaintextZip: "", // Filled below; cannot self-reference.
     meta: {
       schemaVersion: 1,
       cpaCouncilDecision: "2026-05-16-architecture-v5 § Q3",
@@ -311,30 +331,6 @@ export async function buildAuditPackage(
   for (const a of collected.artifacts) {
     zip.file(`${a.kind}/${a.refId}.json`, collected.payloads[a.refId] ?? "{}");
   }
-  // Add a placeholder manifest first so the final ZIP layout matches
-  // what we're hashing. Two-pass approach: write the manifest with an
-  // empty SHA, generate the ZIP, hash THAT, then overwrite the manifest
-  // entry with the real SHA and regenerate. The published
-  // `sha256OfPlaintextZip` therefore matches the bytes an inspector
-  // would hash off the downloaded archive.
-  manifest.sha256OfPlaintextZip = "";
-  zip.file("MANIFEST.json", JSON.stringify(manifest, null, 2));
-  const prelimBytes = await zip.generateAsync({
-    type: "uint8array",
-    compression: "DEFLATE",
-    compressionOptions: { level: 6 },
-  });
-  manifest.sha256OfPlaintextZip = crypto
-    .createHash("sha256")
-    .update(prelimBytes)
-    .digest("hex");
-
-  // Overwrite the manifest with the real SHA + regenerate. Since the
-  // manifest's body changed, the final hash is computed against the
-  // archive's compressed bytes — inspectors should re-hash the
-  // downloaded archive AFTER excluding `MANIFEST.json.sha256OfPlaintextZip`
-  // if they want a stable identifier; the included SHA documents the
-  // contents of the archive at build time.
   zip.file("MANIFEST.json", JSON.stringify(manifest, null, 2));
 
   const zipBuffer = await zip.generateAsync({
@@ -342,6 +338,12 @@ export async function buildAuditPackage(
     compression: "DEFLATE",
     compressionOptions: { level: 6 },
   });
+
+  // SHA-256 of the plaintext ZIP bytes. Stored DB-side only; see comment above.
+  const sha256Hex = crypto
+    .createHash("sha256")
+    .update(zipBuffer)
+    .digest("hex");
 
   // ---- 4. Per-package DEK + AES-GCM encryption. The DEK purpose is
   //         keyed on the packageId so retireDek("audit-package:<id>")
@@ -379,7 +381,7 @@ export async function buildAuditPackage(
     allowOverwrite: false,
   });
 
-  // ---- 6. Persist URL + DEK id + manifest.
+  // ---- 6. Persist URL + DEK id + manifest + sha256_hex.
   await withServiceRole(async (tx) => {
     await tx.execute(
       sql`UPDATE audit_packages
@@ -387,6 +389,7 @@ export async function buildAuditPackage(
                 file_key_id = ${dekId}::uuid,
                 manifest_jsonb = ${JSON.stringify(manifest)}::jsonb,
                 total_artifacts = ${manifest.artifactCount},
+                sha256_hex = ${sha256Hex},
                 updated_at = now()
           WHERE id = ${packageId}::uuid`,
     );
@@ -397,6 +400,7 @@ export async function buildAuditPackage(
     manifest,
     encryptedBlobUrl: uploadResult.url,
     fileKeyId: dekId,
+    sha256Hex,
   };
 }
 

@@ -226,6 +226,12 @@ export const auditPackages = pgTable(
       onDelete: "restrict",
     }),
     totalArtifacts: integer("total_artifacts").notNull().default(0),
+    // SHA-256 hex of the plaintext ZIP bytes (before encryption). Stored
+    // in the DB row only — NOT in the manifest inside the ZIP — so the
+    // hash is always verifiable against the downloaded+decrypted archive
+    // without a self-referential circular dependency. Inspectors verify:
+    //   sha256(decryptedZip) === audit_packages.sha256_hex
+    sha256Hex: text("sha256_hex"),
     generatedByUserId: uuid("generated_by_user_id")
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),

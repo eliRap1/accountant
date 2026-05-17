@@ -43,6 +43,12 @@ export type AllocationThresholdRule = {
  * historical issuance audits depend on these thresholds being stable.
  */
 export const INVOICE_ALLOCATION_THRESHOLDS_MINOR: ReadonlyArray<AllocationThresholdRule> = [
+  // ₪25,000 — 2024 launch step (system live May-2024; rule date 2024-01-01).
+  // Source: rules-2026.ts § invoiceAllocationThresholdsMinor (cross-verified).
+  {
+    effectiveFrom: new Date(Date.UTC(2024, 0, 1)),
+    amountMinor: 2_500_000n,
+  },
   // ₪20,000 — 2025 step.
   {
     effectiveFrom: new Date(Date.UTC(2025, 0, 1)),
@@ -95,8 +101,11 @@ export function activeThresholdAt(date: Date): bigint {
  *     threshold does NOT require allocation (consistent with the ITA's
  *     "amounts exceeding NIS X" wording on the gov.il service page).
  *
- * `amountMinor` MUST be the invoice's grand total (subtotal + VAT) in
- * אגורות — never use the net pre-VAT amount.
+ * `amountMinor` MUST be the invoice's **subtotal (pre-VAT)** amount in
+ * אגורות. The 2026 threshold (₪5,000 from 2026-06-01) is defined by the
+ * ITA on the pre-VAT "סכום לפני מע"מ" amount. NEVER pass the grand total
+ * (subtotal + VAT) — that would inflate the effective threshold by the
+ * VAT factor and silently exempt invoices that should require allocation.
  */
 export function requiresAllocationNumber(
   issueDate: Date,

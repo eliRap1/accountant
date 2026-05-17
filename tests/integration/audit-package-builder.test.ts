@@ -347,7 +347,12 @@ describeOrSkip("audit package builder — end-to-end", () => {
     expect(m.receiptIds).toContain(state.receiptId);
     expect(m.taxFilingIds).toContain(state.taxFilingId);
     expect(m.artifactCount).toBeGreaterThanOrEqual(3);
-    expect(m.sha256OfPlaintextZip).toMatch(/^[a-f0-9]{64}$/);
+    // SHA-256 is returned on the result, NOT embedded in the manifest.
+    // The DB UPDATE stores it in audit_packages.sha256_hex; inspectors
+    // verify: sha256(decryptedZip) === sha256_hex.
+    expect(result.sha256Hex).toMatch(/^[a-f0-9]{64}$/);
+    // The manifest must NOT carry the old sha256OfPlaintextZip field.
+    expect((m as Record<string, unknown>)["sha256OfPlaintextZip"]).toBeUndefined();
     for (const a of m.artifacts) {
       expect(a.refId).toBeTruthy();
       expect(a.provenance).toBeTruthy();
@@ -363,6 +368,11 @@ describeOrSkip("audit package builder — end-to-end", () => {
       wireCiphertext: capturedWire!,
     });
     expect(zipBuffer.length).toBeGreaterThan(0);
+
+    // Cross-verify the SHA against the actual decrypted ZIP bytes.
+    const { createHash } = await import("node:crypto");
+    const computedSha = createHash("sha256").update(zipBuffer).digest("hex");
+    expect(computedSha).toBe(result.sha256Hex);
 
     const archive = await JSZip.loadAsync(zipBuffer);
     const manifestEntry = archive.file("MANIFEST.json");
