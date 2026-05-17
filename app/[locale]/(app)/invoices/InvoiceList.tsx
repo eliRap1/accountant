@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { motion } from "framer-motion";
 import { Eye, FileDown, Ban } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { SelectField, Field } from "@/components/app/ui/Field";
 
@@ -266,6 +266,8 @@ function TypeBadge({
   cancelled: boolean;
   t: (k: string) => string;
 }) {
+  const locale = useLocale();
+  const typeLangKey = locale === "he-IL" ? "he" : "en";
   const config: Record<
     InvoiceRow["invoiceType"],
     string
@@ -285,7 +287,7 @@ function TypeBadge({
       <span
         className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] uppercase tracking-[0.14em] ${cls}`}
       >
-        {t(`types.option.${type}.he`)}
+        {t(`types.option.${type}.${typeLangKey}`)}
       </span>
       {cancelled ? (
         <span className="inline-flex items-center gap-1 rounded-md border border-red-400/40 bg-red-500/10 px-1.5 py-0.5 text-[10px] uppercase tracking-[0.14em] text-red-200">

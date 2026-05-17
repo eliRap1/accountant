@@ -60,9 +60,10 @@ function minorToDisplay(amountMinor: string, currency: string): string {
 }
 
 export default async function InvoiceDetailPage(props: Props) {
-  const { id } = await props.params;
+  const { id, locale } = await props.params;
   const me = await requireCurrentUser();
   const t = await getTranslations("app.invoices");
+  const typeLangKey = locale === "he-IL" ? "he" : "en";
 
   const { head, lines } = await withUser(me.appUserId, async (tx) => {
     const heads = (await tx.execute(
@@ -117,7 +118,7 @@ export default async function InvoiceDetailPage(props: Props) {
       <header className="flex items-center justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-100">
-            {t(`types.option.${head.invoiceType}.he`)} #{head.sequentialNumber}
+            {t(`types.option.${head.invoiceType}.${typeLangKey}`)} #{head.sequentialNumber}
           </h1>
           <p className="mt-1 text-sm text-slate-400" dir="ltr">
             {head.issueDate} · {head.businessName}

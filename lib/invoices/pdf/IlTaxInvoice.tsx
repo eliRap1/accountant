@@ -196,9 +196,20 @@ const styles = StyleSheet.create({
   },
 });
 
-function formatMinor(amountMinor: bigint, currency: string): string {
-  const sign = amountMinor < 0n ? "-" : "";
-  const abs = amountMinor < 0n ? -amountMinor : amountMinor;
+function formatMinor(
+  amountMinor: bigint | string | number,
+  currency: string,
+): string {
+  // The DB driver (postgres-js) returns int8 / bigint columns as plain
+  // strings unless told otherwise. The route fetches via `SELECT *` so
+  // the runtime shape diverges from the typed `IlInvoiceRow` (which
+  // promises bigint). Coerce defensively so a string-typed value cannot
+  // explode the bigint comparison `< 0n` with "Cannot mix BigInt and
+  // other types".
+  const v =
+    typeof amountMinor === "bigint" ? amountMinor : BigInt(amountMinor);
+  const sign = v < 0n ? "-" : "";
+  const abs = v < 0n ? -v : v;
   const major = abs / 100n;
   const minor = abs % 100n;
   const majorStr = major.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
