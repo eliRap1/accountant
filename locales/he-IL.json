@@ -156,7 +156,8 @@
   "language": {
     "label": "עברית",
     "short": "HE",
-    "flag": "🇮🇱"
+    "flag": "🇮🇱",
+    "changeLang": "החלף שפה"
   },
   "auth": {
     "logoTagline": "דיוק ושקיפות",
@@ -801,41 +802,20 @@
       "types": {
         "legend": "סוג מסמך",
         "option": {
-          "tax_invoice": {
-            "he": "חשבונית מס",
-            "en": "Tax invoice",
-            "desc": "מסמך מס סטנדרטי לעסקאות חייבות במע״מ"
-          },
-          "tax_invoice_receipt": {
-            "he": "חשבונית מס/קבלה",
-            "en": "Tax invoice/receipt",
-            "desc": "מסמך משולב — חשבונית מס עם אישור תשלום בו-זמני"
-          },
-          "receipt": {
-            "he": "קבלה",
-            "en": "Receipt",
-            "desc": "אישור על קבלת תשלום ללא רכיב מס"
-          },
-          "credit_note": {
-            "he": "חשבונית זיכוי",
-            "en": "Credit note",
-            "desc": "תזכה לחשבונית קיימת — מונפק רק דרך פעולת ביטול"
-          },
-          "proforma": {
-            "he": "חשבון עסקה",
-            "en": "Proforma",
-            "desc": "הצעת מחיר — אין השפעת מס עד הנפקת חשבונית מס"
-          },
-          "debit_note": {
-            "he": "חשבונית חיוב",
-            "en": "Debit note",
-            "desc": "הוספת חיוב לחשבונית קיימת"
-          },
-          "self_invoice": {
-            "he": "חשבונית עצמית",
-            "en": "Self invoice",
-            "desc": "חיוב הפוך (Reverse charge) — שירות מספק זר"
-          }
+          "tax_invoice": "חשבונית מס",
+          "tax_invoiceDesc": "מסמך מס סטנדרטי לעסקאות חייבות במע״מ",
+          "tax_invoice_receipt": "חשבונית מס/קבלה",
+          "tax_invoice_receiptDesc": "מסמך משולב — חשבונית מס עם אישור תשלום בו-זמני",
+          "receipt": "קבלה",
+          "receiptDesc": "אישור על קבלת תשלום ללא רכיב מס",
+          "credit_note": "חשבונית זיכוי",
+          "credit_noteDesc": "תזכה לחשבונית קיימת — מונפק רק דרך פעולת ביטול",
+          "proforma": "חשבון עסקה",
+          "proformaDesc": "הצעת מחיר — אין השפעת מס עד הנפקת חשבונית מס",
+          "debit_note": "חשבונית חיוב",
+          "debit_noteDesc": "הוספת חיוב לחשבונית קיימת",
+          "self_invoice": "חשבונית עצמית",
+          "self_invoiceDesc": "חיוב הפוך (Reverse charge) — שירות מספק זר"
         }
       },
       "allocation": {

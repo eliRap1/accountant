@@ -156,7 +156,8 @@
   "language": {
     "label": "English",
     "short": "EN",
-    "flag": "🇺🇸"
+    "flag": "🇺🇸",
+    "changeLang": "Change language"
   },
   "auth": {
     "logoTagline": "Precision & Transparency",
@@ -801,41 +802,20 @@
       "types": {
         "legend": "Document type",
         "option": {
-          "tax_invoice": {
-            "he": "חשבונית מס",
-            "en": "Tax invoice",
-            "desc": "Standard tax document for VAT-liable transactions"
-          },
-          "tax_invoice_receipt": {
-            "he": "חשבונית מס/קבלה",
-            "en": "Tax invoice/receipt",
-            "desc": "Combined document — tax invoice with concurrent payment acknowledgement"
-          },
-          "receipt": {
-            "he": "קבלה",
-            "en": "Receipt",
-            "desc": "Payment acknowledgement with no tax component"
-          },
-          "credit_note": {
-            "he": "חשבונית זיכוי",
-            "en": "Credit note",
-            "desc": "Reverses an existing invoice — emitted only via the cancel action"
-          },
-          "proforma": {
-            "he": "חשבון עסקה",
-            "en": "Proforma",
-            "desc": "Price quote — no tax impact until a tax invoice is issued"
-          },
-          "debit_note": {
-            "he": "חשבונית חיוב",
-            "en": "Debit note",
-            "desc": "Adds a charge to an existing invoice"
-          },
-          "self_invoice": {
-            "he": "חשבונית עצמית",
-            "en": "Self invoice",
-            "desc": "Reverse-charge VAT for a foreign-supplier service"
-          }
+          "tax_invoice": "Tax invoice",
+          "tax_invoiceDesc": "Standard tax document for VAT-liable transactions",
+          "tax_invoice_receipt": "Tax invoice/receipt",
+          "tax_invoice_receiptDesc": "Combined document — tax invoice with concurrent payment acknowledgement",
+          "receipt": "Receipt",
+          "receiptDesc": "Payment acknowledgement with no tax component",
+          "credit_note": "Credit note",
+          "credit_noteDesc": "Reverses an existing invoice — emitted only via the cancel action",
+          "proforma": "Proforma",
+          "proformaDesc": "Price quote — no tax impact until a tax invoice is issued",
+          "debit_note": "Debit note",
+          "debit_noteDesc": "Adds a charge to an existing invoice",
+          "self_invoice": "Self invoice",
+          "self_invoiceDesc": "Reverse-charge VAT for a foreign-supplier service"
         }
       },
       "allocation": {

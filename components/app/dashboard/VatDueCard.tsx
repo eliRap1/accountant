@@ -34,7 +34,7 @@ function severityClass(days: number): string {
 
 function formatCurrency(value: number, locale: string): string {
   try {
-    return new Intl.NumberFormat(locale === "he-IL" ? "he-IL" : "en-IL", {
+    return new Intl.NumberFormat(locale, {
       style: "currency",
       currency: "ILS",
       maximumFractionDigits: 0,

@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Globe, Check } from "lucide-react";
 import { Suspense, useEffect, useRef, useState, useTransition } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing, type AppLocale } from "@/i18n/routing";
@@ -46,6 +46,7 @@ function LanguageSwitcherInner({ compact = false }: { compact?: boolean }) {
   // i18n/navigation returns the path *without* the locale prefix, so
   // switching is just `router.replace(pathname, { locale: target })`.
   const activeLocale = useLocale() as AppLocale;
+  const tLang = useTranslations("language");
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -87,7 +88,7 @@ function LanguageSwitcherInner({ compact = false }: { compact?: boolean }) {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label="Change language"
+        aria-label={tLang("changeLang")}
         disabled={isPending}
         className={`group inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 text-sm text-slate-200 transition-colors hover:border-white/20 hover:bg-white/10 disabled:opacity-60 ${compact ? "" : ""}`}
       >

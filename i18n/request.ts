@@ -57,6 +57,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
       return path;
     },
     onError(error) {
+      // ru-RU is marketing-only (Plan v4 Risk #24). App/auth namespaces
+      // intentionally fall back to en-US via getMessageFallback, so
+      // MISSING_MESSAGE noise for that locale is expected — suppress it.
+      if (error.code === "MISSING_MESSAGE" && locale === "ru-RU") return;
       // pino lands in Phase A.6 — until then route i18n errors through
       // console.warn so they show up in Vercel logs without crashing
       // the render.

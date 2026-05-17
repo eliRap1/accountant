@@ -74,7 +74,7 @@ function formatCurrency(minor: string, locale: string): string {
   // ₪10^12 mark we'll ever see).
   const value = Number(minor) / 100;
   try {
-    return new Intl.NumberFormat(locale === "he-IL" ? "he-IL" : "en-IL", {
+    return new Intl.NumberFormat(locale, {
       style: "currency",
       currency: "ILS",
       maximumFractionDigits: 0,

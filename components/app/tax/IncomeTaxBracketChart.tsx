@@ -26,7 +26,7 @@ type Props = {
 function fmt(minor: string, locale: string): string {
   const value = Number(minor) / 100;
   try {
-    return new Intl.NumberFormat(locale === "he-IL" ? "he-IL" : "en-IL", {
+    return new Intl.NumberFormat(locale, {
       style: "currency",
       currency: "ILS",
       maximumFractionDigits: 0,
@@ -100,7 +100,7 @@ export default function IncomeTaxBracketChart({
                 aria-hidden
               >
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-emerald-400/80 to-emerald-500/40"
+                  className="h-full rounded-full bg-gradient-to-r rtl:bg-gradient-to-l from-emerald-400/80 to-emerald-500/40"
                   style={{ width: `${width}%` }}
                 />
               </div>

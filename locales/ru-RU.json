@@ -157,6 +157,7 @@
   "language": {
     "label": "Русский",
     "short": "RU",
-    "flag": "🇷🇺"
+    "flag": "🇷🇺",
+    "changeLang": "Сменить язык"
   }
 }

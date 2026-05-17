@@ -38,7 +38,7 @@ type Props = {
 
 function formatCurrencyShort(value: number, locale: string): string {
   try {
-    return new Intl.NumberFormat(locale === "he-IL" ? "he-IL" : "en-IL", {
+    return new Intl.NumberFormat(locale, {
       notation: "compact",
       maximumFractionDigits: 1,
       currency: "ILS",

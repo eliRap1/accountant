@@ -106,7 +106,7 @@ export default async function TaxMakdamotPage({
   function formatIls(minor: bigint): string {
     const value = Number(minor) / 100;
     try {
-      return new Intl.NumberFormat(locale === "he-IL" ? "he-IL" : "en-IL", {
+      return new Intl.NumberFormat(locale, {
         style: "currency",
         currency: "ILS",
         maximumFractionDigits: 0,
