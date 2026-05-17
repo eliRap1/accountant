@@ -77,10 +77,10 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
-    "@better-auth/cli": "1.4.21",
+    "@better-auth/cli": "^1.4.22",
     "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^24",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",

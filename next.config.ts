@@ -35,8 +35,13 @@ export default withSentryConfig(withIntlConfig, {
   project: process.env["SENTRY_PROJECT"] ?? "<placeholder>",
   silent: true,
   widenClientFileUpload: true,
-  disableLogger: true,
-  automaticVercelMonitors: false,
+  // disableLogger was top-level deprecated; with Turbopack as the default
+  // bundler in Next.js 16 the webpack tree-shake option is a no-op anyway,
+  // so the option is dropped entirely.
+  // automaticVercelMonitors moved under webpack.* (new canonical location).
+  webpack: {
+    automaticVercelMonitors: false,
+  },
   // Avoid noisy "Sentry plugin uploaded a sourcemap…" lines for the
   // App Router transition warning.
   suppressOnRouterTransitionStartWarning: true,
