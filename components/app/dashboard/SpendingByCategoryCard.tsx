@@ -38,6 +38,7 @@ export default function SpendingByCategoryCard({
 }) {
   const t = useTranslations("app.dashboard.spendingByCategory");
   const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), []);
 
   const slices = data.rows.map((r, idx) => ({
