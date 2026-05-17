@@ -473,6 +473,14 @@
         "today": "today",
         "overdue": "overdue"
       },
+      "cashRunway": {
+        "title": "Cash runway",
+        "subtitle": "6-month forecast",
+        "monthsLabel": "months of runway",
+        "positive": "Positive cashflow",
+        "burnLabel": "Avg monthly burn",
+        "depleted": "Cash depleted"
+      },
       "chart": {
         "eyebrow": "Overview",
         "title": "Revenue vs profit",

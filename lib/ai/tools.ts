@@ -12,6 +12,7 @@
 import { tool } from "ai";
 import { z } from "zod";
 import { sql } from "drizzle-orm";
+import { getCashRunway } from "@/lib/aggregations/cashRunway";
 import { getRecurringSubscriptions } from "@/lib/aggregations/recurringSubscriptions";
 import { getSpendingByCategory } from "@/lib/aggregations/spendingByCategory";
 import { getUpcomingObligations } from "@/lib/aggregations/upcomingObligations";
@@ -240,6 +241,28 @@ export function buildGetUpcomingObligations(ctx: ToolContext) {
 }
 
 /**
+ * `getCashRunway(windowMonths)` — months until cash on hand is depleted
+ * at the average net-burn rate over the last N months. Returns null
+ * monthsRemaining when the business is cash-flow positive.
+ */
+export function buildGetCashRunway(ctx: ToolContext) {
+  return tool({
+    description:
+      "Forecast cash runway for the user's active business: months until cash on hand is depleted at the average net-burn rate over the last 6 months. Returns null months when the business is cash-flow positive.",
+    inputSchema: z.object({
+      windowMonths: z.number().int().min(3).max(12).default(6),
+    }),
+    execute: async ({ windowMonths }) => {
+      const result = await getCashRunway(ctx.userId, {
+        windowMonths,
+        ...(ctx.now ? { now: ctx.now } : {}),
+      });
+      return jsonifyBigints(result);
+    },
+  });
+}
+
+/**
  * Aggregate factory — returns a `ToolSet` (record of tools) keyed by
  * the names the model invokes. Pass directly to `generateText`/
  * `streamText` as the `tools` option.
@@ -254,6 +277,7 @@ export function buildAdvisorTools(ctx: ToolContext) {
     getSpendingByCategory: buildGetSpendingByCategory(ctx),
     getRecurringSubscriptions: buildGetRecurringSubscriptions(ctx),
     getUpcomingObligations: buildGetUpcomingObligations(ctx),
+    getCashRunway: buildGetCashRunway(ctx),
   } as const;
 }
 

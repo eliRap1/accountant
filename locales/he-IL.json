@@ -473,6 +473,14 @@
         "today": "היום",
         "overdue": "באיחור"
       },
+      "cashRunway": {
+        "title": "אופק תזרים",
+        "subtitle": "תחזית 6 חודשים",
+        "monthsLabel": "חודשי אופק",
+        "positive": "תזרים חיובי",
+        "burnLabel": "שריפה חודשית ממוצעת",
+        "depleted": "מזומן אזל"
+      },
       "chart": {
         "eyebrow": "סקירה",
         "title": "הכנסות מול רווח",

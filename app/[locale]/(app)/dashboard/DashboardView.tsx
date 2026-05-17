@@ -16,7 +16,9 @@ import MonthlyProfitTrendChart from "@/components/app/dashboard/MonthlyProfitTre
 import SpendingByCategoryCard from "@/components/app/dashboard/SpendingByCategoryCard";
 import RecurringSubsCard from "@/components/app/dashboard/RecurringSubsCard";
 import UpcomingObligationsCard from "@/components/app/dashboard/UpcomingObligationsCard";
+import CashRunwayCard from "@/components/app/dashboard/CashRunwayCard";
 import type { CashOnHand } from "@/lib/aggregations/cashOnHand";
+import type { CashRunway } from "@/lib/aggregations/cashRunway";
 import type { OverdueInvoices } from "@/lib/aggregations/overdueInvoices";
 import type { UncategorisedReceipts } from "@/lib/aggregations/uncategorisedReceipts";
 import type { AdvanceTaxStatus } from "@/lib/aggregations/advanceTaxStatus";
@@ -48,6 +50,7 @@ type Props = {
   spendingByCategory: SpendingByCategory;
   recurringSubs: RecurringSubscriptions;
   upcomingObligations: UpcomingObligations;
+  cashRunway: CashRunway;
   nowIso: string;
 };
 
@@ -65,6 +68,7 @@ export default function DashboardView({
   spendingByCategory,
   recurringSubs,
   upcomingObligations,
+  cashRunway,
   nowIso,
 }: Props) {
   const t = useTranslations("app.dashboard");
@@ -123,6 +127,7 @@ export default function DashboardView({
           nowIso={nowIso}
           locale={locale}
         />
+        <CashRunwayCard data={cashRunway} locale={locale} />
         <MonthlyProfitTrendChart
           data={profitTrend.rows}
           monthLabels={monthLabels}
