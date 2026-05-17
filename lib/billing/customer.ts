@@ -37,53 +37,37 @@ type UserRow = { email: string; name: string | null };
 
 /**
  * Find any existing Stripe customer ID we have on record for this user.
- * Returns null if no subscription row references a Stripe customer yet.
+ * Must be called inside an existing `withServiceRole` transaction so the
+ * advisory lock acquired by the caller is visible to this read.
  */
-async function findExistingCustomerId(
+async function findExistingCustomerIdInTx(
+  tx: Parameters<Parameters<typeof withServiceRole>[0]>[0],
   appUserId: string,
 ): Promise<string | null> {
-  return withServiceRole(async (tx) => {
-    // Primary: `users.stripe_customer_id` — written immediately after
-    // every successful `stripe.customers.create` so a missed webhook
-    // never causes a duplicate customer.
-    const userRows = (await tx.execute(
-      sql`SELECT stripe_customer_id
-            FROM users
-           WHERE id = ${appUserId}::uuid
-           LIMIT 1`,
-    )) as unknown as Array<{ stripe_customer_id: string | null }>;
-    const fromUser = userRows[0]?.stripe_customer_id ?? null;
-    if (fromUser) return fromUser;
+  // Primary: `users.stripe_customer_id` — written immediately after
+  // every successful `stripe.customers.create` so a missed webhook
+  // never causes a duplicate customer.
+  const userRows = (await tx.execute(
+    sql`SELECT stripe_customer_id
+          FROM users
+         WHERE id = ${appUserId}::uuid
+         LIMIT 1`,
+  )) as unknown as Array<{ stripe_customer_id: string | null }>;
+  const fromUser = userRows[0]?.stripe_customer_id ?? null;
+  if (fromUser) return fromUser;
 
-    // Legacy fallback: rows created before migration 0016 only
-    // recorded the customer id on the subscriptions table.
-    const subRows = (await tx.execute(
-      sql`SELECT provider_customer_id
-            FROM subscriptions
-           WHERE user_id = ${appUserId}::uuid
-             AND provider = 'stripe'
-             AND provider_customer_id IS NOT NULL
-           ORDER BY created_at DESC
-           LIMIT 1`,
-    )) as unknown as Array<{ provider_customer_id: string | null }>;
-    return subRows[0]?.provider_customer_id ?? null;
-  });
-}
-
-/** Cache the customer_id on `users.stripe_customer_id` so the next
- *  resolve call returns it without touching Stripe. Idempotent. */
-async function cacheCustomerId(
-  appUserId: string,
-  customerId: string,
-): Promise<void> {
-  await withServiceRole(async (tx) => {
-    await tx.execute(
-      sql`UPDATE users
-            SET stripe_customer_id = ${customerId}
-          WHERE id = ${appUserId}::uuid
-            AND stripe_customer_id IS NULL`,
-    );
-  });
+  // Legacy fallback: rows created before migration 0016 only
+  // recorded the customer id on the subscriptions table.
+  const subRows = (await tx.execute(
+    sql`SELECT provider_customer_id
+          FROM subscriptions
+         WHERE user_id = ${appUserId}::uuid
+           AND provider = 'stripe'
+           AND provider_customer_id IS NOT NULL
+         ORDER BY created_at DESC
+         LIMIT 1`,
+  )) as unknown as Array<{ provider_customer_id: string | null }>;
+  return subRows[0]?.provider_customer_id ?? null;
 }
 
 /**
@@ -125,9 +109,11 @@ export async function resolveStripeCustomer(
   args: ResolveStripeCustomerArgs,
 ): Promise<ResolvedCustomer> {
   const localeOrFallback = "locale" in args ? args.locale : undefined;
-  const existing = await findExistingCustomerId(args.appUserId);
-  if (existing) return { customerId: existing, created: false };
 
+  // Fast path (no lock): most calls are for users who already have a
+  // cached customer. Avoid advisory-lock overhead on the common case.
+  // We intentionally do NOT short-circuit here for the "not found" case;
+  // we re-check inside the lock below to close the race window.
   const contact = await loadUserContact(args.appUserId);
   if (!contact) {
     throw new Error(
@@ -135,28 +121,58 @@ export async function resolveStripeCustomer(
     );
   }
 
-  const stripe = getStripe();
-  // Stripe Tax does NOT support Israel as of 2026-05-16
-  // (https://docs.stripe.com/tax/supported-countries — Israel not
-  // listed). We still set address.country indirectly via metadata so
-  // Radar can risk-score and the customer record stays clean; tax
-  // calculation itself is handled outside Stripe.
-  //
-  // exactOptionalPropertyTypes: true means we can't pass `name:
-  // undefined` — only conditionally include the property at all.
-  const params: Stripe.CustomerCreateParams = {
-    email: contact.email,
-    metadata: {
-      app_user_id: args.appUserId,
-      locale: localeOrFallback ?? "he-IL",
-    },
-  };
-  if (contact.name) params.name = contact.name;
-  const customer = await stripe.customers.create(params);
-  // Persist immediately so a webhook race or outright failure
-  // doesn't cause the next checkout to fork a new customer for the
-  // same user. Idempotent — partial-unique index protects against
-  // concurrent inserts.
-  await cacheCustomerId(args.appUserId, customer.id);
-  return { customerId: customer.id, created: true };
+  return withServiceRole(async (tx) => {
+    // Optimistic read inside the transaction before acquiring the lock.
+    // If a customer id is already cached this returns immediately without
+    // ever blocking on the advisory lock.
+    const optimistic = await findExistingCustomerIdInTx(tx, args.appUserId);
+    if (optimistic) return { customerId: optimistic, created: false };
+    // Acquire a transaction-scoped advisory lock keyed on the userId.
+    // Uses dbService (unpooled direct connection) so pg_advisory_xact_lock
+    // is supported — pgbouncer in transaction mode drops session-level state
+    // and does not support advisory locks. The lock auto-releases on
+    // commit/rollback; no explicit unlock needed.
+    await tx.execute(
+      sql`SELECT pg_advisory_xact_lock(hashtext(${args.appUserId}))`,
+    );
+
+    // Re-check inside the lock: a concurrent caller may have already
+    // created and cached the customer while we were waiting.
+    const existing = await findExistingCustomerIdInTx(tx, args.appUserId);
+    if (existing) return { customerId: existing, created: false };
+
+    const stripe = getStripe();
+    // Stripe Tax does NOT support Israel as of 2026-05-16
+    // (https://docs.stripe.com/tax/supported-countries — Israel not
+    // listed). We still set address.country indirectly via metadata so
+    // Radar can risk-score and the customer record stays clean; tax
+    // calculation itself is handled outside Stripe.
+    //
+    // exactOptionalPropertyTypes: true means we can't pass `name:
+    // undefined` — only conditionally include the property at all.
+    const params: Stripe.CustomerCreateParams = {
+      email: contact.email,
+      metadata: {
+        app_user_id: args.appUserId,
+        locale: localeOrFallback ?? "he-IL",
+      },
+    };
+    if (contact.name) params.name = contact.name;
+    // idempotencyKey ensures Stripe deduplicates retries of this exact
+    // create call, returning the same customer object even if the HTTP
+    // request is retried after a transient network error.
+    const customer = await stripe.customers.create(params, {
+      idempotencyKey: `customer:${args.appUserId}`,
+    });
+    // Write the cache inside the same transaction that holds the
+    // advisory lock, so check → create → cache is atomic at the DB
+    // level. No other caller can see a NULL and fork a duplicate
+    // customer between this write and lock release.
+    await tx.execute(
+      sql`UPDATE users
+            SET stripe_customer_id = ${customer.id}
+          WHERE id = ${args.appUserId}::uuid`,
+    );
+    return { customerId: customer.id, created: true };
+  });
 }
