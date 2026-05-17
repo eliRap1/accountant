@@ -447,28 +447,32 @@ export async function generatePcn874(args: GeneratePcn874Args): Promise<Buffer> 
       }
     }
 
-    const details: Pcn874DetailRow[] = invoiceRows
-      .filter((r) => r.cancelledAt === null)
-      .map((r) => {
-        const subtotal = BigInt(r.subtotalMinor);
-        const vat = BigInt(r.vatMinor);
-        // Credit-note rows: signed subtotal is negative; VAT positive but
-        // logically subtracts at the trailer. The ITA expects this with
-        // the 'C' indicator + a negative pre-VAT amount.
-        const isCredit = r.invoiceType === "credit_note";
-        const signedSubtotal = isCredit ? -subtotal : subtotal;
-        return {
-          invoiceNumber: r.sequentialNumber,
-          invoiceDate: new Date(`${r.issueDate}T00:00:00Z`),
-          // clientVatId comes from the LEFT JOIN on clients.vat_id.
-          // B2C invoices (client_id IS NULL) produce null here, which
-          // buildDetail encodes as '000000000' per ITA spec.
-          clientVatId: r.clientVatId ?? null,
-          indicator: indicatorFor(r.invoiceType, vatStatus),
-          preVatAmountMinor: signedSubtotal,
-          vatAmountMinor: vat,
-        };
-      });
+    // ITA expects every issued invoice (sequence number assigned) to
+    // appear in the detail stream. A cancelled invoice MUST still appear
+    // with its original indicator — the cancellation is reflected by the
+    // linked credit_note row (separate sequence number, indicator 'C',
+    // negative pre-VAT amount). The trailer net for an
+    // original+credit-note pair equals 0 (full reversal).
+    const details: Pcn874DetailRow[] = invoiceRows.map((r) => {
+      const subtotal = BigInt(r.subtotalMinor);
+      const vat = BigInt(r.vatMinor);
+      // Credit-note rows: signed subtotal is negative; VAT positive but
+      // logically subtracts at the trailer. The ITA expects this with
+      // the 'C' indicator + a negative pre-VAT amount.
+      const isCredit = r.invoiceType === "credit_note";
+      const signedSubtotal = isCredit ? -subtotal : subtotal;
+      return {
+        invoiceNumber: r.sequentialNumber,
+        invoiceDate: new Date(`${r.issueDate}T00:00:00Z`),
+        // clientVatId comes from the LEFT JOIN on clients.vat_id.
+        // B2C invoices (client_id IS NULL) produce null here, which
+        // buildDetail encodes as '000000000' per ITA spec.
+        clientVatId: r.clientVatId ?? null,
+        indicator: indicatorFor(r.invoiceType, vatStatus),
+        preVatAmountMinor: signedSubtotal,
+        vatAmountMinor: vat,
+      };
+    });
 
     // Header period derived from periodEnd — bi-monthly reports collapse
     // to the second month per ITA convention. <verify-this>

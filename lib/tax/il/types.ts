@@ -200,8 +200,14 @@ export type TaxEstimate = {
   expensesMinor: bigint;
   /** Estimated annual income tax (post-credit-points). */
   incomeTax: IncomeTaxResult | null;
-  /** Estimated VAT payable in the current 2-month VAT period. */
+  /** Estimated VAT payable in the current 2-month VAT period. Always >= 0n.
+   *  When input VAT exceeds output VAT, this clamps to 0 and the refund
+   *  shows up in `vatRefundThisPeriodMinor` instead. */
   vatPayableThisPeriodMinor: bigint;
+  /** Estimated VAT refund the user is owed this 2-month period. Always
+   *  >= 0n. Non-zero only when recoverable input VAT exceeds output VAT
+   *  (heavy capex periods, zero-rated exporters, etc.). */
+  vatRefundThisPeriodMinor: bigint;
   /** Bituach Leumi self-employed (the most common Phase D persona). */
   bituachLeumi: BituachLeumiResult | null;
   /** Monthly מקדמות based on declared annual revenue + assigned rate. */

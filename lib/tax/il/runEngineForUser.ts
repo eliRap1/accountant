@@ -198,8 +198,9 @@ export async function runFullTaxEngine(
 
     const vatCollectedMinor = BigInt(vatCollectedRows[0]?.vat_collected_minor ?? "0");
     const vatPaidMinor = BigInt(vatPaidRows[0]?.vat_paid_minor ?? "0");
-    let vatPayableThisPeriodMinor = vatCollectedMinor - vatPaidMinor;
-    if (vatPayableThisPeriodMinor < 0n) vatPayableThisPeriodMinor = 0n;
+    const vatNetMinor = vatCollectedMinor - vatPaidMinor;
+    const vatPayableThisPeriodMinor = vatNetMinor > 0n ? vatNetMinor : 0n;
+    const vatRefundThisPeriodMinor = vatNetMinor < 0n ? -vatNetMinor : 0n;
 
     // Income tax — annualise the YTD net so mid-year users don't see
     // ~5/12 of the true bracketed bill. Take the larger of (days into
@@ -255,6 +256,7 @@ export async function runFullTaxEngine(
       expensesMinor,
       incomeTax,
       vatPayableThisPeriodMinor,
+      vatRefundThisPeriodMinor,
       bituachLeumi,
       advanceTaxMonthlyInstallmentMinor,
       activeAllocationThresholdMinor: activeAllocationThresholdMinor(rules, now),
@@ -279,6 +281,7 @@ function buildEmptyEstimate(args: {
     expensesMinor: 0n,
     incomeTax: null,
     vatPayableThisPeriodMinor: 0n,
+    vatRefundThisPeriodMinor: 0n,
     bituachLeumi: null,
     advanceTaxMonthlyInstallmentMinor: null,
     activeAllocationThresholdMinor: activeAllocationThresholdMinor(args.rules, args.now),
