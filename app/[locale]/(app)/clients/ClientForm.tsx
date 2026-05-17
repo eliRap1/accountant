@@ -51,9 +51,13 @@ export default function ClientForm({ mode, businesses, initial }: Props) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
+  // Always default to first business so the controlled <select> matches
+  // what the user sees (the browser auto-renders the first option when
+  // value="" doesn't match any option, but the form state stays empty
+  // and submit fails with "Select a business before saving"). User can
+  // still switch via the dropdown.
   const defaultBusinessId =
-    initial?.businessId ??
-    (businesses.length === 1 ? (businesses[0]?.id ?? "") : "");
+    initial?.businessId ?? businesses[0]?.id ?? "";
 
   const [values, setValues] = useState<ClientFormValues>({
     businessId: defaultBusinessId,

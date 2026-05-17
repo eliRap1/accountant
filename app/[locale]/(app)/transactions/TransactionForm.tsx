@@ -78,9 +78,10 @@ export default function TransactionForm({
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  const defaultBusinessId =
-    initial?.businessId ??
-    (businesses.length === 1 ? (businesses[0]?.id ?? "") : "");
+  // Always default to first business so the controlled <select> matches
+  // what the browser auto-renders (otherwise value="" looks fine
+  // visually but submit fails with "Select a business before saving").
+  const defaultBusinessId = initial?.businessId ?? businesses[0]?.id ?? "";
   const defaultBusiness = businesses.find((b) => b.id === defaultBusinessId);
 
   const [values, setValues] = useState<TransactionFormValues>({
