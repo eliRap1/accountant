@@ -19,6 +19,7 @@ import {
   activeAllocationThresholdMinor,
 } from "@/lib/tax/il/runEngineForUser";
 import { DEFAULT_DISCLAIMER } from "@/lib/ai/prompt";
+import { getSpendingByCategory } from "@/lib/aggregations/spendingByCategory";
 
 const MAX_SNAPSHOT_CHARS = 1000;
 
@@ -234,8 +235,31 @@ export async function generateSnapshotContext(
       DEFAULT_DISCLAIMER.en,
     ];
 
+    // Append top-3 expense categories last 30 days — supports the AI tool
+    // "what did I spend on X" pattern. Failure here must not break the
+    // snapshot (categories are nice-to-have).
+    let topCatLine: string | null = null;
+    try {
+      const cats = await getSpendingByCategory(userId, { now });
+      const top3 = cats.rows.slice(0, 3);
+      if (top3.length > 0) {
+        topCatLine = `Top expense categories (last 30d): ${top3
+          .map(
+            (c) =>
+              `${c.categoryName ?? "(uncategorised)"} ${shilling(BigInt(Math.round(c.totalMajor * 100)))}`,
+          )
+          .join(", ")}.`;
+      }
+    } catch {
+      /* swallow — snapshot stays valid without this line. */
+    }
+
+    const allLines = topCatLine
+      ? [...lines.slice(0, -2), topCatLine, ...lines.slice(-2)]
+      : lines;
+
     return {
-      text: withinLimit(lines.join("\n")),
+      text: withinLimit(allLines.join("\n")),
       hasBusiness: true,
       inputs: {
         incomeMinor,

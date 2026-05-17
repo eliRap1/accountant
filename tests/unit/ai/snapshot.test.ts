@@ -84,6 +84,14 @@ describe("generateSnapshotContext — populated business", () => {
         ],
       },
       {
+        match: /LEFT JOIN chart_of_accounts/i,
+        rows: [
+          { category_code: "5210", category_name: "Software", total_minor: "300000" },
+          { category_code: "5310", category_name: "Travel", total_minor: "150000" },
+          { category_code: "5400", category_name: "Office", total_minor: "100000" },
+        ],
+      },
+      {
         match: /FROM transactions/i,
         rows: [
           { direction: "income", total_minor: "12345600" }, // ₪123,456
@@ -139,6 +147,7 @@ describe("generateSnapshotContext — populated business", () => {
           },
         ],
       },
+      { match: /LEFT JOIN chart_of_accounts/i, rows: [] },
       { match: /FROM transactions/i, rows: [] },
       { match: /SUM\(vat_minor\)[\s\S]*FROM invoices/i, rows: [] },
       { match: /FROM receipts/i, rows: [] },
@@ -169,6 +178,7 @@ describe("generateSnapshotContext — populated business", () => {
           },
         ],
       },
+      { match: /LEFT JOIN chart_of_accounts/i, rows: [] },
       { match: /FROM transactions/i, rows: [] },
       { match: /SUM\(vat_minor\)[\s\S]*FROM invoices/i, rows: [] },
       { match: /FROM receipts/i, rows: [] },
@@ -184,5 +194,58 @@ describe("generateSnapshotContext — populated business", () => {
     expect(snap.hasBusiness).toBe(true);
     expect(snap.inputs.advanceTaxPaidYtdMinor).toBe(0n);
     expect(snap.text).toContain("Advance-tax rate not yet assigned");
+  });
+
+  it("appends top-3 expense categories when present", async () => {
+    queryResponses = [
+      {
+        match: /FROM businesses/i,
+        rows: [
+          {
+            id: "biz-1",
+            legal_name: "Plain Co",
+            vat_status: "osek_morshe",
+            entity_type: "patur",
+            advance_tax_rate_pct: "4.50",
+            default_currency: "ILS",
+          },
+        ],
+      },
+      {
+        match: /LEFT JOIN chart_of_accounts/i,
+        rows: [
+          { category_code: "5210", category_name: "Software", total_minor: "300000" },
+          { category_code: "5310", category_name: "Travel", total_minor: "150000" },
+          { category_code: "5400", category_name: "Office", total_minor: "100000" },
+        ],
+      },
+      {
+        match: /FROM transactions/i,
+        rows: [
+          { direction: "income", total_minor: "12345600" },
+          { direction: "expense", total_minor: "4500000" },
+        ],
+      },
+      {
+        match: /SUM\(vat_minor\)[\s\S]*FROM invoices/i,
+        rows: [{ vat_collected_minor: "0", vat_paid_minor: "0" }],
+      },
+      {
+        match: /FROM receipts/i,
+        rows: [{ vat_collected_minor: "0", vat_paid_minor: "0" }],
+      },
+      {
+        match: /COUNT\(\*\)[\s\S]*FROM invoices/i,
+        rows: [{ overdue_count: "0", overdue_minor: "0" }],
+      },
+      {
+        match: /FROM tax_advances/i,
+        rows: [{ paid_ytd_minor: "0" }],
+      },
+    ];
+    const snap = await generateSnapshotContext("user-1", { businessId: "biz-1" });
+    expect(snap.text).toMatch(/Top expense categories/i);
+    expect(snap.text).toContain("Software");
+    expect(snap.text.length).toBeLessThanOrEqual(SNAPSHOT_MAX_CHARS);
   });
 });

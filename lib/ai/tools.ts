@@ -263,6 +263,47 @@ export function buildGetCashRunway(ctx: ToolContext) {
 }
 
 /**
+ * `getTransactionsByVendor(vendor, limit)` — last N expense transactions
+ * for a specific vendor matched case-insensitively on counterparty or
+ * description substring. Useful for "show my Netflix charges" queries.
+ */
+export function buildGetTransactionsByVendor(ctx: ToolContext) {
+  return tool({
+    description:
+      "Look up the last N expense transactions for a specific vendor (matched case-insensitive on counterparty or description substring). Useful for answering 'show my Netflix charges' type questions.",
+    inputSchema: z.object({
+      vendor: z.string().min(2).max(80),
+      limit: z.number().int().min(1).max(50).default(20),
+    }),
+    execute: async ({ vendor, limit }) => {
+      const pattern = `%${vendor.toLowerCase()}%`;
+      const rows = await withUser(ctx.userId, async (tx) => {
+        return (await tx.execute(
+          sql`SELECT id::text, txn_date::text, amount_minor::text, currency,
+                     description, COALESCE(metadata_jsonb->>'counterparty', '') AS counterparty
+              FROM transactions
+              WHERE direction = 'expense'
+                AND (
+                  LOWER(COALESCE(description, '')) LIKE ${pattern}
+                  OR LOWER(COALESCE(metadata_jsonb->>'counterparty', '')) LIKE ${pattern}
+                )
+              ORDER BY txn_date DESC
+              LIMIT ${limit}`,
+        )) as unknown as Array<{
+          id: string;
+          txn_date: string;
+          amount_minor: string;
+          currency: string;
+          description: string | null;
+          counterparty: string;
+        }>;
+      });
+      return jsonifyBigints({ vendor, count: rows.length, transactions: rows });
+    },
+  });
+}
+
+/**
  * Aggregate factory — returns a `ToolSet` (record of tools) keyed by
  * the names the model invokes. Pass directly to `generateText`/
  * `streamText` as the `tools` option.
@@ -278,6 +319,7 @@ export function buildAdvisorTools(ctx: ToolContext) {
     getRecurringSubscriptions: buildGetRecurringSubscriptions(ctx),
     getUpcomingObligations: buildGetUpcomingObligations(ctx),
     getCashRunway: buildGetCashRunway(ctx),
+    getTransactionsByVendor: buildGetTransactionsByVendor(ctx),
   } as const;
 }
 
