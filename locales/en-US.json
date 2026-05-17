@@ -458,6 +458,21 @@
         "occurrences": "{count} charges",
         "empty": "No recurring charges detected."
       },
+      "upcomingObligations": {
+        "title": "Upcoming obligations",
+        "subtitle": "Next 90 days",
+        "empty": "No open obligations in this window.",
+        "kind": {
+          "vat_period_close": "VAT",
+          "bituach_leumi": "Bituach Leumi",
+          "makdamot": "Advance tax",
+          "filing": "Filing",
+          "invoice": "Invoice"
+        },
+        "daysUntil": "in {days} days",
+        "today": "today",
+        "overdue": "overdue"
+      },
       "chart": {
         "eyebrow": "Overview",
         "title": "Revenue vs profit",

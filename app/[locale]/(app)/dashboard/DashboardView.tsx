@@ -15,6 +15,7 @@ import MakdamotCard from "@/components/app/dashboard/MakdamotCard";
 import MonthlyProfitTrendChart from "@/components/app/dashboard/MonthlyProfitTrendChart";
 import SpendingByCategoryCard from "@/components/app/dashboard/SpendingByCategoryCard";
 import RecurringSubsCard from "@/components/app/dashboard/RecurringSubsCard";
+import UpcomingObligationsCard from "@/components/app/dashboard/UpcomingObligationsCard";
 import type { CashOnHand } from "@/lib/aggregations/cashOnHand";
 import type { OverdueInvoices } from "@/lib/aggregations/overdueInvoices";
 import type { UncategorisedReceipts } from "@/lib/aggregations/uncategorisedReceipts";
@@ -22,6 +23,7 @@ import type { AdvanceTaxStatus } from "@/lib/aggregations/advanceTaxStatus";
 import type { MonthlyProfitTrend } from "@/lib/aggregations/monthlyProfitTrend";
 import type { SpendingByCategory } from "@/lib/aggregations/spendingByCategory";
 import type { RecurringSubscriptions } from "@/lib/aggregations/recurringSubscriptions";
+import type { UpcomingObligations } from "@/lib/aggregations/upcomingObligations";
 
 type VatDue = {
   amountMajor: number;
@@ -45,6 +47,8 @@ type Props = {
   profitTrend: MonthlyProfitTrend;
   spendingByCategory: SpendingByCategory;
   recurringSubs: RecurringSubscriptions;
+  upcomingObligations: UpcomingObligations;
+  nowIso: string;
 };
 
 export default function DashboardView({
@@ -60,6 +64,8 @@ export default function DashboardView({
   profitTrend,
   spendingByCategory,
   recurringSubs,
+  upcomingObligations,
+  nowIso,
 }: Props) {
   const t = useTranslations("app.dashboard");
 
@@ -112,6 +118,11 @@ export default function DashboardView({
         )}
         <SpendingByCategoryCard data={spendingByCategory} locale={locale} />
         <RecurringSubsCard data={recurringSubs} locale={locale} />
+        <UpcomingObligationsCard
+          data={upcomingObligations}
+          nowIso={nowIso}
+          locale={locale}
+        />
         <MonthlyProfitTrendChart
           data={profitTrend.rows}
           monthLabels={monthLabels}

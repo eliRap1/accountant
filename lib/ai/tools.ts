@@ -14,6 +14,7 @@ import { z } from "zod";
 import { sql } from "drizzle-orm";
 import { getRecurringSubscriptions } from "@/lib/aggregations/recurringSubscriptions";
 import { getSpendingByCategory } from "@/lib/aggregations/spendingByCategory";
+import { getUpcomingObligations } from "@/lib/aggregations/upcomingObligations";
 import { withUser } from "@/lib/db/withUser";
 import { runFullTaxEngine } from "@/lib/tax/il/runEngineForUser";
 
@@ -217,6 +218,28 @@ export function buildGetRecurringSubscriptions(ctx: ToolContext) {
 }
 
 /**
+ * `getUpcomingObligations(windowDays)` — merged chronological timeline of
+ * due dates over the next N days. Covers VAT period close, Bituach Leumi,
+ * מקדמות installments, tax filings, and outstanding invoice receivables.
+ */
+export function buildGetUpcomingObligations(ctx: ToolContext) {
+  return tool({
+    description:
+      "List the user's upcoming tax + filing + invoice obligations over the next N days (default 90, max 180). Includes VAT period close, Bituach Leumi due, מקדמות installments, filings, and outstanding receivable due dates.",
+    inputSchema: z.object({
+      windowDays: z.number().int().min(7).max(180).default(90),
+    }),
+    execute: async ({ windowDays }) => {
+      const result = await getUpcomingObligations(ctx.userId, {
+        windowDays,
+        ...(ctx.now ? { now: ctx.now } : {}),
+      });
+      return jsonifyBigints(result);
+    },
+  });
+}
+
+/**
  * Aggregate factory — returns a `ToolSet` (record of tools) keyed by
  * the names the model invokes. Pass directly to `generateText`/
  * `streamText` as the `tools` option.
@@ -230,6 +253,7 @@ export function buildAdvisorTools(ctx: ToolContext) {
     getMakdamotStatus: buildGetMakdamotStatus(ctx),
     getSpendingByCategory: buildGetSpendingByCategory(ctx),
     getRecurringSubscriptions: buildGetRecurringSubscriptions(ctx),
+    getUpcomingObligations: buildGetUpcomingObligations(ctx),
   } as const;
 }
 

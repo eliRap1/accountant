@@ -18,6 +18,7 @@ import { getMonthlyProfitTrend } from "@/lib/aggregations/monthlyProfitTrend";
 import { runFullTaxEngine } from "@/lib/tax/il/runEngineForUser";
 import { getRecurringSubscriptions } from "@/lib/aggregations/recurringSubscriptions";
 import { getSpendingByCategory } from "@/lib/aggregations/spendingByCategory";
+import { getUpcomingObligations } from "@/lib/aggregations/upcomingObligations";
 import { getCurrentVatWindow, daysBetween } from "@/lib/scheduler/businessQuotedRevenueWindow";
 import MorningBriefCardServer from "@/components/app/dashboard/MorningBriefCard.server";
 import ReadinessBanner from "@/components/app/dashboard/ReadinessBanner";
@@ -66,6 +67,7 @@ export default async function DashboardPage({
     estimate,
     spendingByCategory,
     recurringSubs,
+    upcomingObligations,
   ] = await Promise.all([
     getDashboardData(user.appUserId),
     getCashOnHand(user.appUserId),
@@ -76,6 +78,7 @@ export default async function DashboardPage({
     runFullTaxEngine(user.appUserId, { now }),
     getSpendingByCategory(user.appUserId, { now }),
     getRecurringSubscriptions(user.appUserId, { now }),
+    getUpcomingObligations(user.appUserId, { now }),
   ]);
 
   const vatWindow = getCurrentVatWindow(now);
@@ -128,6 +131,8 @@ export default async function DashboardPage({
         profitTrend={profitTrend}
         spendingByCategory={spendingByCategory}
         recurringSubs={recurringSubs}
+        upcomingObligations={upcomingObligations}
+        nowIso={now.toISOString().slice(0, 10)}
       />
     </div>
   );

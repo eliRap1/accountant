@@ -458,6 +458,21 @@
         "occurrences": "{count} חיובים",
         "empty": "לא זוהו מנויים חוזרים."
       },
+      "upcomingObligations": {
+        "title": "תזרים התחייבויות",
+        "subtitle": "90 הימים הקרובים",
+        "empty": "אין התחייבויות פתוחות בחלון הזה.",
+        "kind": {
+          "vat_period_close": "מע\"מ",
+          "bituach_leumi": "ביטוח לאומי",
+          "makdamot": "מקדמות",
+          "filing": "דיווח",
+          "invoice": "חשבונית"
+        },
+        "daysUntil": "בעוד {days} ימים",
+        "today": "היום",
+        "overdue": "באיחור"
+      },
       "chart": {
         "eyebrow": "סקירה",
         "title": "הכנסות מול רווח",
