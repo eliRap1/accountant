@@ -691,7 +691,10 @@
       "detail": {
         "profile": "פרטי לקוח",
         "address": "כתובת"
-      }
+      },
+      "sendPortalLinkCta": "שלח קישור פורטל",
+      "portalLinkSent": "הקישור נשלח למייל הלקוח",
+      "portalLinkFailed": "שליחת הקישור נכשלה"
     },
     "transactions": {
       "metaTitle": "תנועות · AccounTech",

@@ -691,7 +691,10 @@
       "detail": {
         "profile": "Client profile",
         "address": "Address"
-      }
+      },
+      "sendPortalLinkCta": "Send portal link",
+      "portalLinkSent": "Link sent to the client's email",
+      "portalLinkFailed": "Failed to send portal link"
     },
     "transactions": {
       "metaTitle": "Transactions · AccounTech",

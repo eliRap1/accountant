@@ -5,6 +5,7 @@ import { Pencil } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { requireCurrentUser } from "@/lib/auth/serverSession";
 import { withUser } from "@/lib/db/withUser";
+import SendPortalLinkButton from "../SendPortalLinkButton";
 
 type Props = { params: Promise<{ id: string; locale: string }> };
 
@@ -59,13 +60,23 @@ export default async function ClientDetailPage(props: Props) {
           </h1>
           <p className="mt-1 text-sm text-slate-400">{row.businessName}</p>
         </div>
-        <Link
-          href={`/clients/${row.id}/edit`}
-          className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-sm text-slate-200 transition-colors hover:border-emerald-400/40 hover:text-emerald-200"
-        >
-          <Pencil size={14} />
-          {t("col.edit")}
-        </Link>
+        <div className="flex items-center gap-3">
+          <SendPortalLinkButton
+            clientId={row.id}
+            labels={{
+              cta: t("sendPortalLinkCta"),
+              sent: t("portalLinkSent"),
+              failed: t("portalLinkFailed"),
+            }}
+          />
+          <Link
+            href={`/clients/${row.id}/edit`}
+            className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-sm text-slate-200 transition-colors hover:border-emerald-400/40 hover:text-emerald-200"
+          >
+            <Pencil size={14} />
+            {t("col.edit")}
+          </Link>
+        </div>
       </header>
 
       <section className="glass-strong rounded-2xl p-6">
