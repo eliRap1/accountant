@@ -222,6 +222,7 @@ export async function commitImport(
       const amountMinor = BigInt(r.amountMinor);
       const fingerprint = fingerprintTransaction({
         amountMinor,
+        currency: r.currency,
         txnDate: new Date(`${r.txnDate}T00:00:00Z`),
         counterparty: r.counterparty,
       });

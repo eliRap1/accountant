@@ -24,6 +24,12 @@ import { and, between, eq, sql } from "drizzle-orm";
 import { transactions } from "@/db/schema/money-flows";
 import type { DrizzleTx } from "@/lib/invoices/sequential";
 
+// NOTE on currency in fingerprints: the canonical tuple now includes the
+// ISO-4217 currency code. This means ₪500 (ILS) and $500 (USD) — both
+// stored as 50000n amountMinor — produce different fingerprints and are
+// NOT treated as duplicate candidates. The SQL candidate query is also
+// filtered by currency so the index scan is bounded correctly.
+
 export type TransactionRow = typeof transactions.$inferSelect;
 
 const ENTITY_SUFFIX_RX = /(?:\s*(?:bm\.?|inc\.?|llc\.?|ltd\.?|בע"?מ\.?|חברה))$/u;
@@ -62,6 +68,7 @@ function toUtcDayIso(date: Date): string {
 
 export type FingerprintArgs = {
   amountMinor: bigint;
+  currency: string;
   txnDate: Date;
   counterparty: string;
 };
@@ -70,17 +77,24 @@ export type FingerprintArgs = {
  * Produce a stable SHA-256 hex digest for a transaction's canonical
  * tuple. Use this both at ingest (write to `metadata_jsonb.fingerprint`)
  * and at re-import (compare against existing rows).
+ *
+ * Currency is included so that ₪500 (ILS) and $500 (USD) — both stored
+ * as 50000n amountMinor — produce different fingerprints and are never
+ * treated as duplicates.
  */
 export function fingerprintTransaction(args: FingerprintArgs): string {
   const norm = normalizeCounterparty(args.counterparty);
   const day = toUtcDayIso(args.txnDate);
-  const canonical = `${args.amountMinor.toString()}|${day}|${norm}`;
+  // Currency is upper-cased for normalisation so "ils" and "ILS" collide.
+  const ccy = args.currency.trim().toUpperCase();
+  const canonical = `${args.amountMinor.toString()}|${ccy}|${day}|${norm}`;
   return crypto.createHash("sha256").update(canonical, "utf8").digest("hex");
 }
 
 export type FindDuplicatesArgs = {
   businessId: string;
   amountMinor: bigint;
+  currency: string;
   txnDate: Date;
   counterparty: string;
 };
@@ -100,13 +114,16 @@ export async function findDuplicates(
 ): Promise<TransactionRow[]> {
   const target = fingerprintTransaction({
     amountMinor: args.amountMinor,
+    currency: args.currency,
     txnDate: args.txnDate,
     counterparty: args.counterparty,
   });
 
-  // Bound the SQL scan by amount + ±2-day date range; filter to exact
-  // fingerprint in JS after fetch. We don't store the fingerprint in a
-  // column yet (Phase F.2 may add it), so this is the pragmatic shape.
+  // Bound the SQL scan by amount + currency + ±2-day date range; filter
+  // to exact fingerprint in JS after fetch. We don't store the fingerprint
+  // in a column yet (Phase F.2 may add it), so this is the pragmatic shape.
+  // Currency MUST be part of the SQL filter so that ₪500 (ILS) and $500
+  // (USD) — both stored as 50000n — never collide at the candidate level.
   const lower = new Date(args.txnDate);
   lower.setUTCDate(lower.getUTCDate() - 2);
   const upper = new Date(args.txnDate);
@@ -119,6 +136,7 @@ export async function findDuplicates(
       and(
         eq(transactions.businessId, args.businessId),
         eq(transactions.amountMinor, args.amountMinor),
+        eq(transactions.currency, args.currency.trim().toUpperCase()),
         between(
           transactions.txnDate,
           toUtcDayIso(lower),
@@ -131,6 +149,7 @@ export async function findDuplicates(
   return rows.filter((row) => {
     const rowFp = fingerprintTransaction({
       amountMinor: row.amountMinor,
+      currency: row.currency,
       txnDate: new Date(`${row.txnDate}T00:00:00Z`),
       counterparty: row.description ?? "",
     });

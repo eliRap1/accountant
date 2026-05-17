@@ -95,6 +95,10 @@ export const growAdapter: ProcessorAdapter = {
       if (!r.issuedDate) return acc;
       return acc === null || r.issuedDate > acc ? r.issuedDate : acc;
     }, null);
-    return { rows, nextCursor: body.hasMore && maxDate ? maxDate : null };
+    // Return maxDate regardless of body.hasMore. Previously we returned
+    // null when hasMore=false, causing the next cron run to read
+    // `since = undefined`, which defaults to "2020-01-01" in runSync.ts
+    // and re-fetches the entire receipt history on every completed page.
+    return { rows, nextCursor: maxDate };
   },
 };

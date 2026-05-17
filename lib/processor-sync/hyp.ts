@@ -97,6 +97,18 @@ export const hypAdapter: ProcessorAdapter = {
       receiptNumber: r.receipt_number,
       rawMetadata: r as unknown as Record<string, unknown>,
     }));
-    return { rows, nextCursor: body.next_cursor ?? null };
+    // Hyp paginates via next_cursor. When the server signals the last
+    // page (next_cursor === null / undefined) we still persist the MAX
+    // issuedDate across the current page as the cursor. Without this
+    // the next cron run would read `since = undefined`, which defaults
+    // to "2020-01-01" in runSync.ts, re-fetching 6+ years of receipts.
+    // Dedup prevents double-insert but burns API quota and DB I/O.
+    const maxDate = rows.reduce<string | null>((acc, r) => {
+      if (!r.issuedDate) return acc;
+      return acc === null || r.issuedDate > acc ? r.issuedDate : acc;
+    }, null);
+    // Prefer the server cursor when present (it may encode state we
+    // can't reconstruct from dates alone), fall back to maxDate.
+    return { rows, nextCursor: body.next_cursor ?? maxDate };
   },
 };

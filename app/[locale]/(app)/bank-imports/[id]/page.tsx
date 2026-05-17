@@ -75,6 +75,7 @@ export default async function BankImportReviewPage(props: {
     const fingerprints = imp.rows.map((r) =>
       fingerprintTransaction({
         amountMinor: BigInt(r.amountMinor),
+        currency: r.currency,
         txnDate: new Date(`${r.txnDate}T00:00:00Z`),
         counterparty: r.counterparty,
       }),
@@ -92,6 +93,7 @@ export default async function BankImportReviewPage(props: {
       const existing = (await tx
         .select({
           amountMinor: transactions.amountMinor,
+          currency: transactions.currency,
           txnDate: transactions.txnDate,
           description: transactions.description,
         })
@@ -107,6 +109,7 @@ export default async function BankImportReviewPage(props: {
           ),
         )) as Array<{
         amountMinor: bigint;
+        currency: string;
         txnDate: string;
         description: string | null;
       }>;
@@ -119,6 +122,7 @@ export default async function BankImportReviewPage(props: {
       for (const e of existing) {
         const fp = fingerprintTransaction({
           amountMinor: e.amountMinor,
+          currency: e.currency,
           txnDate: new Date(`${e.txnDate}T00:00:00Z`),
           counterparty: e.description ?? "",
         });

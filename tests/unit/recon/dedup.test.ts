@@ -38,6 +38,7 @@ describe("normalizeCounterparty", () => {
 describe("fingerprintTransaction", () => {
   const base = {
     amountMinor: 12_345n,
+    currency: "ILS",
     txnDate: new Date(Date.UTC(2026, 4, 16, 14, 22, 0)),
     counterparty: "Acme Ltd",
   };
@@ -100,6 +101,18 @@ describe("fingerprintTransaction", () => {
       counterparty: "WidgetCo Inc.",
     });
     expect(a).not.toBe(b);
+  });
+
+  it("differs when currency differs — cross-currency dedup false-positive guard", () => {
+    const ils = fingerprintTransaction({ ...base, currency: "ILS" });
+    const usd = fingerprintTransaction({ ...base, currency: "USD" });
+    expect(ils).not.toBe(usd);
+  });
+
+  it("is case-insensitive on currency", () => {
+    const upper = fingerprintTransaction({ ...base, currency: "ILS" });
+    const lower = fingerprintTransaction({ ...base, currency: "ils" });
+    expect(upper).toBe(lower);
   });
 
   it("produces a 64-character hex digest (SHA-256)", () => {

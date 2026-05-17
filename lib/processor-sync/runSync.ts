@@ -5,9 +5,20 @@
 // processor) so the caller takes responsibility for any auth/RLS
 // gating. We DO use `withServiceRole` here because the cron runs
 // outside a user context.
+//
+// Storage contract for processor-sync receipts:
+//   parsed_vendor_ciphertext — AES-256-GCM ciphertext of the
+//     counterparty metadata JSON, encrypted with the business DEK
+//     (same pattern as OCR receipts in app/api/receipts/parse/route.ts).
+//     The DEK id is stored in parsed_vendor_dek_id so decrypt survives
+//     key rotation.
+//   ocr_text_dek_id — always NULL for processor-sync receipts because
+//     there is no OCR step in this path. Decrypt callers MUST NULL-check
+//     this column before attempting to decrypt ocr_text_ciphertext.
 
 import { sql } from "drizzle-orm";
 import { withServiceRole } from "@/lib/db/withServiceRole";
+import { encryptStringWithDek } from "@/lib/security/encryption";
 import { hypAdapter } from "./hyp";
 import { growAdapter } from "./grow";
 import { payplusAdapter } from "./payplus";
