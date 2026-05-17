@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, useRef, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, ShieldCheck, X } from "lucide-react";
@@ -33,6 +33,60 @@ export default function StepUpModal({ envelope, onClose, onGranted }: Props) {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
+  // Save previously-focused element on open; restore on close.
+  useEffect(() => {
+    if (envelope) {
+      previousFocusRef.current = document.activeElement as HTMLElement;
+    } else {
+      previousFocusRef.current?.focus();
+      previousFocusRef.current = null;
+    }
+  }, [envelope]);
+
+  // Focus trap + Escape handler.
+  useEffect(() => {
+    if (!envelope) return;
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    function getFocusable(): HTMLElement[] {
+      return Array.from(
+        panel!.querySelectorAll<HTMLElement>(
+          'button:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((el) => !el.closest("[disabled]"));
+    }
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const focusable = getFocusable();
+      if (focusable.length === 0) return;
+      const first = focusable[0]!;
+      const last = focusable[focusable.length - 1]!;
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [envelope, onClose]);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -82,6 +136,7 @@ export default function StepUpModal({ envelope, onClose, onGranted }: Props) {
           aria-labelledby="step-up-title"
         >
           <motion.div
+            ref={panelRef}
             initial={{ opacity: 0, y: 10, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.97 }}
@@ -126,6 +181,8 @@ export default function StepUpModal({ envelope, onClose, onGranted }: Props) {
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
                   required
+                  // eslint-disable-next-line jsx-a11y/no-autofocus
+                  autoFocus
                   disabled={submitting}
                   dir="ltr"
                   className="mt-2 block w-full rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2.5 text-sm text-slate-100 outline-none transition-colors focus:border-emerald-400/60 focus:ring-2 focus:ring-emerald-500/30 disabled:opacity-60"
@@ -141,15 +198,10 @@ export default function StepUpModal({ envelope, onClose, onGranted }: Props) {
                 </div>
               ) : null}
 
-              <div className="flex items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  disabled={submitting}
-                  className="rounded-lg px-3 py-1.5 text-sm text-slate-300 hover:bg-white/5 disabled:opacity-50"
-                >
-                  {t("cancel")}
-                </button>
+              {/* flex-row-reverse places Confirm first in DOM/visual order (inline-end
+                  in LTR). rtl:flex-row restores natural order in RTL so Confirm stays
+                  on the inline-end (left) — matching platform convention in both dirs. */}
+              <div className="flex flex-row-reverse items-center justify-start gap-2 rtl:flex-row">
                 <button
                   type="submit"
                   disabled={submitting || password.length === 0}
@@ -157,6 +209,14 @@ export default function StepUpModal({ envelope, onClose, onGranted }: Props) {
                 >
                   {submitting && <Loader2 size={14} className="animate-spin" />}
                   {t("confirm")}
+                </button>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  disabled={submitting}
+                  className="rounded-lg px-3 py-1.5 text-sm text-slate-300 hover:bg-white/5 disabled:opacity-50"
+                >
+                  {t("cancel")}
                 </button>
               </div>
             </form>

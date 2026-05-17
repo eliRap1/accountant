@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
@@ -10,6 +11,7 @@ type Props = {
 
 export default function Logo({ className = "", showWordmark = true }: Props) {
   const t = useTranslations("logo");
+  const gid = useId();
   return (
     <a href="#top" className={`group flex items-center gap-2.5 ${className}`}>
       <motion.svg
@@ -24,7 +26,7 @@ export default function Logo({ className = "", showWordmark = true }: Props) {
         className="overflow-visible"
       >
         <defs>
-          <linearGradient id="acg" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#34d399" />
             <stop offset="100%" stopColor="#059669" />
           </linearGradient>
@@ -32,15 +34,15 @@ export default function Logo({ className = "", showWordmark = true }: Props) {
         <motion.polygon
           points="20,2 36,11 36,29 20,38 4,29 4,11"
           fill="none"
-          stroke="url(#acg)"
+          stroke={`url(#${gid})`}
           strokeWidth="1.5"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
           transition={{ duration: 1.2, ease: "easeInOut" }}
         />
-        <rect x="13" y="14" width="14" height="2.4" rx="1" fill="url(#acg)" />
+        <rect x="13" y="14" width="14" height="2.4" rx="1" fill={`url(#${gid})`} />
         <rect x="13" y="19" width="10" height="2.4" rx="1" fill="#10b981" opacity="0.85" />
-        <rect x="13" y="24" width="14" height="2.4" rx="1" fill="url(#acg)" />
+        <rect x="13" y="24" width="14" height="2.4" rx="1" fill={`url(#${gid})`} />
         <motion.path
           d="M9 30 L31 12"
           stroke="#ecfdf5"

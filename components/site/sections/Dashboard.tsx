@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   Bar,
@@ -39,6 +39,10 @@ export default function Dashboard() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const parallax = useTransform(scrollYProgress, [0, 1], [40, -40]);
   const t = useTranslations("dashboard");
+  const uid = useId();
+  const barFillId = `${uid}-barFill`;
+  const barFillDimId = `${uid}-barFillDim`;
+  const areaFillId = `${uid}-areaFill`;
   // `months` is an array — next-intl returns it via raw() or by reading
   // the JSON literal. We use the typed-translation helper to get the
   // array out and fall back to month index if anything goes sideways.
@@ -174,11 +178,11 @@ export default function Dashboard() {
                     margin={{ top: 8, right: 8, left: -16, bottom: 0 }}
                   >
                     <defs>
-                      <linearGradient id="barFill" x1="0" y1="0" x2="0" y2="1">
+                      <linearGradient id={barFillId} x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#34d399" stopOpacity={0.95} />
                         <stop offset="100%" stopColor="#10b981" stopOpacity={0.55} />
                       </linearGradient>
-                      <linearGradient id="barFillDim" x1="0" y1="0" x2="0" y2="1">
+                      <linearGradient id={barFillDimId} x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#10b981" stopOpacity={0.35} />
                         <stop offset="100%" stopColor="#10b981" stopOpacity={0.18} />
                       </linearGradient>
@@ -202,8 +206,8 @@ export default function Dashboard() {
                           key={i}
                           fill={
                             hovered === null || hovered === i
-                              ? "url(#barFill)"
-                              : "url(#barFillDim)"
+                              ? `url(#${barFillId})`
+                              : `url(#${barFillDimId})`
                           }
                         />
                       ))}
@@ -225,7 +229,7 @@ export default function Dashboard() {
                       margin={{ top: 4, right: 4, left: -24, bottom: 0 }}
                     >
                       <defs>
-                        <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+                        <linearGradient id={areaFillId} x1="0" y1="0" x2="0" y2="1">
                           <stop offset="0%" stopColor="#10b981" stopOpacity={0.55} />
                           <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
                         </linearGradient>
@@ -235,7 +239,7 @@ export default function Dashboard() {
                         dataKey="ebitda"
                         stroke="#34d399"
                         strokeWidth={2}
-                        fill="url(#areaFill)"
+                        fill={`url(#${areaFillId})`}
                         animationDuration={1300}
                       />
                       <XAxis dataKey="month" hide />

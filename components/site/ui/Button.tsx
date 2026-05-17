@@ -38,7 +38,7 @@ const Button = forwardRef<HTMLButtonElement, Props>(function Button(
     >
       <span>{children}</span>
       {withArrow && (
-        <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
+        <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5 rtl:group-hover:translate-x-0" />
       )}
     </motion.button>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   Area,
@@ -43,6 +43,10 @@ type Props = {
 
 export default function RevenueEbitdaChart({ data, showArea = true }: Props) {
   const t = useTranslations("app.dashboard.chart");
+  const uid = useId();
+  const barFillId = `${uid}-barFill`;
+  const barFillDimId = `${uid}-barFillDim`;
+  const areaFillId = `${uid}-areaFill`;
 
   const [hovered, setHovered] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -135,7 +139,7 @@ export default function RevenueEbitdaChart({ data, showArea = true }: Props) {
                 >
                   <defs>
                     <linearGradient
-                      id="appBarFill"
+                      id={barFillId}
                       x1="0"
                       y1="0"
                       x2="0"
@@ -145,7 +149,7 @@ export default function RevenueEbitdaChart({ data, showArea = true }: Props) {
                       <stop offset="100%" stopColor="#10b981" stopOpacity={0.55} />
                     </linearGradient>
                     <linearGradient
-                      id="appBarFillDim"
+                      id={barFillDimId}
                       x1="0"
                       y1="0"
                       x2="0"
@@ -187,8 +191,8 @@ export default function RevenueEbitdaChart({ data, showArea = true }: Props) {
                         key={i}
                         fill={
                           hovered === null || hovered === i
-                            ? "url(#appBarFill)"
-                            : "url(#appBarFillDim)"
+                            ? `url(#${barFillId})`
+                            : `url(#${barFillDimId})`
                         }
                       />
                     ))}
@@ -213,7 +217,7 @@ export default function RevenueEbitdaChart({ data, showArea = true }: Props) {
                   >
                     <defs>
                       <linearGradient
-                        id="appAreaFill"
+                        id={areaFillId}
                         x1="0"
                         y1="0"
                         x2="0"
@@ -228,7 +232,7 @@ export default function RevenueEbitdaChart({ data, showArea = true }: Props) {
                       dataKey="ebitda"
                       stroke="#34d399"
                       strokeWidth={2}
-                      fill="url(#appAreaFill)"
+                      fill={`url(#${areaFillId})`}
                       animationDuration={1300}
                     />
                     <XAxis dataKey="month" hide />
