@@ -6,11 +6,11 @@ import { forwardRef } from "react";
 
 type Variant = "primary" | "ghost" | "outline";
 
+// Note: `as` and `href` are intentionally omitted — Button always renders a
+// <button>. Use a plain <a> or <motion.a> at the call site for link behaviour.
 type Props = Omit<HTMLMotionProps<"button">, "ref" | "children"> & {
   variant?: Variant;
   withArrow?: boolean;
-  as?: "button" | "a";
-  href?: string;
   children?: React.ReactNode;
 };
 

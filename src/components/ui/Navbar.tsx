@@ -43,7 +43,7 @@ export default function Navbar() {
                 className="relative rounded-lg px-3.5 py-2 text-sm text-slate-300 transition-colors hover:text-white"
               >
                 <span className="relative z-10">{l.label}</span>
-                <span className="absolute inset-0 -z-0 rounded-lg bg-white/0 transition-colors hover:bg-white/5" />
+                <span className="absolute inset-0 z-0 rounded-lg bg-white/0 transition-colors hover:bg-white/5" />
               </a>
             </li>
           ))}
