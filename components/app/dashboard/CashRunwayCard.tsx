@@ -68,9 +68,14 @@ export default function CashRunwayCard({
         </span>
       </div>
 
-      <p className="text-[11px] text-slate-400">
-        {t("burnLabel")}: {fmtCurrency(data.avgMonthlyNetBurnMajor, locale)}
-      </p>
+      {!isPositive && (
+        <p className="text-[11px] text-slate-400">
+          {t("burnLabel")}:{" "}
+          <span dir="ltr" className="font-medium text-slate-300">
+            {fmtCurrency(data.avgMonthlyNetBurnMajor, locale)}
+          </span>
+        </p>
+      )}
     </motion.article>
   );
 }
