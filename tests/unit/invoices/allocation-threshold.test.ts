@@ -30,8 +30,12 @@ describe("activeThresholdAt", () => {
     ).toBe(1_000_000n);
   });
 
-  it("returns a large sentinel for pre-2025 dates (no rule yet)", () => {
-    expect(activeThresholdAt(new Date(Date.UTC(2024, 5, 1)))).toBe(
+  it("returns ₪25,000 for 2024 dates (initial allocation phase)", () => {
+    expect(activeThresholdAt(new Date(Date.UTC(2024, 5, 1)))).toBe(2_500_000n);
+  });
+
+  it("returns a large sentinel for pre-2024 dates (no rule yet)", () => {
+    expect(activeThresholdAt(new Date(Date.UTC(2023, 11, 31)))).toBe(
       9_223_372_036_854_775_807n,
     );
   });
