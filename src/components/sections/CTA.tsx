@@ -48,6 +48,8 @@ export default function CTA() {
             </ul>
           </div>
 
+          {/* TODO(audit): wire onSubmit to a real endpoint (API route or Server Action)
+              so contact-form data is actually collected. Currently only prevents default. */}
           <form
             onSubmit={(e) => e.preventDefault()}
             className="glass-strong space-y-4 rounded-2xl p-6 sm:p-8"
