@@ -36,6 +36,12 @@ export default async function TransactionsPage({
   const from = sp.from ?? "";
   const to = sp.to ?? "";
 
+  // Pass NULL instead of "" for date params so PostgreSQL never attempts
+  // to cast an empty string to `date`. See invoices/page.tsx for the full
+  // explanation of this class of bug.
+  const fromDate: string | null = from || null;
+  const toDate: string | null = to || null;
+
   const { businesses, rows } = await withUser(me.appUserId, async (tx) => {
     const bs = (await tx.execute(
       sql`SELECT id, legal_name AS "legalName"
@@ -59,8 +65,8 @@ export default async function TransactionsPage({
             ON coa.code = t.category_code
            AND (coa.business_id = t.business_id OR coa.business_id IS NULL)
           WHERE (${businessId} = '' OR t.business_id::text = ${businessId})
-            AND (${from} = '' OR t.txn_date >= ${from}::date)
-            AND (${to} = '' OR t.txn_date <= ${to}::date)
+            AND (${fromDate}::date IS NULL OR t.txn_date >= ${fromDate}::date)
+            AND (${toDate}::date IS NULL OR t.txn_date <= ${toDate}::date)
           ORDER BY t.txn_date DESC, t.created_at DESC
           LIMIT 500`,
     )) as unknown as TransactionRow[];

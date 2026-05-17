@@ -32,6 +32,15 @@ export default async function InvoicesPage({
   const to = sp.to ?? "";
   const allocation = sp.allocation ?? "";
 
+  // Pass NULL instead of "" for date params so PostgreSQL never attempts
+  // to cast an empty string to `date`. The `::date` cast on a bound
+  // parameter is evaluated eagerly — even when the short-circuit `'' = ''`
+  // branch would make it logically unreachable — causing
+  // "invalid input syntax for type date: """.  Switching to NULL + IS NULL
+  // guard is safe: `NULL::date` → NULL → `NULL IS NULL` → TRUE (no filter).
+  const fromDate: string | null = from || null;
+  const toDate: string | null = to || null;
+
   const { businesses, rows } = await withUser(me.appUserId, async (tx) => {
     const bs = (await tx.execute(
       sql`SELECT id, legal_name AS "legalName"
@@ -56,8 +65,8 @@ export default async function InvoicesPage({
           LEFT JOIN clients c ON c.id = i.client_id
           WHERE i.deleted_at IS NULL
             AND (${businessId} = '' OR i.business_id::text = ${businessId})
-            AND (${from} = '' OR i.issue_date >= ${from}::date)
-            AND (${to} = '' OR i.issue_date <= ${to}::date)
+            AND (${fromDate}::date IS NULL OR i.issue_date >= ${fromDate}::date)
+            AND (${toDate}::date IS NULL OR i.issue_date <= ${toDate}::date)
             AND (${allocation} = '' OR i.allocation_status::text = ${allocation})
           ORDER BY i.issue_date DESC, i.sequential_number DESC
           LIMIT 500`,

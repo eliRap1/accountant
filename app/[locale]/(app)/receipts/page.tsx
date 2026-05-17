@@ -60,6 +60,12 @@ export default async function ReceiptsPage({
   const from = sp.from ?? "";
   const to = sp.to ?? "";
 
+  // Pass NULL instead of "" for date params so PostgreSQL never attempts
+  // to cast an empty string to `date`. See invoices/page.tsx for the full
+  // explanation of this class of bug.
+  const fromDate: string | null = from || null;
+  const toDate: string | null = to || null;
+
   const { businesses, rows } = await withUser(me.appUserId, async (tx) => {
     const bs = (await tx.execute(
       sql`SELECT id, legal_name AS "legalName"
@@ -83,8 +89,8 @@ export default async function ReceiptsPage({
           JOIN businesses b ON b.id = r.business_id
           WHERE (${businessId} = '' OR r.business_id::text = ${businessId})
             AND (${status} = '' OR r.status::text = ${status})
-            AND (${from} = '' OR r.parsed_date >= ${from}::date OR (r.parsed_date IS NULL AND r.created_at >= ${from}::date))
-            AND (${to} = '' OR r.parsed_date <= ${to}::date OR (r.parsed_date IS NULL AND r.created_at <= ${to}::date))
+            AND (${fromDate}::date IS NULL OR r.parsed_date >= ${fromDate}::date OR (r.parsed_date IS NULL AND r.created_at >= ${fromDate}::date))
+            AND (${toDate}::date IS NULL OR r.parsed_date <= ${toDate}::date OR (r.parsed_date IS NULL AND r.created_at <= ${toDate}::date))
           ORDER BY COALESCE(r.parsed_date, r.created_at::date) DESC, r.created_at DESC
           LIMIT 500`,
     )) as unknown as ReceiptRow[];
