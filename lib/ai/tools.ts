@@ -276,7 +276,14 @@ export function buildGetTransactionsByVendor(ctx: ToolContext) {
       limit: z.number().int().min(1).max(50).default(20),
     }),
     execute: async ({ vendor, limit }) => {
-      const pattern = `%${vendor.toLowerCase()}%`;
+      // Escape SQL LIKE metacharacters so a user-supplied vendor string like
+      // "100%" or "foo_bar" doesn't accidentally match unintended rows.
+      const escaped = vendor
+        .toLowerCase()
+        .replace(/\\/g, "\\\\")
+        .replace(/%/g, "\\%")
+        .replace(/_/g, "\\_");
+      const pattern = `%${escaped}%`;
       const rows = await withUser(ctx.userId, async (tx) => {
         return (await tx.execute(
           sql`SELECT id::text, txn_date::text, amount_minor::text, currency,
@@ -284,8 +291,8 @@ export function buildGetTransactionsByVendor(ctx: ToolContext) {
               FROM transactions
               WHERE direction = 'expense'
                 AND (
-                  LOWER(COALESCE(description, '')) LIKE ${pattern}
-                  OR LOWER(COALESCE(metadata_jsonb->>'counterparty', '')) LIKE ${pattern}
+                  LOWER(COALESCE(description, '')) LIKE ${pattern} ESCAPE '\\'
+                  OR LOWER(COALESCE(metadata_jsonb->>'counterparty', '')) LIKE ${pattern} ESCAPE '\\'
                 )
               ORDER BY txn_date DESC
               LIMIT ${limit}`,

@@ -67,6 +67,7 @@ export const authEventTypeEnum = pgEnum("auth_event_type", [
   "engagement_revoked",
   "vat_status_transition",
   "account_deleted",
+  "audit_package_built",
 ]);
 
 export const authEvents = pgTable(

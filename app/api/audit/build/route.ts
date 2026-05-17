@@ -27,12 +27,8 @@ import { capture, flush as flushPosthog } from "@/lib/observability/posthog";
 // (businessId, periodStart, periodEnd) tuple so a grant for one
 // build cannot be replayed for a different period.
 //
-// On success, writes a `step_up_grant`-paired auth_events row of type
-// `account_deleted` is NOT what we want — we reuse `sign_in` slot.
-// Actually we don't have an `audit_package_built` enum value (would
-// require a migration touch — out of scope per the task). We instead
-// stamp a `step_up_grant` follow-up row via the metadata trail that
-// the build itself surfaces. The PostHog `audit_package.built` event
+// On success, writes an auth_events row of type `audit_package_built`
+// (added in migration 0017). The PostHog `audit_package.built` event
 // is the canonical observability emission.
 
 export const dynamic = "force-dynamic";
@@ -110,10 +106,9 @@ export async function POST(request: Request): Promise<Response> {
     requestedByUserId: me.appUserId,
   });
 
-  // Audit log — best-effort PostHog event + auth_events row. We piggy-
-  // back on the `step_up_grant` event_type because the auth_event_type
-  // enum doesn't include 'audit_package_built' and the task forbids
-  // schema changes. The metadata carries the disambiguator.
+  // Audit log — best-effort PostHog event + auth_events row. Uses the
+  // dedicated `audit_package_built` event_type (added in migration 0017)
+  // so the audit trail is unambiguous.
   capture("audit_package.built", {
     distinctId: me.appUserId,
     packageId: result.packageId,
@@ -146,7 +141,7 @@ export async function POST(request: Request): Promise<Response> {
             VALUES (
               ${me.appUserId}::uuid,
               ${me.authUserId},
-              'step_up_grant'::auth_event_type,
+              'audit_package_built'::auth_event_type,
               ${metadata}::jsonb
             )`,
       );

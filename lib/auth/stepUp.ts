@@ -81,6 +81,12 @@ export const STEP_UP_OPS = [
   // the `audit_packages` artifact.
   "audit.build_package",
   "audit.download_package",
+  // Business lifecycle — hard-delete (soft) is irreversible from the
+  // operator's perspective; gate it so an XSS / CSRF can't silently
+  // wipe a business profile.
+  "business.delete",
+  // Invoice cancel emits an IL credit_note; irreversible once sequenced.
+  "invoice.cancel",
 ] as const;
 
 export type StepUpOp = (typeof STEP_UP_OPS)[number];

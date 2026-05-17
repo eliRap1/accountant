@@ -258,9 +258,11 @@ export async function createInvoice(
   // payload hash binds the grant to the invoice's identity so a step-up
   // for invoice A cannot be replayed for invoice B.
   const issueDate = new Date(`${input.issueDate}T00:00:00Z`);
+  // ITA threshold applies to the pre-VAT subtotal, not the grand total.
+  // See requiresAllocationNumber JSDoc in lib/invoices/allocationThreshold.ts.
   const needsAllocation = requiresAllocationNumber(
     issueDate,
-    totals.totalMinor,
+    totals.subtotalMinor,
     businessRow.vatStatus,
   );
   if (needsAllocation) {
@@ -410,6 +412,18 @@ export async function cancelInvoice(
     return rows[0] ?? null;
   });
   if (!businessRow) return { error: "app.errors.invalidInput" };
+
+  try {
+    await requireFreshSession({
+      op: "invoice.cancel",
+      payloadHash: computePayloadHash({ invoiceId: id }),
+    });
+  } catch (err) {
+    if (err instanceof StepUpRequired) {
+      return { stepUpRequired: { op: err.op, payloadHash: err.payloadHash } };
+    }
+    throw err;
+  }
 
   const provider = selectProvider(businessRow);
 

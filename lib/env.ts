@@ -12,7 +12,7 @@ const optionalNonEmpty = z.preprocess(
   z.string().min(1).optional(),
 );
 
-const schema = z.object({
+const baseSchema = z.object({
   // Runtime
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 
@@ -56,9 +56,13 @@ const schema = z.object({
   // Vercel Cron shared secret. Cron handlers verify the
   // `Authorization: Bearer ${CRON_SECRET}` header that Vercel
   // auto-injects when the platform invokes a scheduled function.
-  // Optional in dev (handlers fall back to allowing unauthenticated
-  // local invocation), required in production.
-  CRON_SECRET: optionalNonEmpty,
+  // Optional in dev/preview (handlers fall back to allowing unauthenticated
+  // local invocation); required in production (enforced via superRefine
+  // below). Minimum 20 chars to ensure sufficient entropy.
+  CRON_SECRET: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.string().min(20).optional(),
+  ),
 
   // Stripe billing (Phase F.1). All optional so dev / staging can run
   // without Stripe configured — the lib/billing layer throws a clear
@@ -78,7 +82,21 @@ const schema = z.object({
   STRIPE_PRICE_ACCOUNTANT: optionalNonEmpty,
 });
 
-type Env = z.infer<typeof schema>;
+// Production guard: CRON_SECRET is mandatory in production so that Vercel
+// cron invocations are authenticated. We use superRefine rather than a
+// conditional field schema so the type stays `string | undefined` for
+// dev/test (cron handlers already handle the missing-secret path there).
+const schema = baseSchema.superRefine((data, ctx) => {
+  if (data.NODE_ENV === "production" && !data.CRON_SECRET) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["CRON_SECRET"],
+      message: "CRON_SECRET is required in production (min 20 chars)",
+    });
+  }
+});
+
+type Env = z.infer<typeof baseSchema>;
 
 // Detect Next.js build phase. Next sets NEXT_PHASE=phase-production-build
 // while running `next build` page-data collection. Route-handler modules

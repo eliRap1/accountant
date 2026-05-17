@@ -299,6 +299,18 @@ export async function deleteBusiness(
   if (!parsed.success) return { error: "app.errors.invalidInput" };
   const { id } = parsed.data;
 
+  try {
+    await requireFreshSession({
+      op: "business.delete",
+      payloadHash: computePayloadHash({ businessId: id }),
+    });
+  } catch (err) {
+    if (err instanceof StepUpRequired) {
+      return { stepUpRequired: { op: err.op, payloadHash: err.payloadHash } };
+    }
+    throw err;
+  }
+
   await withUser(me.appUserId, async (tx) => {
     await tx
       .update(businesses)

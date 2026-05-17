@@ -46,21 +46,39 @@ function templateForOtpType(
   return "verifyEmail";
 }
 
-// Vercel attaches a fresh hostname (`<project>-<hash>-<team>.vercel.app`)
-// to every preview deploy AND to each new production deploy before the
-// `<project>-kappa.vercel.app` alias is re-pointed. Without explicitly
-// trusting those hostnames Better Auth rejects every request with
-// "Invalid origin". Patterns mirror the deploy-URL grammar.
-const trustedOriginPatterns: string[] = [
-  "https://accountant-*.vercel.app",
-  "https://*.elirap1s-projects.vercel.app",
+// Explicit list of trusted origins. Wildcard patterns are replaced with
+// named aliases to avoid inadvertently trusting attacker-registered
+// `accountant-evil.vercel.app` subdomains.
+//
+// VERCEL_BRANCH_URL is injected by Vercel per-preview-deploy
+// (https://vercel.com/docs/deployments/generated-urls). When defined we
+// add it at module-load so the current preview's own origin is trusted
+// without a wildcard.
+const trustedOriginList: string[] = [
+  // Local development
+  "http://localhost:3000",
+  // Named production aliases
+  "https://accountant-kappa.vercel.app",
+  "https://accountant-git-main-elirap1s-projects.vercel.app",
 ];
+
+// Vercel injects VERCEL_BRANCH_URL for the current preview/branch deploy.
+const vercelBranchUrl = process.env["VERCEL_BRANCH_URL"];
+if (vercelBranchUrl) {
+  // The env var may omit the scheme; normalise to https.
+  const normalised = vercelBranchUrl.startsWith("http")
+    ? vercelBranchUrl
+    : `https://${vercelBranchUrl}`;
+  if (!trustedOriginList.includes(normalised)) {
+    trustedOriginList.push(normalised);
+  }
+}
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
   secret: env().BETTER_AUTH_SECRET,
   baseURL: env().BETTER_AUTH_URL,
-  trustedOrigins: trustedOriginPatterns,
+  trustedOrigins: trustedOriginList,
 
   // Email + password is the default sign-in path. OTP / passkey are alternatives.
   emailAndPassword: {
