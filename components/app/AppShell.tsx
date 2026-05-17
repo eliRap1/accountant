@@ -377,7 +377,10 @@ function Sidebar({
       <motion.aside
         initial={false}
         animate={{
-          x: mobileOpen ? 0 : isRtl ? "100%" : "-100%",
+          // Overshoot by w-64 + 1px so the border itself clears the
+          // viewport. With a plain -100% the 1px border-r sat exactly at
+          // x=0 of the viewport and showed as a thin vertical strip.
+          x: mobileOpen ? 0 : isRtl ? "calc(100% + 1px)" : "calc(-100% - 1px)",
         }}
         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
         className={`glass-strong fixed top-0 z-40 flex h-screen w-64 flex-col gap-1 px-3 py-5 lg:hidden ${
