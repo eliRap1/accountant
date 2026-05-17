@@ -13,6 +13,7 @@ import {
   FileText,
   Home,
   Inbox,
+  Landmark,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -64,6 +65,7 @@ type NavKey =
   | "audit"
   | "processorSync"
   | "bankImports"
+  | "bankLinks"
   | "ledger"
   | "settings";
 
@@ -85,6 +87,7 @@ const NAV_ITEMS: NavItem[] = [
   { key: "filings", href: "/filings", icon: FileArchive },
   { key: "processorSync", href: "/processor-sync", icon: CreditCard },
   { key: "bankImports", href: "/bank-imports", icon: Banknote },
+  { key: "bankLinks", href: "/bank-links", icon: Landmark },
 ];
 
 const AUDIT_NAV_ITEM: NavItem = {
@@ -346,9 +349,7 @@ function Sidebar({
     <>
       {/* Desktop: static, always visible. */}
       <aside
-        className={`glass-strong sticky top-0 hidden h-screen w-64 flex-col gap-1 px-3 py-5 lg:flex ${
-          isRtl ? "border-l border-white/5" : "border-r border-white/5"
-        }`}
+        className="glass-strong sticky top-0 hidden h-screen w-64 flex-col gap-1 px-3 py-5 lg:flex border-e border-white/5"
       >
         <SidebarBrand />
         <SidebarNav
@@ -383,8 +384,8 @@ function Sidebar({
           x: mobileOpen ? 0 : isRtl ? "calc(100% + 1px)" : "calc(-100% - 1px)",
         }}
         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-        className={`glass-strong fixed top-0 z-40 flex h-screen w-64 flex-col gap-1 px-3 py-5 lg:hidden ${
-          isRtl ? "end-0 border-l border-white/5" : "start-0 border-r border-white/5"
+        className={`glass-strong fixed top-0 z-40 flex h-screen w-64 flex-col gap-1 px-3 py-5 lg:hidden border-e border-white/5 ${
+          isRtl ? "end-0" : "start-0"
         }`}
         style={{ pointerEvents: mobileOpen ? "auto" : "none" }}
         aria-hidden={!mobileOpen}
@@ -501,7 +502,7 @@ function SidebarLink({
       href={href as any}
       className={`group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${
         active
-          ? "bg-gradient-to-r from-emerald-500/20 to-emerald-500/5 text-emerald-100"
+          ? "bg-gradient-to-r rtl:bg-gradient-to-l from-emerald-500/20 to-emerald-500/5 text-emerald-100"
           : "text-slate-300 hover:bg-white/5 hover:text-white"
       }`}
     >

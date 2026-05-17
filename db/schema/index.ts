@@ -19,6 +19,8 @@ export * from "./compliance";
 export * from "./coa-errata";
 // AI tax-advisor (Phase D Layer 1)
 export * from "./ai";
+// Bank connections — AISP live-link stub (Salt Edge integration pending)
+export * from "./bank-connections";
 // NOTE: db/schema/scheduled.ts deliberately not re-exported here —
 // it only re-exports from invoicing.ts (Layer 2) for documentary cohesion;
 // including it would produce duplicate exports.

@@ -382,6 +382,7 @@
         "audit": "Audit pack",
         "processorSync": "Processor sync",
         "bankImports": "Bank imports",
+        "bankLinks": "Bank links",
         "ledger": "Ledger",
         "settings": "Settings",
         "back": "Back",
@@ -456,7 +457,7 @@
       "recurringSubs": {
         "title": "Recurring subscriptions",
         "subtitle": "Last 180 days",
-        "occurrences": "{count} charges",
+        "occurrences": "{count, plural, one {charge} other {charges}}",
         "empty": "No recurring charges detected."
       },
       "upcomingObligations": {
@@ -1426,6 +1427,34 @@
         "alreadyCommitted": "Import already committed",
         "parseFailed": "File could not be parsed — check the format matches the selected bank",
         "parserNotImplemented": "Parser for this bank+format combination is not implemented yet — try CSV until full support ships"
+      }
+    },
+    "bankLinks": {
+      "title": "Bank links",
+      "subtitle": "Live bank account sync (coming soon)",
+      "connectCta": "Connect a bank",
+      "emptyState": "No banks connected yet",
+      "statusPending": "Pending",
+      "statusActive": "Active",
+      "statusFailed": "Failed",
+      "banks": {
+        "leumi": "Bank Leumi",
+        "hapoalim": "Bank Hapoalim",
+        "discount": "Bank Discount",
+        "mizrahi": "Mizrahi Tefahot",
+        "fibi": "FIBI"
+      },
+      "col": {
+        "bank": "Bank",
+        "business": "Business",
+        "status": "Status",
+        "provider": "Provider",
+        "connectedAt": "Connected at"
+      },
+      "connecting": {
+        "title": "Connecting...",
+        "subtitle": "Waiting for Salt Edge integration",
+        "stubNotice": "Live bank connection is pending vendor contract with Salt Edge. This screen will use real OAuth once the integration is complete."
       }
     },
     "processorSync": {

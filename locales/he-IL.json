@@ -382,6 +382,7 @@
         "audit": "תיק ביקורת",
         "processorSync": "סולקים",
         "bankImports": "ייבוא בנק",
+        "bankLinks": "חיבורי בנק",
         "ledger": "ספר חשבונות",
         "settings": "הגדרות",
         "back": "חזרה",
@@ -1426,6 +1427,34 @@
         "alreadyCommitted": "הייבוא כבר אושר",
         "parseFailed": "הקובץ לא נקרא — בדוק שהפורמט תואם לבנק שנבחר",
         "parserNotImplemented": "הפַּרְסֶר עבור פורמט זה עדיין לא נבנה — נסה CSV עד שתשובץ תמיכה מלאה"
+      }
+    },
+    "bankLinks": {
+      "title": "חיבורי בנק",
+      "subtitle": "סנכרון חי של חשבונות בנק (בקרוב)",
+      "connectCta": "חבר בנק",
+      "emptyState": "עוד לא חוברו בנקים",
+      "statusPending": "ממתין לחיבור",
+      "statusActive": "פעיל",
+      "statusFailed": "כשל",
+      "banks": {
+        "leumi": "בנק לאומי",
+        "hapoalim": "בנק הפועלים",
+        "discount": "בנק דיסקונט",
+        "mizrahi": "מזרחי טפחות",
+        "fibi": "הבינלאומי"
+      },
+      "col": {
+        "bank": "בנק",
+        "business": "עסק",
+        "status": "סטטוס",
+        "provider": "ספק",
+        "connectedAt": "תאריך חיבור"
+      },
+      "connecting": {
+        "title": "מחבר...",
+        "subtitle": "ממתינים לאינטגרציית Salt Edge",
+        "stubNotice": "חיבור בנק חי ממתין לחתימת חוזה עם ספק Salt Edge. המסך הזה יעבוד עם OAuth אמיתי כשהאינטגרציה תושלם."
       }
     },
     "processorSync": {
