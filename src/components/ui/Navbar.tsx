@@ -51,7 +51,7 @@ export default function Navbar() {
 
         <div className="hidden md:flex items-center gap-3">
           <a
-            href="#contact"
+            href="/login"
             className="rounded-lg px-3 py-2 text-sm text-slate-300 hover:text-white transition-colors"
           >
             Client Login
