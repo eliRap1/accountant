@@ -66,7 +66,7 @@ export default function Approach() {
               <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-400/30 bg-emerald-500/10 text-emerald-300">
                 <Icon size={22} />
               </div>
-              <div className="mb-2 font-mono text-xs text-slate-500">0{i + 1}</div>
+              <div className="mb-2 font-mono text-xs text-slate-500">{String(i + 1).padStart(2, "0")}</div>
               <h3 className="text-lg font-semibold tracking-tight text-slate-50">{s.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-slate-400">{s.desc}</p>
             </motion.div>
