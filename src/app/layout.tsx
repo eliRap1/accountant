@@ -16,7 +16,8 @@ export const metadata: Metadata = {
   title: "AccounTech — Precision & Transparency",
   description:
     "Modern accounting, audit, tax, and strategic consulting — engineered with precision and delivered with transparency.",
-  metadataBase: new URL("https://accountech.example.com"),
+  // TODO(audit): replace placeholder with real production URL or process.env.NEXT_PUBLIC_SITE_URL
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://accountech.example.com"),
   openGraph: {
     title: "AccounTech — Precision & Transparency",
     description:
