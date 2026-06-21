@@ -41,16 +41,8 @@ export const config: VercelConfig = {
           // blob: in worker-src is required by @react-three/fiber (OffscreenCanvas worker).
           // TODO(audit): tighten script-src once a nonce or hash strategy is adopted.
           key: "Content-Security-Policy",
-          value: [
-            "default-src 'self'",
-            "script-src 'self' 'unsafe-inline'",
-            "style-src 'self' 'unsafe-inline'",
-            "font-src 'self' https://fonts.gstatic.com",
-            "img-src 'self' data: blob:",
-            "connect-src 'self'",
-            "worker-src 'self' blob:",
-            "frame-ancestors 'none'",
-          ].join("; "),
+          value:
+            "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; worker-src 'self' blob:; frame-ancestors 'none'",
         },
       ],
     },
