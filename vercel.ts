@@ -35,6 +35,23 @@ export const config: VercelConfig = {
           key: "Strict-Transport-Security",
           value: "max-age=63072000; includeSubDomains; preload",
         },
+        {
+          // Baseline CSP for a static marketing site.
+          // 'unsafe-inline' for styles is required by Tailwind CSS v4 (runtime injection).
+          // blob: in worker-src is required by @react-three/fiber (OffscreenCanvas worker).
+          // TODO(audit): tighten script-src once a nonce or hash strategy is adopted.
+          key: "Content-Security-Policy",
+          value: [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline'",
+            "style-src 'self' 'unsafe-inline'",
+            "font-src 'self' https://fonts.gstatic.com",
+            "img-src 'self' data: blob:",
+            "connect-src 'self'",
+            "worker-src 'self' blob:",
+            "frame-ancestors 'none'",
+          ].join("; "),
+        },
       ],
     },
   ],
