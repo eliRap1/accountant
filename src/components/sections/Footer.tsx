@@ -1,5 +1,3 @@
-"use client";
-
 import Logo from "../ui/Logo";
 
 const Twitter = (p: { size?: number; className?: string }) => (
