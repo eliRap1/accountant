@@ -27,9 +27,9 @@ export default function Logo({ className = "", showWordmark = true }: Props) {
             <stop offset="100%" stopColor="#059669" />
           </linearGradient>
         </defs>
-        {/* Outer hex */}
-        <motion.polygon
-          points="20,2 36,11 36,29 20,38 4,29 4,11"
+        {/* Outer hex — using <path> for reliable pathLength animation across browsers */}
+        <motion.path
+          d="M20,2 L36,11 L36,29 L20,38 L4,29 L4,11 Z"
           fill="none"
           stroke="url(#acg)"
           strokeWidth="1.5"
