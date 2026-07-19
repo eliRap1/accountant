@@ -438,10 +438,13 @@ export async function generatePcn874(args: GeneratePcn874Args): Promise<Buffer> 
 
     for (const [, rows] of byType.entries()) {
       // Sequence is ascending by orderBy above.
-      const nonCancelled = rows
-        .filter((r) => r.cancelledAt === null)
-        .map((r) => r.sequentialNumber);
-      const gap = findSequenceGap(nonCancelled);
+      // Include ALL rows (cancelled and non-cancelled) — a cancelled invoice
+      // still holds its sequence number and must appear in the filing as a
+      // matched original + credit_note pair. Filtering out cancelled rows
+      // causes false-positive Pcn874SequenceGap errors when a cancellation
+      // sits between two active invoices.
+      const allNumbers = rows.map((r) => r.sequentialNumber);
+      const gap = findSequenceGap(allNumbers);
       if (gap !== null) {
         throw new Pcn874SequenceGap(gap);
       }

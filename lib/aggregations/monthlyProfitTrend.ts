@@ -32,9 +32,9 @@ const WINDOW_MONTHS = 6;
 function buildEmptyRows(now: Date): MonthlyProfitPoint[] {
   const rows: MonthlyProfitPoint[] = [];
   for (let i = WINDOW_MONTHS - 1; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const idx = d.getMonth();
-    const monthKey = `${d.getFullYear()}-${String(idx + 1).padStart(2, "0")}`;
+    const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1));
+    const idx = d.getUTCMonth();
+    const monthKey = `${d.getUTCFullYear()}-${String(idx + 1).padStart(2, "0")}`;
     rows.push({ monthIdx: idx, monthKey, profit: 0 });
   }
   return rows;
@@ -44,7 +44,9 @@ export async function getMonthlyProfitTrend(
   userId: string,
 ): Promise<MonthlyProfitTrend> {
   const now = new Date();
-  const start = new Date(now.getFullYear(), now.getMonth() - (WINDOW_MONTHS - 1), 1);
+  const start = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - (WINDOW_MONTHS - 1), 1),
+  );
   const startIso = start.toISOString().slice(0, 10);
 
   return withUser(userId, async (tx) => {

@@ -331,6 +331,20 @@ describe("pcn874 findSequenceGap", () => {
     // 3 + 4 + 5 missing; first gap is 3.
     expect(findSequenceGap([1, 2, 6, 7])).toBe(3);
   });
+
+  it("returns null when cancelled invoices are included in an otherwise contiguous sequence", () => {
+    // Simulates generatePcn874 passing ALL sequence numbers (including
+    // cancelled ones) rather than filtering them out. Invoices 1,2,4 active;
+    // invoice 3 cancelled — but still holds its sequence slot. The full
+    // series [1,2,3,4] is contiguous; no gap should be reported.
+    expect(findSequenceGap([1, 2, 3, 4])).toBeNull();
+  });
+
+  it("still detects a real gap even when cancelled rows are present", () => {
+    // Invoice 3 cancelled, invoice 4 is missing entirely (never issued).
+    // Series [1,2,3,5] has a gap at 4.
+    expect(findSequenceGap([1, 2, 3, 5])).toBe(4);
+  });
 });
 
 describe("pcn874 generatePcn874 — spec gate", () => {
