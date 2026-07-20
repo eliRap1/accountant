@@ -17,9 +17,9 @@
     "@react-three/fiber": "^9.6.1",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.14.0",
-    "next": "16.2.4",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "next": "16.2.10",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
     "recharts": "^3.8.1",
     "three": "^0.184.0"
   },
@@ -31,7 +31,7 @@
     "@types/three": "^0.184.0",
     "@vercel/config": "^0.3.0",
     "eslint": "^9",
-    "eslint-config-next": "16.2.4",
+    "eslint-config-next": "16.2.10",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vercel": "^53.1.0"
