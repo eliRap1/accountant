@@ -24,6 +24,7 @@ export const config: VercelConfig = {
     {
       source: "/(.*)",
       headers: [
+        // TODO(audit): add Content-Security-Policy header once inline-style / canvas requirements are mapped
         { key: "X-Content-Type-Options", value: "nosniff" },
         { key: "X-Frame-Options", value: "SAMEORIGIN" },
         { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
