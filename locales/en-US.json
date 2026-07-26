@@ -1,0 +1,1590 @@
+{
+  "nav": {
+    "services": "Features",
+    "dashboard": "Live Demo",
+    "approach": "How it works",
+    "contact": "Pricing",
+    "login": "Sign in",
+    "book": "Start free"
+  },
+  "logo": {
+    "tagline": "Estimates · Not tax advice"
+  },
+  "hero": {
+    "badge": "Built for עוסק פטור · עוסק מורשה · ח.פ.",
+    "title1": "The accountant",
+    "titleAccent": "you don't",
+    "title2": "have to pay every month.",
+    "desc": "Israeli tax invoices, receipt OCR, VAT estimates and ready-to-upload SHAAM files. From ₪49/month. Estimates only — not tax advice; consult a licensed CPA before filing.",
+    "ctaPrimary": "Start free",
+    "ctaSecondary": "See the dashboard",
+    "kpi1Value": "₪49",
+    "kpi1Label": "Solo plan / month",
+    "kpi2Value": "10s",
+    "kpi2Label": "To issue a tax invoice",
+    "kpi3Value": "60h+",
+    "kpi3Label": "Saved per year",
+    "scroll": "scroll ↓"
+  },
+  "services": {
+    "eyebrow": "What it does",
+    "title1": "Three workflows.",
+    "titleAccent": "One clean panel.",
+    "desc": "Replace the spreadsheet, the receipt shoebox, and the back-and-forth with your CPA. Estimates only — final filings stay with a licensed accountant.",
+    "audit": {
+      "title": "Invoicing & receipts",
+      "desc": "Issue compliant חשבונית מס in seconds. Scan receipts with OCR. 2026 allocation-number support built in.",
+      "b1": "חשבונית מס with allocation №",
+      "b2": "Receipt OCR + auto-category",
+      "b3": "Hyp / Grow / PayPlus sync"
+    },
+    "tax": {
+      "title": "VAT & income estimates",
+      "desc": "We crunch your invoices and expenses into clean PCN874, form 102 and form 6111 files — ready to upload to SHAAM.",
+      "b1": "PCN874 / 6111 / 102 export",
+      "b2": "Form 1301 / 1214 prep",
+      "b3": "Estimates only · not advice"
+    },
+    "consulting": {
+      "title": "AI advisor + CPA mode",
+      "desc": "Plain-Hebrew explainer for every number. Invite your accountant on the ₪399 tier — multi-business view, full audit log.",
+      "b1": "Plain-language explanations",
+      "b2": "Accountant collaboration",
+      "b3": "Consult a CPA before filing"
+    }
+  },
+  "dashboard": {
+    "eyebrow": "Live preview",
+    "title1": "Your numbers,",
+    "titleAccent": "without the shoebox.",
+    "desc": "Hover the bars to inspect monthly revenue. Every figure ties back to a receipt, an invoice, or a bank line — auditable end to end.",
+    "cta": "Try the demo",
+    "kpiArr": "Annualized revenue",
+    "kpiGm": "Net margin",
+    "kpiEbitda": "Expenses (YTD)",
+    "kpiYoy": "YoY growth",
+    "kpiYoyDelta": "healthy",
+    "barTitle": "Monthly revenue",
+    "fy": "FY 2026",
+    "areaTitle": "Profit trajectory",
+    "cashTitle": "Cash position",
+    "cashOperating": "Operating",
+    "cashReserve": "Tax reserve",
+    "cashInvestment": "Other",
+    "revenue": "Revenue",
+    "ebitda": "Profit",
+    "months": [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ]
+  },
+  "approach": {
+    "eyebrow": "How it works",
+    "title": "From signup to first invoice in 10 minutes.",
+    "s1": {
+      "title": "Connect",
+      "desc": "Add your עוסק details and link your payment processor or bank in a couple of clicks."
+    },
+    "s2": {
+      "title": "Import",
+      "desc": "Drop in past invoices and receipts. OCR reads, categorizes, and dedupes the lot."
+    },
+    "s3": {
+      "title": "Issue & track",
+      "desc": "Send tax invoices with allocation numbers. Watch VAT and income estimates update live."
+    },
+    "s4": {
+      "title": "File",
+      "desc": "Export PCN874, 102, 6111 — upload to SHAAM yourself, or hand off to your CPA."
+    }
+  },
+  "cta": {
+    "eyebrow": "Pricing",
+    "title1": "Free to start.",
+    "title2": "₪49 when you're ready.",
+    "desc": "Free / Solo ₪49 / Plus ₪99 / Business ₪199 / Accountant ₪399 — all prices monthly, ex-VAT. No card required for the free tier. Cancel anytime.",
+    "address": "Tel Aviv · 100% online",
+    "nameLabel": "Full name",
+    "namePh": "Israel Israeli",
+    "emailLabel": "Email",
+    "emailPh": "you@business.co.il",
+    "companyLabel": "Business name",
+    "companyPh": "Your business / ח.פ.",
+    "msgLabel": "What are you using today?",
+    "msgPh": "Excel + accountant, just an accountant, nothing yet...",
+    "submit": "Start free trial",
+    "note": "No card required. Estimates only — not tax advice."
+  },
+  "footer": {
+    "tagline": "AccounTech — software that handles invoices, receipts and VAT estimates for Israeli self-employed. Estimates only · Not tax advice · Consult a licensed CPA.",
+    "practice": "Product",
+    "practiceLinks": [
+      "Invoicing",
+      "Receipts & OCR",
+      "VAT estimates",
+      "Accountant mode"
+    ],
+    "company": "Company",
+    "companyLinks": [
+      "About",
+      "Pricing",
+      "Security",
+      "Contact"
+    ],
+    "resources": "Resources",
+    "resourceLinks": [
+      "Help center",
+      "2026 allocation №",
+      "SHAAM guide",
+      "Status"
+    ],
+    "copy": "AccounTech Ltd · Software, not a CPA firm. Estimates only — not tax advice."
+  },
+  "sticky": {
+    "label": "Start free"
+  },
+  "language": {
+    "label": "English",
+    "short": "EN",
+    "flag": "🇺🇸",
+    "changeLang": "Change language"
+  },
+  "auth": {
+    "logoTagline": "Precision & Transparency",
+    "signIn": {
+      "metaTitle": "Sign in · AccounTech",
+      "title": "Welcome back",
+      "subtitle": "Enter your account details to continue",
+      "emailLabel": "Email address",
+      "passwordLabel": "Password",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "createOne": "Create one",
+      "errors": {
+        "invalidCredentials": "Wrong email or password",
+        "emailNotVerified": "Email not verified — check your inbox",
+        "userBanned": "This account has been suspended",
+        "tooManyAttempts": "Too many attempts — try again in a few minutes",
+        "unexpected": "Unexpected error",
+        "generic": "Sign-in failed"
+      }
+    },
+    "signUp": {
+      "metaTitle": "Sign up · AccounTech",
+      "title": "Create an account",
+      "subtitle": "Sign up for AccounTech — built for Israeli self-employed and business owners.",
+      "nameLabel": "Full name",
+      "emailLabel": "Email address",
+      "passwordLabel": "Password (minimum 8 characters)",
+      "passwordHint": "Password must be at least 8 characters",
+      "passwordConfirmLabel": "Confirm password",
+      "acceptTerms": "I agree to the",
+      "acceptTermsLink": "Terms of Service",
+      "acceptPrivacy": "and the",
+      "acceptPrivacyLink": "Privacy Policy",
+      "captchaRequired": "Please complete the CAPTCHA",
+      "submit": "Create account",
+      "submitting": "Creating account...",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "errors": {
+        "passwordMismatch": "Passwords do not match",
+        "passwordTooShortClient": "Password must be at least 8 characters",
+        "termsRequired": "You must accept the Terms of Service and Privacy Policy",
+        "userAlreadyExists": "This email is already registered — try signing in",
+        "passwordTooShort": "Password is too short (minimum 8 characters)",
+        "passwordTooLong": "Password is too long (maximum 128 characters)",
+        "invalidEmail": "Invalid email address",
+        "captchaFailed": "CAPTCHA verification failed — please try again",
+        "tooManyAttempts": "Too many attempts — try again in a few minutes",
+        "unexpected": "Unexpected error",
+        "generic": "Sign-up failed"
+      }
+    },
+    "verifyEmail": {
+      "metaTitle": "Verify email · AccounTech",
+      "title": "Check your email",
+      "subtitle": "We sent a verification link to",
+      "subtitleSuffix": ". Click it to continue.",
+      "resend": "Resend the link",
+      "resending": "Sending...",
+      "resent": "Sent! Check your inbox",
+      "checkSpam": "Didn't get it? Check your spam folder, or",
+      "backToSignIn": "sign in with an existing account",
+      "errors": {
+        "missingEmail": "Missing email address for resend",
+        "resendFailed": "Resend failed",
+        "unexpected": "Unexpected error"
+      }
+    },
+    "forgotPassword": {
+      "metaTitle": "Forgot password · AccounTech",
+      "title": "Reset password",
+      "subtitle": "Enter your email address and we'll send you a password reset link.",
+      "emailLabel": "Email address",
+      "submit": "Send reset link",
+      "submitting": "Sending...",
+      "successTitle": "Check your email",
+      "successDesc": "If that address is registered with us, we've sent a password reset link. The link expires in one hour.",
+      "backToSignIn": "Back to sign in",
+      "remembered": "Remembered your password?",
+      "errors": {
+        "sendFailed": "Could not send reset link",
+        "unexpected": "Unexpected error"
+      }
+    },
+    "resetPassword": {
+      "metaTitle": "New password · AccounTech",
+      "title": "New password",
+      "subtitle": "Choose a new password (at least 8 characters).",
+      "passwordLabel": "New password",
+      "passwordConfirmLabel": "Confirm password",
+      "submit": "Update password",
+      "submitting": "Saving...",
+      "backToSignIn": "Back to sign in",
+      "errors": {
+        "missingToken": "Invalid link — token is missing",
+        "mismatch": "Passwords do not match",
+        "passwordTooShortClient": "Password must be at least 8 characters",
+        "invalidToken": "This reset link has expired — request a new one",
+        "tokenExpired": "This reset link has expired — request a new one",
+        "passwordTooShort": "Password is too short (minimum 8 characters)",
+        "passwordTooLong": "Password is too long (maximum 128 characters)",
+        "unexpected": "Unexpected error",
+        "generic": "Password reset failed"
+      }
+    },
+    "twoFactor": {
+      "enroll": {
+        "metaTitle": "Enable 2FA · AccounTech",
+        "titlePasswordGate": "Enable two-factor authentication",
+        "subtitlePasswordGate": "Enter your current password to confirm 2FA setup.",
+        "passwordLabel": "Current password",
+        "continueSubmit": "Continue",
+        "continueSubmitting": "Verifying...",
+        "titleScan": "Scan and verify",
+        "subtitleScan": "Add the account to an authenticator app (Google Authenticator, Authy, 1Password).",
+        "qrCaption": "Scan with your authenticator app",
+        "manualSecretLabel": "Secret key (for manual entry)",
+        "copySecret": "Copy",
+        "copied": "Copied",
+        "uriLabel": "Or open directly",
+        "backupCodesTitle": "Backup codes — store them somewhere safe",
+        "backupCodesSub": "Each code is single-use. Use only if you lose access to your authenticator.",
+        "copyAllCodes": "Copy all codes",
+        "codeLabel": "Enter the code from your authenticator to confirm",
+        "verifySubmit": "Verify and enable",
+        "verifySubmitting": "Verifying...",
+        "skipForNow": "Skip for now",
+        "errors": {
+          "missingUri": "Verification URI missing — please try again",
+          "invalidPassword": "Wrong password",
+          "invalidCode": "Wrong code — check your authenticator app",
+          "twoFactorNotEnabled": "Two-factor authentication is not enabled yet",
+          "tooManyAttempts": "Too many attempts — try again in a few minutes",
+          "unexpected": "Unexpected error",
+          "generic": "Two-factor authentication failed"
+        }
+      },
+      "verify": {
+        "metaTitle": "Two-factor authentication · AccounTech",
+        "title": "Two-factor authentication",
+        "subtitleTotp": "Enter the code from your authenticator app.",
+        "subtitleBackup": "Enter one of your backup codes (8 digits).",
+        "codeLabelTotp": "6-digit code",
+        "codeLabelBackup": "Backup code",
+        "trustDevice": "Trust this device for 30 days",
+        "submit": "Verify and continue",
+        "submitting": "Verifying...",
+        "switchToBackup": "Use a backup code instead",
+        "switchToTotp": "Back to authenticator app",
+        "signInOther": "Sign in with a different account",
+        "errors": {
+          "invalidCode": "Wrong code",
+          "invalidBackupCode": "Backup code is wrong or already used",
+          "tooManyAttempts": "Too many attempts — try again in a few minutes",
+          "invalidTwoFactorCookie": "Please sign in again before completing 2FA",
+          "unexpected": "Unexpected error",
+          "generic": "Verification failed"
+        }
+      }
+    },
+    "passkeys": {
+      "metaTitle": "Passkeys · AccounTech",
+      "title": "Passkeys",
+      "subtitle": "Sign in with Face ID / Touch ID / Windows Hello — no password.",
+      "emptyState": "No passkeys yet. Add one below.",
+      "addPasskey": "Add a passkey",
+      "namePlaceholder": "Eli's iPhone",
+      "nameLabel": "Passkey name (e.g. \"Eli's iPhone\")",
+      "confirmDelete": "Delete this passkey? This cannot be undone.",
+      "cancel": "Cancel",
+      "addSubmit": "Continue",
+      "addSubmitting": "Waiting for device...",
+      "added": "Passkey registered",
+      "deviceSingle": "Single device",
+      "deviceMulti": "Synced via cloud (Apple / Google / Microsoft)",
+      "deviceUnknown": "Hardware key",
+      "addedOn": "added",
+      "deleteAria": "Delete",
+      "unnamed": "Unnamed passkey",
+      "errors": {
+        "loadFailed": "Could not load passkeys",
+        "addFailed": "Registration failed",
+        "deleteFailed": "Delete failed",
+        "unexpected": "Unexpected error"
+      }
+    },
+    "recoveryCodes": {
+      "metaTitle": "Backup codes · AccounTech",
+      "titlePostEnroll": "Backup codes",
+      "titleRegenerate": "Backup codes",
+      "subtitlePostEnroll": "These codes let you sign in if you lose access to your authenticator. Each code is single-use.",
+      "subtitleRegenerate": "Generating new codes invalidates the old ones — save the new codes immediately.",
+      "passwordLabel": "Current password",
+      "generateSubmit": "Generate new codes",
+      "generateSubmitting": "Generating...",
+      "copyAll": "Copy all codes",
+      "copied": "Copied",
+      "doneCta": "I saved them — continue",
+      "warningTitle": "Backup codes — store them somewhere safe",
+      "warningDesc": "Each code is single-use. Use only if you lose access to your authenticator.",
+      "errors": {
+        "invalidPassword": "Wrong password",
+        "twoFactorNotEnabled": "Two-factor authentication is not enabled yet",
+        "unexpected": "Unexpected error",
+        "generic": "Could not generate codes"
+      }
+    }
+  },
+  "app": {
+    "shell": {
+      "nav": {
+        "dashboard": "Dashboard",
+        "invoices": "Invoices",
+        "receipts": "Receipts & expenses",
+        "transactions": "Transactions",
+        "clients": "Clients",
+        "tax": "Tax",
+        "filings": "Filings",
+        "audit": "Audit pack",
+        "processorSync": "Processor sync",
+        "bankImports": "Bank imports",
+        "bankLinks": "Bank links",
+        "ledger": "Ledger",
+        "settings": "Settings",
+        "back": "Back",
+        "toggle": "Toggle navigation"
+      },
+      "user": {
+        "signOut": "Sign out",
+        "settings": "Settings",
+        "account": "Account"
+      },
+      "businessSwitcher": {
+        "heading": "Your businesses",
+        "empty": "No business",
+        "emptyAria": "No business yet",
+        "manage": "Manage businesses",
+        "kindEngaged": "Engagement"
+      }
+    },
+    "dashboard": {
+      "metaTitle": "Dashboard · AccounTech",
+      "title": "Overview",
+      "subtitle": "Live snapshot of your business — estimates only.",
+      "empty": {
+        "title": "No data yet",
+        "desc": "Add your first transaction or invoice to see estimates here.",
+        "cta": "Add first transaction"
+      },
+      "tiles": {
+        "vatDue": {
+          "label": "VAT due this period",
+          "daysLeft": "{days} days until filing · due {due}",
+          "daysOverdue": "Overdue by {days} days · was due {due}"
+        },
+        "cashOnHand": {
+          "label": "Cash on hand",
+          "accountCount": "Across {count} accounts"
+        },
+        "overdueInvoices": {
+          "label": "Overdue invoices",
+          "hasOverdue": "Clients past due",
+          "allClear": "No overdue invoices",
+          "cta": "Review"
+        },
+        "uncategorisedReceipts": {
+          "label": "Uncategorised receipts",
+          "pending": "Waiting for review",
+          "allCategorised": "All receipts categorised",
+          "cta": "Categorise"
+        },
+        "makdamot": {
+          "label": "Advance tax (מקדמות)",
+          "paid": "Paid",
+          "due": "Due",
+          "installments": "{count} installments",
+          "balanceOwed": "{amount} still owed",
+          "upToDate": "Up to date",
+          "cta": "Open advances",
+          "notAvailable": "No advance-tax history yet",
+          "notAvailableHint": "Once you log advance payments, the running balance shows up here."
+        },
+        "monthlyProfitTrend": {
+          "label": "Profit trend",
+          "window": "Last 6 months"
+        }
+      },
+      "spendingByCategory": {
+        "title": "Spending by category",
+        "subtitle": "Last 30 days",
+        "empty": "No expenses in this window.",
+        "uncategorised": "Uncategorised"
+      },
+      "recurringSubs": {
+        "title": "Recurring subscriptions",
+        "subtitle": "Last 180 days",
+        "occurrences": "{count, plural, one {charge} other {charges}}",
+        "empty": "No recurring charges detected."
+      },
+      "upcomingObligations": {
+        "title": "Upcoming obligations",
+        "subtitle": "Next 90 days",
+        "empty": "No open obligations in this window.",
+        "kind": {
+          "vat_period_close": "VAT",
+          "bituach_leumi": "Bituach Leumi",
+          "makdamot": "Advance tax",
+          "filing": "Filing",
+          "invoice": "Invoice"
+        },
+        "daysUntil": "in {days} days",
+        "today": "today",
+        "overdue": "overdue"
+      },
+      "cashRunway": {
+        "title": "Cash runway",
+        "subtitle": "6-month forecast",
+        "monthsLabel": "months of runway",
+        "positive": "Positive cashflow",
+        "burnLabel": "Avg monthly burn",
+        "depleted": "Cash depleted"
+      },
+      "chart": {
+        "eyebrow": "Overview",
+        "title": "Revenue vs profit",
+        "desc": "Last 12 months. Hover the bars for detail.",
+        "fy": "FY 2026",
+        "revenue": "Revenue",
+        "ebitda": "Profit",
+        "kpiArr": "Annualized revenue (est.)",
+        "kpiGm": "Net margin",
+        "kpiEbitda": "Total profit, 12mo",
+        "kpiYoy": "YoY growth",
+        "kpiYoyDelta": "estimate",
+        "barTitle": "Monthly revenue"
+      },
+      "months": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      ],
+      "readiness": {
+        "title": "{count} owner gate(s) still blocking live traffic",
+        "hint": "This panel hides automatically once every gate closes."
+      }
+    },
+    "onboarding": {
+      "metaTitle": "Onboarding · AccounTech",
+      "title": "Tell us about your business",
+      "subtitle": "Four details and you're in — we apply the right VAT and bookkeeping defaults automatically.",
+      "step1": "Account",
+      "step2": "Business profile",
+      "step3": "Done",
+      "business": {
+        "title": "Business details",
+        "legalName": "Legal name",
+        "legalNamePh": "Registered business name",
+        "vatId": "ע.מ. / ח.פ.",
+        "vatIdPh": "9 digits",
+        "entityType": {
+          "patur": "Osek Patur",
+          "paturHint": "Exempt dealer · single-entry",
+          "morshe": "Osek Morshe",
+          "morsheHint": "Licensed dealer · single-entry",
+          "hevra_baam": "Limited company",
+          "hevra_baamHint": "ח.פ. · double-entry"
+        },
+        "addressCity": "City",
+        "submit": "Continue",
+        "errors": {
+          "vatIdInvalid": "Invalid VAT/business ID",
+          "required": "Required field"
+        }
+      },
+      "complete": {
+        "title": "All set",
+        "desc": "Your business is created. You can now record your first transaction or invoice.",
+        "cta": "Go to dashboard"
+      }
+    },
+    "legal": {
+      "disclaimer": {
+        "banner": "Estimates only · Not tax advice · Consult a licensed accountant",
+        "footer": "Estimates only · Not tax advice · Consult a licensed accountant",
+        "bannerSr": "The content of this screen is an estimate only and is not tax advice. Consult a licensed CPA before acting on it or submitting any filings.",
+        "footerSr": "Estimates only. This content is not tax advice. Consult a licensed CPA."
+      }
+    },
+    "common": {
+      "saving": "Saving...",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "view": "View",
+      "invalidInput": "Invalid input — check the fields and try again",
+      "unbalancedEntry": "Debit and credit totals do not balance"
+    },
+    "errors": {
+      "invalidInput": "Invalid input",
+      "unbalancedEntry": "Journal entry is unbalanced",
+      "stepUpRequired": "Additional verification required — the amount crosses the allocation threshold",
+      "invoiceImmutable": "An issued invoice cannot be edited — cancel and reissue"
+    },
+    "businesses": {
+      "metaTitle": "Businesses · AccounTech",
+      "title": "Businesses",
+      "subtitle": "Manage the businesses you own",
+      "addCta": "Add business",
+      "newTitle": "Add a new business",
+      "editTitle": "Edit business",
+      "formIntro": "Business details are stored encrypted where required and drive VAT estimates and invoice numbering.",
+      "emptyState": "No businesses yet — add your first",
+      "legalName": "Legal name",
+      "vatId": "VAT ID / ח.פ.",
+      "vatIdHelp": "9 digits for an osek; 9 digits for a company",
+      "entityType": "Entity type",
+      "vatStatus": "VAT status",
+      "bookkeepingMethod": "Bookkeeping method",
+      "taxYearEndMonth": "Tax year end month",
+      "advanceTaxRatePct": "Advance tax rate (%)",
+      "advanceTaxRatePctHelp": "Rate set by the Israel Tax Authority",
+      "tikNikuyim": "Withholding file (תיק ניכויים)",
+      "tikNikuyimHelp": "Required for businesses with payroll",
+      "defaultCurrency": "Default currency",
+      "addressHeading": "Address",
+      "addressStreet": "Street",
+      "addressCity": "City",
+      "addressPostalCode": "Postal code",
+      "addressCountry": "Country (ISO)",
+      "ilMunicipalAuthority": "Municipal authority",
+      "submitCreate": "Create business",
+      "submitUpdate": "Save changes",
+      "col": {
+        "legalName": "Name",
+        "vatId": "VAT ID",
+        "entityType": "Type",
+        "vatStatus": "VAT",
+        "currency": "Currency",
+        "actions": "Actions",
+        "view": "View",
+        "edit": "Edit"
+      },
+      "entityOption": {
+        "patur": "Osek Patur",
+        "morshe": "Osek Morshe",
+        "hevra_baam": "Limited company",
+        "amuta": "Nonprofit",
+        "shutfut": "Partnership"
+      },
+      "vatStatusOption": {
+        "liable": "Liable for VAT",
+        "osek_patur": "Osek Patur",
+        "osek_morshe": "Osek Morshe",
+        "exporter": "Exporter",
+        "nonprofit": "Nonprofit"
+      },
+      "bookkeepingOption": {
+        "single_entry": "Single-entry",
+        "double_entry": "Double-entry"
+      },
+      "detail": {
+        "profile": "Business profile",
+        "address": "Address",
+        "vatHistory": "VAT status history",
+        "vatHistoryEmpty": "No status changes recorded",
+        "effectiveFrom": "Effective from",
+        "effectiveTo": "Effective to",
+        "reason": "Reason"
+      },
+      "entityTypeOption": {
+        "patur": "Osek Patur (VAT-exempt)",
+        "morshe": "Osek Morshe (VAT-liable)",
+        "hevra_baam": "Limited company (Ltd)",
+        "amuta": "Non-profit (Amuta)",
+        "shutfut": "Partnership"
+      }
+    },
+    "clients": {
+      "metaTitle": "Clients · AccounTech",
+      "title": "Clients",
+      "subtitle": "Per-business customer ledger. Encrypted fields marked.",
+      "addCta": "Add client",
+      "newTitle": "Add client",
+      "editTitle": "Edit client",
+      "formIntro": "Email, phone, and notes are stored encrypted. Existing values are not revealed on edit — a new value replaces the prior.",
+      "emptyState": "No clients yet — add your first",
+      "noBusinessYet": "Create a business before adding clients",
+      "missingBusiness": "Select a business before saving",
+      "business": "Business",
+      "legalName": "Client name",
+      "vatId": "VAT ID / ח.פ. (for invoices)",
+      "vatIdHelp": "Optional per client; mandatory on a tax invoice",
+      "email": "Email",
+      "phone": "Phone",
+      "encryptedHelp": "This field is stored encrypted",
+      "encryptedTooltip": "Encrypted — revealing requires step-up auth",
+      "notes": "Internal notes",
+      "addressHeading": "Address",
+      "addressStreet": "Street",
+      "addressCity": "City",
+      "addressPostalCode": "Postal code",
+      "addressCountry": "Country (ISO)",
+      "defaultPaymentTermsDays": "Payment terms (days)",
+      "defaultCurrency": "Currency",
+      "masked": "masked",
+      "submitCreate": "Create client",
+      "submitUpdate": "Save changes",
+      "col": {
+        "legalName": "Name",
+        "business": "Business",
+        "vatId": "VAT ID",
+        "email": "Email",
+        "phone": "Phone",
+        "actions": "Actions",
+        "view": "View",
+        "edit": "Edit"
+      },
+      "detail": {
+        "profile": "Client profile",
+        "address": "Address"
+      },
+      "sendPortalLinkCta": "Send portal link",
+      "portalLinkSent": "Link sent to the client's email",
+      "portalLinkFailed": "Failed to send portal link"
+    },
+    "transactions": {
+      "metaTitle": "Transactions · AccounTech",
+      "title": "Transactions",
+      "subtitle": "Income and expenses per business and account",
+      "addCta": "Add transaction",
+      "newTitle": "New transaction",
+      "editTitle": "Edit transaction",
+      "formIntro": "Amounts are entered in whole units (₪ not agorot) and stored in minor units internally.",
+      "emptyState": "No transactions in the selected range",
+      "noBusinessYet": "Create a business before recording transactions",
+      "missingBusiness": "Select a business before saving",
+      "business": "Business",
+      "financialAccount": "Financial account",
+      "accountUnallocated": "No account (inbox)",
+      "addAccountInline": "Add a new account",
+      "addAccountSubmit": "Add",
+      "newAccountName": "Account name",
+      "direction": "Direction",
+      "amount": "Amount",
+      "amountHelp": "Positive value only",
+      "currency": "Currency",
+      "category": "Category code",
+      "categoryPlaceholder": "0000",
+      "categoryHelp": "From the chart of accounts; type a code or name",
+      "description": "Description",
+      "txnDate": "Date",
+      "source": "Source",
+      "submitCreate": "Create transaction",
+      "submitUpdate": "Save changes",
+      "filterBusiness": "Business",
+      "filterAllBusinesses": "All businesses",
+      "filterFrom": "From",
+      "filterTo": "To",
+      "filterApply": "Filter",
+      "filterClear": "Clear",
+      "directionOption": {
+        "income": "Income",
+        "expense": "Expense",
+        "transfer": "Transfer"
+      },
+      "col": {
+        "date": "Date",
+        "direction": "Direction",
+        "amount": "Amount",
+        "business": "Business",
+        "account": "Account",
+        "category": "Category",
+        "description": "Description",
+        "actions": "Actions",
+        "view": "View",
+        "edit": "Edit"
+      }
+    },
+    "invoices": {
+      "title": "Invoices",
+      "subtitle": "Issue, view and cancel tax invoices, invoice-receipts, receipts and credit notes",
+      "addCta": "New invoice",
+      "newTitle": "New invoice",
+      "editTitle": "Edit invoice",
+      "formIntro": "Sequential numbers are auto-allocated per business and document type. Fields lock after issuance.",
+      "emptyState": "No invoices in the selected range",
+      "noBusinessYet": "Create a business before issuing an invoice",
+      "missingBusiness": "Select a business before saving",
+      "business": "Business",
+      "client": "Client",
+      "clientNone": "No client (internal-use invoice)",
+      "clientHelp": "Pick an existing client — required on a tax invoice for an osek morshe",
+      "issueDate": "Issue date",
+      "dueDate": "Due date",
+      "currency": "Currency",
+      "fxRate": "FX rate",
+      "fxRateHelp": "Rate against ₪ on the issue date — verify against Bank of Israel",
+      "notesHe": "Notes (Hebrew)",
+      "notesEn": "Notes (English)",
+      "linesHeading": "Invoice lines",
+      "addLine": "Add line",
+      "removeLine": "Remove line",
+      "downloadPdf": "Download PDF",
+      "backToInvoice": "Back to invoice",
+      "cancelledBadge": "cancelled",
+      "cancelledBanner": "This invoice was cancelled — a linked credit note has been issued",
+      "immutableBanner": "Invoice issued — editing is locked. To fix: Cancel → Credit Note and reissue.",
+      "submitCreate": "Issue invoice",
+      "submitUpdate": "Save changes",
+      "line": {
+        "description": "Description",
+        "quantity": "Quantity",
+        "unitPrice": "Unit price",
+        "vatRate": "VAT %",
+        "vatRatePaturLocked": "Osek Patur locked to 0%",
+        "lineTotal": "Line total",
+        "subtotalPreview": "Line subtotal:",
+        "vatPreview": "Line VAT:"
+      },
+      "totals": {
+        "subtotal": "Subtotal",
+        "vat": "VAT",
+        "total": "Total"
+      },
+      "filterBusiness": "Business",
+      "filterAllBusinesses": "All businesses",
+      "filterFrom": "From",
+      "filterTo": "To",
+      "filterAllocation": "Allocation status",
+      "filterAllStatuses": "All statuses",
+      "filterApply": "Filter",
+      "filterClear": "Clear",
+      "types": {
+        "legend": "Document type",
+        "option": {
+          "tax_invoice": "Tax invoice",
+          "tax_invoiceDesc": "Standard tax document for VAT-liable transactions",
+          "tax_invoice_receipt": "Tax invoice/receipt",
+          "tax_invoice_receiptDesc": "Combined document — tax invoice with concurrent payment acknowledgement",
+          "receipt": "Receipt",
+          "receiptDesc": "Payment acknowledgement with no tax component",
+          "credit_note": "Credit note",
+          "credit_noteDesc": "Reverses an existing invoice — emitted only via the cancel action",
+          "proforma": "Proforma",
+          "proformaDesc": "Price quote — no tax impact until a tax invoice is issued",
+          "debit_note": "Debit note",
+          "debit_noteDesc": "Adds a charge to an existing invoice",
+          "self_invoice": "Self invoice",
+          "self_invoiceDesc": "Reverse-charge VAT for a foreign-supplier service"
+        }
+      },
+      "allocation": {
+        "paturExempt": "Osek Patur — allocation number not required",
+        "requiredHeading": "Allocation number required",
+        "requiredBody": "The amount exceeds the {threshold} threshold. Enter the allocation number manually from the SHAAM portal.",
+        "allocationNumberLabel": "Allocation number (Invoice Israel)",
+        "allocationNumberPlaceholder": "Paste from the SHAAM portal",
+        "allocationNumberHelp": "Optional now — can be added after issuance. Without it, status will be 'required — not assigned'.",
+        "nearHeading": "Approaching the allocation threshold",
+        "nearBody": "Current threshold: {threshold}. Adding another line may require an allocation number.",
+        "belowThreshold": "Below the threshold ({threshold}) — no allocation number needed"
+      },
+      "allocationStatus": {
+        "not_required": "not required",
+        "required_not_assigned": "required — not assigned",
+        "manual_pasted": "manual paste",
+        "partner_issued": "partner issued",
+        "processor_synced": "processor synced",
+        "direct_shaam": "direct SHAAM"
+      },
+      "col": {
+        "number": "Number",
+        "date": "Date",
+        "type": "Type",
+        "business": "Business",
+        "client": "Client",
+        "allocation": "Allocation",
+        "total": "Total",
+        "actions": "Actions",
+        "view": "View",
+        "pdf": "PDF"
+      },
+      "detail": {
+        "headerSection": "Invoice details",
+        "business": "Business",
+        "client": "Client",
+        "allocationStatus": "Allocation status",
+        "allocationNumber": "Allocation number",
+        "parentInvoice": "Parent invoice",
+        "lines": "Line items",
+        "linesEmpty": "No line items (e.g. aggregate credit note)",
+        "notes": "Notes"
+      },
+      "edit": {
+        "lockedTitle": "Invoice is locked for editing",
+        "lockedBody": "Once an invoice has a sequential number, IL ITA's no-gap policy makes it immutable. To correct, use Cancel → Credit Note and reissue.",
+        "viewInsteadCta": "View invoice",
+        "cancelledTitle": "Invoice already cancelled",
+        "cancelledBody": "This invoice was cancelled and a linked credit note was issued. Visit the credit note for details."
+      },
+      "cancel": {
+        "cta": "Cancel → Credit Note",
+        "dialogTitle": "Cancel and issue credit note",
+        "dialogBody": "Cancelling an invoice issues a linked credit note — no row is deleted. The reason appears on the credit note PDF.",
+        "reasonLabel": "Reason for cancellation",
+        "confirm": "Confirm cancellation",
+        "errors": {
+          "reasonRequired": "A reason is required"
+        }
+      }
+    },
+    "ledger": {
+      "metaTitle": "Ledger · AccounTech",
+      "title": "Ledger",
+      "subtitle": "Balanced double-entry journal entries",
+      "addCta": "New entry",
+      "newTitle": "New journal entry",
+      "newIntro": "Add at least two lines — total debit must equal total credit.",
+      "emptyState": "No entries for this business",
+      "placeholderDoubleEntryOnly": "The ledger is only available for businesses with double-entry bookkeeping. Single-entry businesses should use the Transactions screen.",
+      "manageBusinessesCta": "Manage businesses",
+      "filterBusiness": "Business",
+      "business": "Business",
+      "missingBusiness": "Select a business before saving",
+      "entryDate": "Entry date",
+      "description": "Description",
+      "linesHeading": "Entry lines",
+      "balancePreview": "Total debit / Total credit",
+      "balanced": "balanced",
+      "unbalanced": "unbalanced",
+      "submit": "Create entry",
+      "line": {
+        "accountCode": "Account",
+        "debit": "Debit",
+        "credit": "Credit",
+        "description": "Line description",
+        "add": "Add line",
+        "remove": "Remove line"
+      },
+      "col": {
+        "date": "Date",
+        "source": "Source",
+        "description": "Description",
+        "lines": "Lines",
+        "debit": "Debit",
+        "credit": "Credit",
+        "balance": "Balance"
+      }
+    },
+    "billing": {
+      "metaTitle": "Billing · AccounTech",
+      "title": "Billing",
+      "subtitle": "Pick a plan, manage payment method, or cancel anytime.",
+      "current": {
+        "label": "Current plan",
+        "renewsOn": "Renews on {date}",
+        "endsOn": "Ends on {date}"
+      },
+      "status": {
+        "active": "Active",
+        "trialing": "Trial",
+        "past_due": "Payment overdue",
+        "cancelled": "Cancelled",
+        "expired": "Expired",
+        "none": "No subscription"
+      },
+      "interval": {
+        "month": "month",
+        "year": "year"
+      },
+      "badge": {
+        "current": "Your plan"
+      },
+      "plan": {
+        "upgrade": "Choose plan",
+        "freeContact": "Default starter plan."
+      },
+      "portal": {
+        "cta": "Manage subscription"
+      },
+      "vat": {
+        "note": "Prices include 18% Israeli VAT for B2C customers. Stripe Tax does not yet support Israel — VAT is applied via our קבלה generation; an invoice is issued for every charge."
+      },
+      "errors": {
+        "generic": "Something went wrong"
+      },
+      "success": {
+        "title": "You're all set",
+        "desc": "Your subscription is active. The receipt has been emailed to you.",
+        "backToBilling": "Back to billing",
+        "toDashboard": "Go to dashboard",
+        "pending": {
+          "title": "Finalising your subscription...",
+          "desc": "Stripe has confirmed the payment. We're waiting for the activation webhook — usually a couple of seconds."
+        }
+      },
+      "cancel": {
+        "title": "Checkout cancelled",
+        "desc": "No charge was made. You can pick a plan again whenever you're ready.",
+        "backToBilling": "Back to billing"
+      }
+    },
+    "morningBrief": {
+      "eyebrow": "Morning brief",
+      "title": "What to do today",
+      "ariaLabel": "Morning tax brief",
+      "emptyDesc": "Your first brief lands tomorrow at 08:00. Add a business and a few receipts so we have something to summarise.",
+      "emptyCta": "Open dashboard",
+      "ruFallbackNote": "Shown in English — Hebrew tax estimates have not been CPA-reviewed in Russian.",
+      "cta": {
+        "pay_vat": "Open VAT view",
+        "follow_up_overdue": "Open overdue invoices",
+        "categorise_receipts": "Categorise receipts now",
+        "nothing_urgent": "Open dashboard"
+      }
+    },
+    "tax": {
+      "title": "Tax",
+      "subtitle": "Live estimates from your bookkeeping — VAT, advances, year-end.",
+      "tabsLabel": "Tax sub-tabs",
+      "tabs": {
+        "vat": "VAT",
+        "makdamot": "Advances",
+        "yearEnd": "Year-end"
+      },
+      "reviewBanner": {
+        "he": "אומדנים בשלבי סקירה — אל תסתמכו",
+        "en": "Estimates pending review — do not rely",
+        "note": "Rule-set version {version}, reviewer {reviewer} ({reviewedOn})."
+      },
+      "vat": {
+        "payableLabel": "VAT payable this period",
+        "payableHelper": "Difference between VAT collected and VAT recovered — estimate.",
+        "dueDateLabel": "Next filing deadline",
+        "dueDateHelper": "{days} days until filing.",
+        "allocationThresholdLabel": "Allocation-number threshold",
+        "allocationThresholdHelper": "Pre-VAT amount above which an allocation number is required on a tax invoice.",
+        "breakdownTitle": "VAT period breakdown",
+        "breakdownHelper": "Approximate split for the last 2-month period — derived from your transactions and receipts.",
+        "statSubtotal": "Pre-VAT revenue",
+        "statCollected": "VAT collected",
+        "statRecovered": "VAT recovered",
+        "statNet": "Net payable"
+      },
+      "makdamot": {
+        "pageTitle": "Advance tax (מקדמות)",
+        "pageSubtitle": "Monthly advance payments using the rate the Tax Authority assigned.",
+        "monthlyInstallmentLabel": "Estimated monthly installment",
+        "monthlyInstallmentHelper": "Based on your assigned rate and average monthly revenue.",
+        "rateRangeLabel": "Typical rate band",
+        "rateRangeHelper": "Sector-dependent. The ITA assigns a specific rate to each business.",
+        "projectedAnnualLabel": "Projected annual total",
+        "projectedAnnualHelper": "End-of-year total at current run rate.",
+        "notAssigned": "No rate assigned",
+        "notAssignedHelper": "Contact the Tax Authority to get the rate for your business.",
+        "historyTitle": "Advance-tax history",
+        "historyEmpty": "No advance-tax records yet.",
+        "col": {
+          "period": "Period",
+          "amount": "Amount",
+          "status": "Status"
+        },
+        "schemaGapTitle": "Phase E.0 schema not yet applied",
+        "schemaGapDesc": "The `tax_advances` table is missing — we're showing the engine projection only.",
+        "schemaGapHint": "Once the migration runs you'll see paid installments and downloadable confirmations here.",
+        "layer3MissingTitle": "Preview — no advance-tax history yet",
+        "layer3MissingDesc": "Numbers shown are an engine estimate. Payment history opens once Phase E.0 schema is applied."
+      },
+      "yearEnd": {
+        "pageTitle": "Year-end",
+        "pageSubtitle": "Income tax estimate for {year} — includes credit points, surtax, and Bituach Leumi.",
+        "netTaxLabel": "Net income tax (estimate)",
+        "netTaxHelper": "Projected annual figure for {year} after credit points.",
+        "creditValueLabel": "Credit-point value",
+        "creditValueHelper": "Total value of the credit points you're entitled to.",
+        "bituachLabel": "Bituach Leumi",
+        "bituachHelper": "Projected annual contribution (self-employed).",
+        "bracketChartTitle": "Income tax brackets",
+        "marginalRate": "Marginal {pct}%",
+        "effectiveRate": "Effective {pct}%",
+        "surtaxNote": "Includes מס יסף surtax of {amount} on income above ₪721,560.",
+        "prepPackDesc": "Build a year-end pack — forms 1301 / 1214 ready to upload to SHAAM.",
+        "prepPackCta": "Open prep pack"
+      }
+    },
+    "filings": {
+      "metaTitle": "Filings · AccounTech",
+      "title": "Filings",
+      "subtitle": "Generate PCN874, 6111 and other tax-authority files. Estimates only — review with a CPA before uploading to the regulator's portal.",
+      "addCta": "New filing",
+      "emptyState": "No filings yet — generate your first.",
+      "groupHeading": {
+        "pcn874": "PCN874 (monthly VAT)",
+        "form_6111": "Form 6111 (annual uniform file)",
+        "form_102": "Form 102 (BTL monthly)",
+        "form_1301": "Form 1301 (annual individual)",
+        "form_1214": "Form 1214 (annual company)",
+        "form_126": "Form 126 (annual employer)",
+        "form_856": "Form 856 (annual WHT)"
+      },
+      "kindLabel": {
+        "pcn874": "PCN874",
+        "form_6111": "Form 6111",
+        "form_102": "Form 102",
+        "form_1301": "Form 1301",
+        "form_1214": "Form 1214",
+        "form_126": "Form 126",
+        "form_856": "Form 856"
+      },
+      "kindDesc": {
+        "pcn874": "Online VAT digital report — fixed-width windows-1255 file uploaded to the SHAAM portal.",
+        "form_6111": "Uniform digital annual file — bilingual XML mapped from your chart of accounts.",
+        "form_102": "Monthly Bituach Leumi employer report — depends on payroll module.",
+        "form_1301": "Annual personal tax-return prep pack — printable PDF for portal upload.",
+        "form_1214": "Annual corporate tax-return prep pack — printable PDF for portal upload.",
+        "form_126": "Annual unified employer file — depends on payroll module.",
+        "form_856": "Annual withholding-tax-to-suppliers file — depends on supplier WHT tagging."
+      },
+      "kindLockedDesc": "Available on the {plan} plan and above.",
+      "planName": {
+        "solo": "Solo",
+        "plus": "Plus"
+      },
+      "upgradeCta": "Upgrade plan",
+      "statusBadge": {
+        "draft": "draft",
+        "generated": "ready for upload",
+        "downloaded": "downloaded",
+        "submitted": "submitted to portal"
+      },
+      "readyForPortalUpload": "Ready for portal upload",
+      "neverFiled": "We never submit on your behalf — you upload the file to the regulator's portal.",
+      "col": {
+        "kind": "Form",
+        "period": "Period",
+        "generatedAt": "Generated",
+        "status": "Status",
+        "asmachta": "Asmachta",
+        "actions": "Actions",
+        "view": "View"
+      },
+      "wizard": {
+        "title": "New filing",
+        "stepKind": "Pick form",
+        "stepPeriod": "Pick period",
+        "stepReview": "Review totals",
+        "stepGenerate": "Generate file",
+        "kindLegend": "Which filing do you need?",
+        "businessLabel": "Business",
+        "businessHelp": "Filings are scoped to a single business.",
+        "periodStartLabel": "Period start",
+        "periodEndLabel": "Period end",
+        "periodHelp": "Date range in the form's calendar. PCN874 is monthly or bi-monthly; annual forms use Jan 1 – Dec 31.",
+        "fiscalYearLabel": "Fiscal year",
+        "fiscalYearHelp": "The tax year being reported.",
+        "acknowledgeTitle": "Spec status",
+        "acknowledgeBody": "These generators reflect the public shape of each format. The exact byte layouts must still be reconfirmed against the regulator's canonical spec before any real submission.",
+        "acknowledgeCheckbox": "I acknowledge these are estimates pending CPA review",
+        "previewTitle": "Preview totals",
+        "previewEmpty": "Nothing to preview yet — pick a business and a period.",
+        "previewInvoiceCount": "Invoices in period",
+        "previewSumPreVat": "Pre-VAT total",
+        "previewSumVat": "VAT total",
+        "previewFiscalYear": "Fiscal year",
+        "previewLayerNote": "Some forms depend on data layers that aren't built yet. The wizard will surface a clear error at generate-time.",
+        "submitGenerate": "Generate file",
+        "submitting": "Generating...",
+        "back": "Back",
+        "next": "Next",
+        "cancel": "Cancel",
+        "lockedTitle": "Plan upgrade required",
+        "lockedBody": "Generating this form is part of a higher plan.",
+        "missingBusiness": "Select a business before continuing.",
+        "missingPeriod": "Period start and end are required.",
+        "missingAcknowledge": "Acknowledge the spec status before generating.",
+        "specUnverified": "The byte-level spec for this form has not been confirmed against a regulator primary source. Tick the acknowledgement to proceed in testing.",
+        "layerNotReady": "This form depends on a data layer that isn't built yet — please come back once the payroll / supplier-WHT modules ship.",
+        "notApplicable": "This form is not applicable for the selected business (e.g. an osek patur does not file PCN874).",
+        "sequenceGap": "Sequence gap detected in the invoice stream — please fix the underlying invoices before generating.",
+        "unknownError": "Could not generate the file — see logs for details."
+      },
+      "detail": {
+        "headerSection": "Filing details",
+        "business": "Business",
+        "kind": "Form",
+        "period": "Period",
+        "generatedAt": "Generated at",
+        "generatedBy": "Generated by",
+        "totalsSection": "Totals",
+        "inputsSection": "Provenance",
+        "inputsInvoiceCount": "Source invoices",
+        "inputsReceiptCount": "Source receipts",
+        "inputsTransactionCount": "Source transactions",
+        "inputsEmpty": "No row-level inputs recorded for this filing.",
+        "downloadCta": "Download file",
+        "downloadHelp": "Download the regulator-ready file. Requires step-up verification.",
+        "markSubmittedCta": "Mark as submitted",
+        "markSubmittedHelp": "After you upload the file to the regulator's portal, paste the asmachta (confirmation number) here.",
+        "submittedHeading": "Submission record",
+        "submittedAtLabel": "Submitted at",
+        "submittedAsmachtaLabel": "Asmachta (portal confirmation)",
+        "submittedBanner": "This filing was reported as submitted to the portal.",
+        "asmachtaLabel": "Asmachta",
+        "asmachtaPlaceholder": "Paste the portal confirmation number",
+        "asmachtaHelp": "Optional but recommended — kept on file for the audit trail.",
+        "submitConfirm": "Record submission",
+        "cancel": "Cancel"
+      },
+      "errors": {
+        "notFound": "Filing not found, or not visible to your account.",
+        "stepUpRequired": "Additional verification required — please re-authenticate before downloading.",
+        "planLocked": "Your current plan does not allow this filing — upgrade to continue.",
+        "alreadySubmitted": "This filing has already been recorded as submitted.",
+        "generic": "Something went wrong — please try again."
+      },
+      "disclaimer": "Files are produced from your bookkeeping data. They are NOT a regulatory submission — review them, then upload to the SHAAM / ITA / BTL portal yourself."
+    },
+    "receipts": {
+      "metaTitle": "Receipts · AccounTech",
+      "title": "Receipts",
+      "subtitle": "Upload, OCR, review and approve expense receipts. Encrypted at rest.",
+      "uploadCta": "Upload receipt",
+      "emptyState": "No receipts yet — upload your first.",
+      "filter": {
+        "business": "Business",
+        "allBusinesses": "All businesses",
+        "status": "Status",
+        "allStatuses": "All statuses",
+        "from": "From",
+        "to": "To",
+        "apply": "Filter",
+        "clear": "Clear"
+      },
+      "status": {
+        "pending_review": "Pending review",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "section": {
+        "pending": "Pending review",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "ocr": {
+        "applied": "OCR applied",
+        "pending": "OCR pending"
+      },
+      "col": {
+        "date": "Date",
+        "business": "Business",
+        "category": "Category",
+        "amount": "Amount",
+        "ocr": "OCR",
+        "actions": "Actions",
+        "view": "View"
+      },
+      "upload": {
+        "metaTitle": "Upload receipt · AccounTech",
+        "title": "Upload receipt",
+        "subtitle": "Drop an image or PDF, or take a photo. We'll OCR vendor, total and VAT.",
+        "business": "Business",
+        "noBusinesses": "Create a business before uploading receipts.",
+        "dropHint": "Drop file here, or pick one below.",
+        "allowed": "JPEG, PNG, WebP, PDF · max 4 MB",
+        "pickFile": "Choose file",
+        "openCamera": "Take photo",
+        "clear": "Clear selection",
+        "submit": "Upload and OCR",
+        "statusUploading": "Uploading...",
+        "statusParsing": "Reading receipt...",
+        "error": {
+          "generic": "Could not upload — please try again.",
+          "network": "Network error — check your connection.",
+          "tooLarge": "File is larger than 4 MB.",
+          "missing_file": "No file selected.",
+          "missing_business": "Pick a business first.",
+          "empty_file": "File is empty.",
+          "file_too_large": "File is larger than 4 MB.",
+          "unsupported_media_type": "Only JPEG / PNG / WebP / PDF are supported.",
+          "forbidden_business": "You don't have access to that business.",
+          "blob_upload_failed": "Storage upload failed — please try again."
+        }
+      },
+      "detail": {
+        "metaTitle": "Receipt · AccounTech",
+        "title": "Receipt detail",
+        "backToList": "Back to receipts",
+        "ocrTextTitle": "OCR output",
+        "ocrPendingTitle": "OCR is being prepared",
+        "ocrPendingDesc": "We'll fill in vendor, amount and VAT in a moment. Refresh to see the result."
+      },
+      "review": {
+        "title": "Review and correct",
+        "subtitle": "OCR is a starting point — verify amounts before approving.",
+        "vendor": "Vendor",
+        "date": "Date",
+        "amount": "Total (₪)",
+        "vat": "VAT amount (₪)",
+        "category": "Category code",
+        "businessUsePct": "Business-use %",
+        "save": "Save changes",
+        "approve": "Approve",
+        "reject": "Reject",
+        "linkTransaction": "Open linked transaction",
+        "linkInvoice": "Open linked invoice",
+        "errors": {
+          "generic": "Could not save — please try again."
+        }
+      }
+    },
+    "ai": {
+      "title": "AI Advisor",
+      "subtitle": "Plain-language answers about your numbers. Estimates only.",
+      "chatLabel": "Tax advisor chat",
+      "historyLabel": "Conversation history",
+      "historyEmpty": "No conversations yet — ask your first question below.",
+      "untitledThread": "Untitled thread",
+      "greeting": "Hi! I'm AccounTech's tax advisor. I can explain your numbers — VAT, advances, year-end. Ask me anything, but remember: estimates only · not tax advice.",
+      "inputLabel": "Ask the advisor",
+      "inputPlaceholder": "e.g. how much VAT do I owe this month?",
+      "send": "Send",
+      "stop": "Stop",
+      "errors": {
+        "generic": "Unexpected error — please try again.",
+        "quotaExceeded": "You've reached your monthly message quota. Upgrade your plan to continue.",
+        "gatewayDisabled": "The AI advisor is not available in this environment.",
+        "unauthorized": "Sign in to use the advisor."
+      },
+      "disabled": {
+        "title": "AI advisor is off",
+        "desc": "Vercel AI Gateway key is missing. Set AI_GATEWAY_API_KEY to enable the advisor."
+      },
+      "conversation": {
+        "title": "AI advisor conversation",
+        "subtitle": "Conversation #{id}",
+        "notFoundTitle": "Conversation not found",
+        "notFoundDesc": "It may have been deleted, or the ai_conversations schema hasn't been applied yet."
+      },
+      "snapshot": {
+        "toggle": "What does the advisor see?",
+        "description": "This is the exact input we send to the model. Identifiers are removed — no bank values or national IDs."
+      }
+    },
+    "audit": {
+      "metaTitle": "Audit package · AccounTech",
+      "eyebrow": "ITA inspection",
+      "title": "Audit package",
+      "subtitle": "One-click bundle for an Israeli Tax Authority inspector visit. Estimates only — review with a CPA before handing over.",
+      "addCta": "New package",
+      "newTitle": "Build a new audit package",
+      "detailTitle": "Audit package",
+      "formIntro": "Pick a business and a period. We collect invoices, receipts, transactions, tax filings, payroll and owner compensation into an encrypted ZIP.",
+      "emptyState": "No audit packages yet — build your first.",
+      "noBusinessYet": "Create a business or accept an accountant engagement before building.",
+      "business": "Business",
+      "periodStart": "Period start",
+      "periodEnd": "Period end",
+      "buildSubmit": "Build package",
+      "buildSubmitting": "Building...",
+      "downloadCta": "Download ZIP",
+      "downloadingLabel": "Preparing...",
+      "manifestSummary": "Manifest summary",
+      "sha256": "Plaintext ZIP SHA-256",
+      "backToList": "Back to packages",
+      "col": {
+        "business": "Business",
+        "period": "Period",
+        "generatedAt": "Generated",
+        "artifacts": "Artifacts",
+        "actions": "Actions",
+        "view": "View"
+      },
+      "counts": {
+        "totalArtifacts": "Total artifacts",
+        "invoices": "Invoices",
+        "receipts": "Receipts",
+        "transactions": "Transactions",
+        "taxFilings": "Tax filings",
+        "payrollRuns": "Payroll runs",
+        "ownerCompensation": "Owner compensation",
+        "bankReconciliations": "Bank reconciliations",
+        "riskFlags": "Risk flags"
+      },
+      "errors": {
+        "generic": "Unexpected error — please try again.",
+        "forbidden": "You do not have permission to build packages for this business.",
+        "stepUpRequired": "Additional verification required — please confirm with your password.",
+        "dekRetired": "This package has been sealed (crypto-erasure). Contents are unrecoverable.",
+        "notReady": "Package is still being prepared — refresh in a moment."
+      }
+    },
+    "bankImports": {
+      "title": "Bank imports",
+      "subtitle": "Upload bank statements (PDF/CSV/XLSX/OFX) and migrate from Greeninvoice.",
+      "addCta": "New import",
+      "emptyState": "No bank imports yet — upload your first statement.",
+      "uploadTitle": "New bank import",
+      "uploadSubtitle": "Drop a statement file, pick the bank, and we'll parse the rows for review.",
+      "reviewTitle": "Review parsed transactions",
+      "alreadyCommitted": "This import has already been committed to your transactions.",
+      "noBusinessYet": "Create a business before importing statements.",
+      "noRowsParsed": "No rows could be parsed from this file.",
+      "business": "Business",
+      "financialAccount": "Financial account",
+      "accountUnallocated": "No account (inbox)",
+      "bankLabel": "Bank",
+      "formatLabel": "Export format",
+      "dropZone": "Drop a file here or click to pick",
+      "parseCta": "Parse file",
+      "parsing": "Parsing...",
+      "commitCta": "Commit {count} rows",
+      "committing": "Committing...",
+      "bank": {
+        "leumi": "Leumi",
+        "hapoalim": "Hapoalim",
+        "mizrahi": "Mizrahi Tefahot",
+        "discount": "Discount",
+        "ofx": "OFX (any bank)",
+        "greeninvoice": "Greeninvoice migration",
+        "other": "Other (CSV with column mapping)"
+      },
+      "format": {
+        "leumi_pdf": "Leumi PDF",
+        "hapoalim_csv": "Hapoalim CSV",
+        "mizrahi_xlsx": "Mizrahi XLSX",
+        "discount_csv": "Discount CSV",
+        "ofx": "OFX 1.x/2.x",
+        "csv": "Generic CSV",
+        "greeninvoice_csv": "Greeninvoice CSV"
+      },
+      "col": {
+        "importedAt": "Imported at",
+        "business": "Business",
+        "bank": "Bank",
+        "format": "Format",
+        "fileName": "File",
+        "rowCount": "Rows",
+        "status": "Status",
+        "actions": "Actions",
+        "view": "Review",
+        "toggleAll": "Toggle all",
+        "toggleRow": "Toggle row",
+        "date": "Date",
+        "amount": "Amount",
+        "description": "Description",
+        "dedup": "Duplicate?"
+      },
+      "dedup": {
+        "candidateOf": "Possible duplicate of {date} — {desc}"
+      },
+      "errors": {
+        "fileTooLarge": "File is too large (max 25 MB)",
+        "fileMissing": "Pick a file before parsing",
+        "businessMissing": "Select a business",
+        "readFile": "Could not read the file",
+        "noRowsSelected": "Select at least one row to commit",
+        "alreadyCommitted": "Import already committed",
+        "parseFailed": "File could not be parsed — check the format matches the selected bank",
+        "parserNotImplemented": "Parser for this bank+format combination is not implemented yet — try CSV until full support ships"
+      }
+    },
+    "bankLinks": {
+      "title": "Bank links",
+      "subtitle": "Live bank account sync (coming soon)",
+      "connectCta": "Connect a bank",
+      "emptyState": "No banks connected yet",
+      "statusPending": "Pending",
+      "statusActive": "Active",
+      "statusFailed": "Failed",
+      "banks": {
+        "leumi": "Bank Leumi",
+        "hapoalim": "Bank Hapoalim",
+        "discount": "Bank Discount",
+        "mizrahi": "Mizrahi Tefahot",
+        "fibi": "FIBI"
+      },
+      "col": {
+        "bank": "Bank",
+        "business": "Business",
+        "status": "Status",
+        "provider": "Provider",
+        "connectedAt": "Connected at"
+      },
+      "connecting": {
+        "title": "Connecting...",
+        "subtitle": "Waiting for Salt Edge integration",
+        "stubNotice": "Live bank connection is pending vendor contract with Salt Edge. This screen will use real OAuth once the integration is complete."
+      }
+    },
+    "processorSync": {
+      "title": "Processor sync",
+      "subtitle": "Pull receipts (קבלות) from Hyp, Grow, and PayPlus — paired against your invoices.",
+      "connectCta": "Connect processor",
+      "connectTitle": "Connect a payment processor",
+      "connectSubtitle": "We encrypt your API key under a per-business key. View requires step-up auth.",
+      "connectedHeading": "Connected processors",
+      "emptyState": "No processors connected yet.",
+      "noBusinessYet": "Create a business before connecting a processor.",
+      "business": "Business",
+      "processorLabel": "Processor",
+      "apiKeyLabel": "API key",
+      "connectSubmit": "Test & connect",
+      "connecting": "Testing...",
+      "syncNow": "Sync now",
+      "syncing": "Syncing...",
+      "neverSynced": "Never synced",
+      "hoursAgo": "Synced {hours}h ago",
+      "failing": "Sync failing ({count} attempts)",
+      "processor": {
+        "hyp": "Hyp",
+        "grow": "Grow Payments",
+        "payplus": "PayPlus"
+      },
+      "apiKeyPlaceholder": {
+        "hyp": "Hyp API key",
+        "grow": "Grow API key",
+        "payplus": "API_KEY:SECRET_KEY"
+      },
+      "apiKeyHelp": {
+        "hyp": "From Hyp dashboard → Developer → API keys.",
+        "grow": "From Grow Payments dashboard → API access.",
+        "payplus": "PayPlus uses two keys — paste them joined by a colon (apiKey:secretKey)."
+      },
+      "col": {
+        "processor": "Processor",
+        "business": "Business",
+        "lastSynced": "Last synced",
+        "actions": "Actions"
+      },
+      "orphans": {
+        "heading": "Unpaired receipts",
+        "subtitle": "Receipts the processor returned that we could not match to an invoice.",
+        "empty": "No unpaired receipts.",
+        "col": {
+          "date": "Date",
+          "amount": "Amount",
+          "customer": "Customer",
+          "receiptNo": "Receipt #",
+          "reason": "Reason"
+        },
+        "reason": {
+          "no_match": "No invoice with that amount",
+          "ambiguous": "Multiple invoices match",
+          "amount_date": "Amount+date only",
+          "exact": "Matched"
+        }
+      },
+      "errors": {
+        "businessMissing": "Select a business",
+        "apiKeyMissing": "Enter an API key",
+        "connectionFailed": "Connection test failed",
+        "alreadyConnected": "Already connected — disconnect first",
+        "syncFailed": "Sync failed"
+      }
+    },
+    "settings": {
+      "pageTitle": "Settings",
+      "pageSubtitle": "Manage account, security, billing and business profile.",
+      "profile": {
+        "editHint": "Edit name & email from /billing → manage account."
+      },
+      "businesses": {
+        "title": "Businesses",
+        "desc": "Profile, VAT status, bookkeeping method."
+      },
+      "billing": {
+        "title": "Billing & plan",
+        "desc": "Active plan, payment method, invoices."
+      },
+      "twoFactor": {
+        "title": "Two-factor auth",
+        "desc": "Enable / disable TOTP."
+      },
+      "passkeys": {
+        "title": "Passkeys",
+        "desc": "Hardware keys and passkeys."
+      },
+      "recoveryCodes": {
+        "title": "Recovery codes",
+        "desc": "Generate emergency sign-in codes."
+      },
+      "locale": {
+        "title": "Interface language",
+        "desc": "Change language from the switcher in the header."
+      }
+    },
+    "stepUp": {
+      "title": "Step-up verification",
+      "subtitle": "Sensitive action ({op}) — confirm before proceeding",
+      "passwordLabel": "Password",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "close": "Close",
+      "errors": {
+        "wrongFactor": "Wrong password",
+        "unknown": "Unexpected error",
+        "network": "Network error"
+      }
+    }
+  },
+  "email": {
+    "morningBrief": {
+      "subject": "Morning tax brief · סיכום מס בוקר",
+      "subjectVat": "Morning brief · {amount} VAT by {date}",
+      "subjectOverdue": "Morning brief · {count} overdue invoices",
+      "subjectReceipts": "Morning brief · {count} receipts to categorise",
+      "subjectClear": "Morning brief · all clear",
+      "ctaLabel": "Open dashboard"
+    }
+  },
+  "shell": {
+    "nav": {
+      "back": "Back",
+      "dashboard": "Dashboard"
+    }
+  }
+}
