@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -57,8 +57,6 @@ export default function Dashboard() {
   const parallax = useTransform(scrollYProgress, [0, 1], [40, -40]);
 
   const [hovered, setHovered] = useState<number | null>(null);
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
 
   const total = data.reduce((acc, d) => acc + d.revenue, 0);
   const yoy = ((data[11].revenue - data[0].revenue) / data[0].revenue) * 100;
@@ -117,7 +115,6 @@ export default function Dashboard() {
               <span className="text-xs text-slate-500">FY 2026 · ${(total / 1000).toFixed(2)}M</span>
             </div>
             <div className="h-72">
-              {mounted && (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={data}
@@ -151,7 +148,6 @@ export default function Dashboard() {
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
-              )}
             </div>
           </div>
 
@@ -160,7 +156,6 @@ export default function Dashboard() {
             <div className="rounded-2xl border border-white/5 bg-slate-950/50 p-4 sm:p-5">
               <h3 className="mb-2 text-sm font-medium text-slate-200">EBITDA Trajectory</h3>
               <div className="h-44">
-                {mounted && (
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={data} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
                     <defs>
@@ -181,7 +176,6 @@ export default function Dashboard() {
                     <YAxis hide />
                   </AreaChart>
                 </ResponsiveContainer>
-                )}
               </div>
             </div>
             <div className="rounded-2xl border border-white/5 bg-slate-950/50 p-5">
