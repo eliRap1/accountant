@@ -24,22 +24,41 @@ const styles: Record<Variant, string> = {
 };
 
 const Button = forwardRef<HTMLButtonElement, Props>(function Button(
-  { variant = "primary", withArrow, className = "", children, ...rest },
+  { variant = "primary", withArrow, className = "", children, as, href, ...rest },
   ref
 ) {
+  const cls = `inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-medium tracking-tight transition-colors will-change-transform ${styles[variant]} ${className}`;
+  const inner = (
+    <>
+      <span>{children}</span>
+      {withArrow && (
+        <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
+      )}
+    </>
+  );
+  if (as === "a") {
+    return (
+      <motion.a
+        href={href}
+        whileHover={{ scale: 1.035, y: -1 }}
+        whileTap={{ scale: 0.97, y: 0 }}
+        transition={{ type: "spring", stiffness: 380, damping: 22 }}
+        className={cls}
+      >
+        {inner}
+      </motion.a>
+    );
+  }
   return (
     <motion.button
       ref={ref}
       whileHover={{ scale: 1.035, y: -1 }}
       whileTap={{ scale: 0.97, y: 0 }}
       transition={{ type: "spring", stiffness: 380, damping: 22 }}
-      className={`inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-medium tracking-tight transition-colors will-change-transform ${styles[variant]} ${className}`}
+      className={cls}
       {...rest}
     >
-      <span>{children}</span>
-      {withArrow && (
-        <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
-      )}
+      {inner}
     </motion.button>
   );
 });

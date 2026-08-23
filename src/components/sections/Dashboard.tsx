@@ -106,7 +106,7 @@ export default function Dashboard() {
           <Kpi icon={TrendingUp} label="ARR Run-rate" value={`$${(data[11].revenue * 12 / 1000).toFixed(1)}M`} delta="+18.4%" />
           <Kpi icon={Activity} label="Gross Margin" value="74.2%" delta="+3.1 pts" />
           <Kpi icon={PieChart} label="EBITDA TTM" value={`$${data.reduce((a, d) => a + d.ebitda, 0)}k`} delta="+62%" />
-          <Kpi icon={TrendingUp} label="YoY Growth" value={`${yoy.toFixed(0)}%`} delta="strong" subtle />
+          <Kpi icon={TrendingUp} label="YTD Growth" value={`${yoy.toFixed(0)}%`} delta="strong" subtle />
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[1.6fr_1fr]">
