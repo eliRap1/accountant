@@ -34,6 +34,7 @@ export default function Footer() {
             </p>
           </div>
 
+          {/* TODO(audit): replace href="#" stubs with real URLs for all footer and social links */}
           <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
             <Column
               title="Practice"
