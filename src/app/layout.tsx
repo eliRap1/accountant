@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "AccounTech — Precision & Transparency",
   description:
     "Modern accounting, audit, tax, and strategic consulting — engineered with precision and delivered with transparency.",
-  metadataBase: new URL("https://accountech.example.com"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? "https://accounttech.vercel.app"),
   openGraph: {
     title: "AccounTech — Precision & Transparency",
     description:
