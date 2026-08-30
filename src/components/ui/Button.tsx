@@ -4,13 +4,11 @@ import { motion, type HTMLMotionProps } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { forwardRef } from "react";
 
-type Variant = "primary" | "ghost" | "outline";
+type Variant = "primary" | "ghost";
 
 type Props = Omit<HTMLMotionProps<"button">, "ref" | "children"> & {
   variant?: Variant;
   withArrow?: boolean;
-  as?: "button" | "a";
-  href?: string;
   children?: React.ReactNode;
 };
 
@@ -19,8 +17,6 @@ const styles: Record<Variant, string> = {
     "bg-emerald-500 text-slate-950 shadow-[0_10px_40px_-10px_rgba(16,185,129,0.7)] hover:bg-emerald-400 hover:shadow-[0_14px_50px_-8px_rgba(16,185,129,0.85)]",
   ghost:
     "bg-white/5 text-slate-100 border border-white/10 hover:bg-white/10",
-  outline:
-    "bg-transparent text-emerald-300 border border-emerald-400/50 hover:bg-emerald-500/10",
 };
 
 const Button = forwardRef<HTMLButtonElement, Props>(function Button(
