@@ -50,7 +50,7 @@ export default function GlareCard({ children, className = "" }: Props) {
       <motion.div
         aria-hidden
         style={{ background: border }}
-        className="pointer-events-none absolute inset-0 rounded-2xl p-px [mask:linear-gradient(#000,#000)_content-box,linear-gradient(#000,#000)] [mask-composite:exclude]"
+        className="pointer-events-none absolute inset-0 rounded-2xl p-px [mask:linear-gradient(#000,#000)_content-box,linear-gradient(#000,#000)] [mask-composite:exclude] [-webkit-mask:linear-gradient(#000,#000)_content-box,linear-gradient(#000,#000)] [-webkit-mask-composite:destination-out]"
       />
       {/* Inner card */}
       <div className="relative h-full rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10">
