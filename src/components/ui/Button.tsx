@@ -9,6 +9,9 @@ type Variant = "primary" | "ghost" | "outline";
 type Props = Omit<HTMLMotionProps<"button">, "ref" | "children"> & {
   variant?: Variant;
   withArrow?: boolean;
+  // TODO: `as` and `href` are not implemented — the component always renders
+  // a <button>. To support link-style usage, conditionally render motion.a
+  // and forward `href`; until then callers should use a plain <motion.a>.
   as?: "button" | "a";
   href?: string;
   children?: React.ReactNode;
