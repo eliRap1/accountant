@@ -24,9 +24,11 @@ const styles: Record<Variant, string> = {
 };
 
 const Button = forwardRef<HTMLButtonElement, Props>(function Button(
-  { variant = "primary", withArrow, className = "", children, ...rest },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  { variant = "primary", withArrow, className = "", children, as: _as, href: _href, ...rest },
   ref
 ) {
+  // TODO: implement polymorphic rendering when `as="a"` + `href` are provided
   return (
     <motion.button
       ref={ref}
