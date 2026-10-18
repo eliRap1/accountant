@@ -51,14 +51,15 @@ export default function CTA() {
             onSubmit={(e) => e.preventDefault()}
             className="glass-strong space-y-4 rounded-2xl p-6 sm:p-8"
           >
-            <Field label={t("nameLabel")} type="text" placeholder={t("namePh")} />
-            <Field label={t("emailLabel")} type="email" placeholder={t("emailPh")} />
-            <Field label={t("companyLabel")} type="text" placeholder={t("companyPh")} />
+            <Field label={t("nameLabel")} type="text" placeholder={t("namePh")} name="name" />
+            <Field label={t("emailLabel")} type="email" placeholder={t("emailPh")} name="email" />
+            <Field label={t("companyLabel")} type="text" placeholder={t("companyPh")} name="company" />
             <div>
               <label className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-slate-400">
                 {t("msgLabel")}
               </label>
               <textarea
+                name="message"
                 rows={4}
                 placeholder={t("msgPh")}
                 className="w-full resize-none rounded-xl border border-white/10 bg-slate-950/60 px-3.5 py-3 text-sm text-slate-100 outline-none transition-colors placeholder:text-slate-600 focus:border-emerald-400/60"
@@ -79,10 +80,12 @@ function Field({
   label,
   type,
   placeholder,
+  name,
 }: {
   label: string;
   type: string;
   placeholder: string;
+  name: string;
 }) {
   return (
     <div>
@@ -91,6 +94,7 @@ function Field({
       </label>
       <input
         type={type}
+        name={name}
         placeholder={placeholder}
         className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-3.5 py-3 text-sm text-slate-100 outline-none transition-colors placeholder:text-slate-600 focus:border-emerald-400/60"
       />
