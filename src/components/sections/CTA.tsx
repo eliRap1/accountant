@@ -49,6 +49,7 @@ export default function CTA() {
           </div>
 
           <form
+            // TODO(audit): wire to an API route or form provider (e.g. Resend, Formspree)
             onSubmit={(e) => e.preventDefault()}
             className="glass-strong space-y-4 rounded-2xl p-6 sm:p-8"
           >
