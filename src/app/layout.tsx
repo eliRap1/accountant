@@ -21,7 +21,23 @@ export const metadata: Metadata = {
     title: "AccounTech — Precision & Transparency",
     description:
       "Audit, tax, and consulting for ambitious companies. Built on data, delivered with clarity.",
+    url: "https://accountech.example.com",
     type: "website",
+    images: [
+      {
+        url: "https://accountech.example.com/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "AccounTech — Precision & Transparency",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AccounTech — Precision & Transparency",
+    description:
+      "Audit, tax, and consulting for ambitious companies. Built on data, delivered with clarity.",
+    images: ["https://accountech.example.com/og-image.png"],
   },
 };
 
