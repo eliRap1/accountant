@@ -1,0 +1,333 @@
+// AI SDK v6 tool definitions for the IL tax advisor.
+//
+// Each tool is a server-side function the model can call to fetch
+// ground-truth data. Tools are user-scoped — they all close over the
+// caller's `userId` and route through `withUser` (RLS).
+//
+// Tool schemas use Zod (v4). The `inputSchema` field name comes from
+// AI SDK v6 (renamed from `parameters` in v5). Tool execution returns
+// any JSON-serialisable value; bigints are stringified to keep the
+// JSON wire format clean and reversible.
+
+import { tool } from "ai";
+import { z } from "zod";
+import { sql } from "drizzle-orm";
+import { getCashRunway } from "@/lib/aggregations/cashRunway";
+import { getRecurringSubscriptions } from "@/lib/aggregations/recurringSubscriptions";
+import { getSpendingByCategory } from "@/lib/aggregations/spendingByCategory";
+import { getUpcomingObligations } from "@/lib/aggregations/upcomingObligations";
+import { withUser } from "@/lib/db/withUser";
+import { runFullTaxEngine } from "@/lib/tax/il/runEngineForUser";
+
+/** Serialise bigints to decimal strings for the tool wire format. */
+function jsonifyBigints<T>(value: T): unknown {
+  if (typeof value === "bigint") return value.toString();
+  if (Array.isArray(value)) return value.map(jsonifyBigints);
+  if (value && typeof value === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      out[k] = jsonifyBigints(v);
+    }
+    return out;
+  }
+  return value;
+}
+
+export type ToolContext = {
+  userId: string;
+  /** Optional now-override for deterministic tests. */
+  now?: Date;
+};
+
+/**
+ * `getTaxEstimate(period)` — runs the full tax engine for the active
+ * business. The `period` parameter currently only accepts "current_year"
+ * because the engine is annualised; Phase E will add "2026Q3" etc.
+ */
+export function buildGetTaxEstimate(ctx: ToolContext) {
+  return tool({
+    description:
+      "Run the IL tax engine for the user's active business. Returns income tax, VAT-this-period, Bituach Leumi, and מקדמות estimates. ESTIMATES ONLY — disclaimer attached.",
+    inputSchema: z.object({
+      period: z
+        .literal("current_year")
+        .describe("Annual estimate for the running tax year."),
+    }),
+    execute: async ({ period: _period }) => {
+      const result = await runFullTaxEngine(ctx.userId, ctx.now ? { now: ctx.now } : {});
+      return jsonifyBigints(result);
+    },
+  });
+}
+
+/**
+ * `getCashflow(months)` — last N months of revenue + expense + ebitda
+ * buckets. Replicates the dashboard chart for AI consumption.
+ */
+export function buildGetCashflow(ctx: ToolContext) {
+  return tool({
+    description:
+      "Read the last N months of income + expense aggregates for the user's active business. Used to answer cashflow + trend questions.",
+    inputSchema: z.object({
+      months: z.number().int().min(1).max(24).default(12),
+    }),
+    execute: async ({ months }) => {
+      const startDate = new Date(ctx.now ?? new Date());
+      startDate.setUTCMonth(startDate.getUTCMonth() - (months - 1));
+      startDate.setUTCDate(1);
+      const startIso = startDate.toISOString().slice(0, 10);
+      const rows = await withUser(ctx.userId, async (tx) => {
+        return (await tx.execute(
+          sql`SELECT to_char(date_trunc('month', txn_date), 'YYYY-MM') AS month_bucket,
+                     direction::text,
+                     COALESCE(SUM(amount_minor),0)::text AS total_minor
+              FROM transactions
+              WHERE txn_date >= ${startIso}::date
+              GROUP BY 1, 2
+              ORDER BY 1`,
+        )) as unknown as Array<{
+          month_bucket: string;
+          direction: string;
+          total_minor: string;
+        }>;
+      });
+      return jsonifyBigints({ months, rows });
+    },
+  });
+}
+
+/**
+ * `getOverdueInvoices()` — list invoices with `due_date < today` that
+ * are not cancelled. Returns up to 50 rows (any further is paginated
+ * outside the AI surface).
+ */
+export function buildGetOverdueInvoices(ctx: ToolContext) {
+  return tool({
+    description:
+      "List up to 50 overdue invoices for the user's active business — invoices past their due_date that are not cancelled.",
+    inputSchema: z.object({
+      limit: z.number().int().min(1).max(50).default(50),
+    }),
+    execute: async ({ limit }) => {
+      const todayIso = (ctx.now ?? new Date()).toISOString().slice(0, 10);
+      const rows = await withUser(ctx.userId, async (tx) => {
+        return (await tx.execute(
+          sql`SELECT id, sequential_number, issue_date::text, due_date::text,
+                     total_minor::text, currency_at_issue
+              FROM invoices
+              WHERE cancelled_at IS NULL
+                AND due_date IS NOT NULL
+                AND due_date < ${todayIso}::date
+                AND invoice_type IN ('tax_invoice','tax_invoice_receipt')
+              ORDER BY due_date ASC
+              LIMIT ${limit}`,
+        )) as unknown as Array<{
+          id: string;
+          sequential_number: number;
+          issue_date: string;
+          due_date: string;
+          total_minor: string;
+          currency_at_issue: string;
+        }>;
+      });
+      return jsonifyBigints({ count: rows.length, invoices: rows });
+    },
+  });
+}
+
+/**
+ * `getVatPayableThisPeriod()` — current 2-month VAT period: collected
+ * minus recoverable. Returns the same value the dashboard surfaces.
+ */
+export function buildGetVatPayableThisPeriod(ctx: ToolContext) {
+  return tool({
+    description:
+      "Estimate the user's VAT payable in the current 2-month VAT period (collected VAT minus recoverable VAT). Returns negative-clamped value.",
+    inputSchema: z.object({}),
+    execute: async () => {
+      const result = await runFullTaxEngine(ctx.userId, ctx.now ? { now: ctx.now } : {});
+      return jsonifyBigints({
+        vatPayableThisPeriodMinor: result.vatPayableThisPeriodMinor,
+        disclaimer: result.disclaimer,
+      });
+    },
+  });
+}
+
+/**
+ * `getMakdamotStatus()` — מקדמות paid YTD, assigned rate, projection
+ * for the remainder of the year. Reads `tax_advances` (Phase D Layer 3).
+ */
+export function buildGetMakdamotStatus(ctx: ToolContext) {
+  return tool({
+    description:
+      "Report מקדמות (advance-tax) status for the active business: assigned rate, YTD paid, projected remainder of year. Returns null fields when the table is not yet provisioned.",
+    inputSchema: z.object({}),
+    execute: async () => {
+      const result = await runFullTaxEngine(ctx.userId, ctx.now ? { now: ctx.now } : {});
+      return jsonifyBigints({
+        monthlyInstallmentMinor: result.advanceTaxMonthlyInstallmentMinor,
+        rateRange: result.advanceTaxRateRange,
+        disclaimer: result.disclaimer,
+      });
+    },
+  });
+}
+
+/**
+ * `getSpendingByCategory(windowDays)` — surfaces the dashboard's
+ * spending-by-category donut data to the model so it can answer "what
+ * did I spend on X this month" questions.
+ */
+export function buildGetSpendingByCategory(ctx: ToolContext) {
+  return tool({
+    description:
+      "Group the user's expense transactions by chart-of-accounts category over a rolling window (default 30 days, max 365). Returns top 12 categories with totals in major ILS units.",
+    inputSchema: z.object({
+      windowDays: z.number().int().min(7).max(365).default(30),
+    }),
+    execute: async ({ windowDays }) => {
+      const result = await getSpendingByCategory(ctx.userId, {
+        windowDays,
+        ...(ctx.now ? { now: ctx.now } : {}),
+      });
+      return jsonifyBigints(result);
+    },
+  });
+}
+
+/**
+ * `getRecurringSubscriptions(windowDays)` — detects recurring expense
+ * subscriptions (Netflix-style monthly charges, weekly groceries, etc.)
+ * over a rolling window (default 180 days).
+ */
+export function buildGetRecurringSubscriptions(ctx: ToolContext) {
+  return tool({
+    description:
+      "Detect recurring expense subscriptions (Netflix-style monthly charges, weekly groceries, etc.) for the user's active business. Returns vendor name, cadence (monthly|weekly), occurrence count, and estimated monthly cost.",
+    inputSchema: z.object({
+      windowDays: z.number().int().min(60).max(365).default(180),
+    }),
+    execute: async ({ windowDays }) => {
+      const result = await getRecurringSubscriptions(ctx.userId, {
+        windowDays,
+        ...(ctx.now ? { now: ctx.now } : {}),
+      });
+      return jsonifyBigints(result);
+    },
+  });
+}
+
+/**
+ * `getUpcomingObligations(windowDays)` — merged chronological timeline of
+ * due dates over the next N days. Covers VAT period close, Bituach Leumi,
+ * מקדמות installments, tax filings, and outstanding invoice receivables.
+ */
+export function buildGetUpcomingObligations(ctx: ToolContext) {
+  return tool({
+    description:
+      "List the user's upcoming tax + filing + invoice obligations over the next N days (default 90, max 180). Includes VAT period close, Bituach Leumi due, מקדמות installments, filings, and outstanding receivable due dates.",
+    inputSchema: z.object({
+      windowDays: z.number().int().min(7).max(180).default(90),
+    }),
+    execute: async ({ windowDays }) => {
+      const result = await getUpcomingObligations(ctx.userId, {
+        windowDays,
+        ...(ctx.now ? { now: ctx.now } : {}),
+      });
+      return jsonifyBigints(result);
+    },
+  });
+}
+
+/**
+ * `getCashRunway(windowMonths)` — months until cash on hand is depleted
+ * at the average net-burn rate over the last N months. Returns null
+ * monthsRemaining when the business is cash-flow positive.
+ */
+export function buildGetCashRunway(ctx: ToolContext) {
+  return tool({
+    description:
+      "Forecast cash runway for the user's active business: months until cash on hand is depleted at the average net-burn rate over the last 6 months. Returns null months when the business is cash-flow positive.",
+    inputSchema: z.object({
+      windowMonths: z.number().int().min(3).max(12).default(6),
+    }),
+    execute: async ({ windowMonths }) => {
+      const result = await getCashRunway(ctx.userId, {
+        windowMonths,
+        ...(ctx.now ? { now: ctx.now } : {}),
+      });
+      return jsonifyBigints(result);
+    },
+  });
+}
+
+/**
+ * `getTransactionsByVendor(vendor, limit)` — last N expense transactions
+ * for a specific vendor matched case-insensitively on counterparty or
+ * description substring. Useful for "show my Netflix charges" queries.
+ */
+export function buildGetTransactionsByVendor(ctx: ToolContext) {
+  return tool({
+    description:
+      "Look up the last N expense transactions for a specific vendor (matched case-insensitive on counterparty or description substring). Useful for answering 'show my Netflix charges' type questions.",
+    inputSchema: z.object({
+      vendor: z.string().min(2).max(80),
+      limit: z.number().int().min(1).max(50).default(20),
+    }),
+    execute: async ({ vendor, limit }) => {
+      // Escape SQL LIKE metacharacters so a user-supplied vendor string like
+      // "100%" or "foo_bar" doesn't accidentally match unintended rows.
+      const escaped = vendor
+        .toLowerCase()
+        .replace(/\\/g, "\\\\")
+        .replace(/%/g, "\\%")
+        .replace(/_/g, "\\_");
+      const pattern = `%${escaped}%`;
+      const rows = await withUser(ctx.userId, async (tx) => {
+        return (await tx.execute(
+          sql`SELECT id::text, txn_date::text, amount_minor::text, currency,
+                     description, COALESCE(metadata_jsonb->>'counterparty', '') AS counterparty
+              FROM transactions
+              WHERE direction = 'expense'
+                AND (
+                  LOWER(COALESCE(description, '')) LIKE ${pattern} ESCAPE '\\'
+                  OR LOWER(COALESCE(metadata_jsonb->>'counterparty', '')) LIKE ${pattern} ESCAPE '\\'
+                )
+              ORDER BY txn_date DESC
+              LIMIT ${limit}`,
+        )) as unknown as Array<{
+          id: string;
+          txn_date: string;
+          amount_minor: string;
+          currency: string;
+          description: string | null;
+          counterparty: string;
+        }>;
+      });
+      return jsonifyBigints({ vendor, count: rows.length, transactions: rows });
+    },
+  });
+}
+
+/**
+ * Aggregate factory — returns a `ToolSet` (record of tools) keyed by
+ * the names the model invokes. Pass directly to `generateText`/
+ * `streamText` as the `tools` option.
+ */
+export function buildAdvisorTools(ctx: ToolContext) {
+  return {
+    getTaxEstimate: buildGetTaxEstimate(ctx),
+    getCashflow: buildGetCashflow(ctx),
+    getOverdueInvoices: buildGetOverdueInvoices(ctx),
+    getVatPayableThisPeriod: buildGetVatPayableThisPeriod(ctx),
+    getMakdamotStatus: buildGetMakdamotStatus(ctx),
+    getSpendingByCategory: buildGetSpendingByCategory(ctx),
+    getRecurringSubscriptions: buildGetRecurringSubscriptions(ctx),
+    getUpcomingObligations: buildGetUpcomingObligations(ctx),
+    getCashRunway: buildGetCashRunway(ctx),
+    getTransactionsByVendor: buildGetTransactionsByVendor(ctx),
+  } as const;
+}
+
+export type AdvisorTools = ReturnType<typeof buildAdvisorTools>;
