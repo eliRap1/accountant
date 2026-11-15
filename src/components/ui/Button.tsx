@@ -9,8 +9,6 @@ type Variant = "primary" | "ghost" | "outline";
 type Props = Omit<HTMLMotionProps<"button">, "ref" | "children"> & {
   variant?: Variant;
   withArrow?: boolean;
-  as?: "button" | "a";
-  href?: string;
   children?: React.ReactNode;
 };
 
