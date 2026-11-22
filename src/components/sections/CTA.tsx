@@ -56,10 +56,12 @@ export default function CTA() {
             <Field label="Work email" type="email" placeholder="jane@company.com" />
             <Field label="Company" type="text" placeholder="Acme, Inc." />
             <div>
-              <label className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-slate-400">
+              <label htmlFor="message" className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-slate-400">
                 What do you need help with?
               </label>
               <textarea
+                id="message"
+                name="message"
                 rows={4}
                 placeholder="Audit prep, R&D credit, monthly close..."
                 className="w-full resize-none rounded-xl border border-white/10 bg-slate-950/60 px-3.5 py-3 text-sm text-slate-100 outline-none transition-colors placeholder:text-slate-600 focus:border-emerald-400/60"
@@ -87,12 +89,15 @@ function Field({
   type: string;
   placeholder: string;
 }) {
+  const id = label.toLowerCase().replace(/\s+/g, "-");
   return (
     <div>
-      <label className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-slate-400">
+      <label htmlFor={id} className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-slate-400">
         {label}
       </label>
       <input
+        id={id}
+        name={id}
         type={type}
         placeholder={placeholder}
         className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-3.5 py-3 text-sm text-slate-100 outline-none transition-colors placeholder:text-slate-600 focus:border-emerald-400/60"
