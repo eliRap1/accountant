@@ -61,7 +61,9 @@ export default function Dashboard() {
   useEffect(() => setMounted(true), []);
 
   const total = data.reduce((acc, d) => acc + d.revenue, 0);
-  const yoy = ((data[11].revenue - data[0].revenue) / data[0].revenue) * 100;
+  const first = data[0];
+  const last = data[data.length - 1];
+  const yoy = first && last ? ((last.revenue - first.revenue) / first.revenue) * 100 : 0;
 
   return (
     <section
@@ -103,7 +105,7 @@ export default function Dashboard() {
 
         {/* KPI row */}
         <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-          <Kpi icon={TrendingUp} label="ARR Run-rate" value={`$${(data[11].revenue * 12 / 1000).toFixed(1)}M`} delta="+18.4%" />
+          <Kpi icon={TrendingUp} label="ARR Run-rate" value={`$${((last?.revenue ?? 0) * 12 / 1000).toFixed(1)}M`} delta="+18.4%" />
           <Kpi icon={Activity} label="Gross Margin" value="74.2%" delta="+3.1 pts" />
           <Kpi icon={PieChart} label="EBITDA TTM" value={`$${data.reduce((a, d) => a + d.ebitda, 0)}k`} delta="+62%" />
           <Kpi icon={TrendingUp} label="YoY Growth" value={`${yoy.toFixed(0)}%`} delta="strong" subtle />
