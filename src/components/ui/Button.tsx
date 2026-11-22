@@ -9,8 +9,6 @@ type Variant = "primary" | "ghost" | "outline";
 type Props = Omit<HTMLMotionProps<"button">, "ref" | "children"> & {
   variant?: Variant;
   withArrow?: boolean;
-  as?: "button" | "a";
-  href?: string;
   children?: React.ReactNode;
 };
 
@@ -24,7 +22,7 @@ const styles: Record<Variant, string> = {
 };
 
 const Button = forwardRef<HTMLButtonElement, Props>(function Button(
-  { variant = "primary", withArrow, className = "", children, ...rest },
+  { variant = "primary", withArrow, className = "", children, ...rest }: Props,
   ref
 ) {
   return (
